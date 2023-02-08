@@ -77,7 +77,7 @@
 					"name": "@electron-forge/maker-deb",
 					"config": {
 						"options": {
-							"icon": "./public/logo@1.25x"
+							"icon": "./public/logo@1.25x.png"
 						}
 					}
 				}
