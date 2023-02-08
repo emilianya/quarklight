@@ -1,25 +1,28 @@
-import logo from './logo.svg';
+//import logo from './logo.svg';
 import './App.css';
+import {useEffect, useState} from "react";
+import {LoginScreen} from "./screens/LoginScreen";
+import {MainScreen} from "./screens/MainScreen";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const savedLoginState = localStorage.getItem("isLoggedIn") === "true" || false;
+    const savedToken = localStorage.getItem("token");
+    let [isLoggedIn, setIsLoggedIn] = useState(savedLoginState);
+    let [getToken, setToken] = useState(savedToken);
+
+    useEffect(() => {
+        localStorage.setItem("isLoggedIn", JSON.stringify(isLoggedIn));
+        localStorage.setItem("token", getToken);
+    });
+    return (
+        <div>
+            <span>{isLoggedIn}</span>
+            {!isLoggedIn ?  <LoginScreen loginState={{isLoggedIn, setIsLoggedIn}} tokenState={{setToken, getToken}}/>
+                         :  <MainScreen  loginState={{isLoggedIn, setIsLoggedIn}} tokenState={{setToken, getToken}}/>
+            }
+
+        </div>
+    );
 }
 
 export default App;
