@@ -1,47 +1,87 @@
 {
-  "name": "quarklight",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
-  },
-  "main": "public/electron.js",
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "dev": "concurrently -k \"npm start\" \"npm:electron\"",
-    "electron": "wait-on tcp:3000 && electron ."
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "concurrently": "^7.6.0",
-    "electron": "^23.0.0",
-    "electron-is-dev": "^2.0.0",
-    "wait-on": "^7.0.1"
-  }
+	"name": "quarklight",
+	"version": "0.1.0",
+	"author": "LIT Devs",
+	"description": "A simple lightquark client",
+	"dependencies": {
+		"electron-is-dev": "^2.0.0",
+		"electron-squirrel-startup": "^1.0.0",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
+		"react-scripts": "5.0.1"
+	},
+	"main": "public/electron.js",
+	"homepage": "./",
+	"scripts": {
+		"start": "react-scripts start",
+		"build": "react-scripts build",
+		"test": "react-scripts test",
+		"eject": "react-scripts eject",
+		"dev": "concurrently -k \"npm start\" \"npm:electron\"",
+		"electron": "wait-on tcp:3000 && electron-forge start",
+		"package": "react-scripts build && electron-forge package",
+		"make": "react-scripts build && electron-forge make",
+		"makelinux": "react-scripts build && electron-forge make --platform=linux --targets=@electron-forge/maker-deb"
+	},
+	"eslintConfig": {
+		"extends": [
+			"react-app",
+			"react-app/jest"
+		]
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	},
+	"devDependencies": {
+		"@electron-forge/cli": "^6.0.5",
+		"@electron-forge/maker-deb": "^6.0.5",
+		"@electron-forge/maker-rpm": "^6.0.5",
+		"@electron-forge/maker-squirrel": "^6.0.5",
+		"@electron-forge/maker-zip": "^6.0.5",
+		"concurrently": "^7.6.0",
+		"electron": "^23.0.0",
+		"electron-devtools-installer": "^3.2.0",
+		"wait-on": "^7.0.1"
+	},
+	"config": {
+		"forge": {
+			"packagerConfig": {
+				"asar": true,
+				"icon": "./public/logo"
+			},
+			"rebuildConfig": {},
+			"makers": [
+				{
+					"name": "@electron-forge/maker-squirrel",
+					"config": {
+						"icon": "./public/logo@1.25x"
+					}
+				},
+				{
+					"name": "@electron-forge/maker-zip",
+					"platforms": ["darwin"],
+					"config": {
+						"icon": "./public/logo@1.25x"
+					}
+				},
+				{
+					"name": "@electron-forge/maker-deb",
+					"config": {
+						"options": {
+							"icon": "./public/logo@1.25x"
+						}
+					}
+				}
+			]
+		}
+	}
 }

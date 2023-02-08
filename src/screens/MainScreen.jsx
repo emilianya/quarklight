@@ -18,8 +18,8 @@ export function MainScreen(props) {
 	}, [props.tokenState.getToken])
 	return (
 		<div className="screenRoot">
-			<p>You are {userData.username}</p>
-			<p>Your email address is {userData.email}</p>
+			<p>You are {userData?.username || "loading..."}</p>
+			<p>Your email address is {userData?.email || "loading..."}</p>
 			<button onClick={() => props.loginState.setIsLoggedIn(false)}>Loggery Outtery</button>
 		</div>
 	);
