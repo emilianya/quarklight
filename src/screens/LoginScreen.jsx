@@ -1,7 +1,8 @@
 import poweredBy from "../assets/poweredby.png";
-import {useState} from "react";
+import {useState, useContext} from "react";
+import {AppContext} from "../contexts/AppContext";
 
-async function attemptLogin(e, loginState, tokenState, screenState) {
+async function attemptLogin(e, appContext, screenState) {
 	screenState.setProcessing(true);
 	e.preventDefault();
 	let res = await fetch("https://lq.litdevs.org/v1/auth/token", {
@@ -17,8 +18,8 @@ async function attemptLogin(e, loginState, tokenState, screenState) {
 	let data = await res.json();
 	screenState.setProcessing(false)
 	if (data.request.success) {
-		tokenState.setToken(data.response.access_token);
-		loginState.setIsLoggedIn(true);
+		appContext.setToken(data.response.access_token);
+		appContext.setLoggedIn(true);
 	} else {
 		screenState.setError(`Login failed. Please try again.\n${data.response.message}`);
 	}
@@ -27,9 +28,10 @@ async function attemptLogin(e, loginState, tokenState, screenState) {
 export function LoginScreen(props) {
 	let [error, setError] = useState(false);
 	let [processing, setProcessing] = useState(false);
+	let appContext = useContext(AppContext);
 	return (
 		<div className="screenRoot">
-			<form className="centerModal" onSubmit={(e) => attemptLogin(e, props.loginState, props.tokenState, {error, setError, setProcessing, processing})}>
+			<form className="centerModal" onSubmit={(e) => attemptLogin(e, appContext, {error, setError, setProcessing, processing})}>
 				<p>Welcome back! Please log in using LITauth.</p>
 				<input className="input-box" placeholder="Email" type="email" name="email" required/>
 				<input className="input-box" placeholder="Password" type="password" name="password" required/><br/>

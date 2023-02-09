@@ -1,26 +1,27 @@
-import {useEffect, useState} from "react";
+import {useEffect, useContext} from "react";
+import {AppContext} from "../contexts/AppContext";
 
 export function MainScreen(props) {
-	let [userData, setUserData] = useState(undefined);
+	let appContext = useContext(AppContext);
 	useEffect(() => {
 		async function getUserData() {
 			let res = await fetch("https://lq.litdevs.org/v1/user/me", {
 				headers: {
-					"Authorization": `Bearer ${props.tokenState.getToken}`
+					"Authorization": `Bearer ${appContext.token}`
 				}
 			})
 			let data = await res.json();
 			if (data.request.success) {
-				setUserData(data.response.jwtData);
+				appContext.setUserData(data.response.jwtData);
 			}
 		}
 		getUserData();
-	}, [props.tokenState.getToken])
+	}, [appContext, appContext.token])
 	return (
 		<div className="screenRoot">
-			<p>You are {userData?.username || "loading..."}</p>
-			<p>Your email address is {userData?.email || "loading..."}</p>
-			<button onClick={() => props.loginState.setIsLoggedIn(false)}>Loggery Outtery</button>
+			<p>You are {appContext?.userData?.username || "loading..."}</p>
+			<p>Your email address is {appContext?.userData?.email || "loading..."}</p>
+			<button onClick={() => appContext.setLoggedIn(false)}>Loggery Outtery</button>
 		</div>
 	);
 }
