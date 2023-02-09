@@ -1,6 +1,7 @@
 const path = require('path');
 
 const { app, BrowserWindow, shell } = require('electron');
+if (require('electron-squirrel-startup')) app.quit();
 const isDev = require('electron-is-dev');
 
 let installExtension, REACT_DEVELOPER_TOOLS;
