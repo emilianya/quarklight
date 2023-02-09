@@ -22,6 +22,7 @@ export default class Lightquark {
      */
     async apiCall (path, method = "GET", body = undefined, version = undefined) {
         try {
+            throw new Error("Test error :._:.:_.:")
             let finalUrl = `${this.baseUrl}/${version || this.defaultVersion}/${path}`;
             let headers = {
                 "Content-Type": "application/json",
@@ -33,7 +34,7 @@ export default class Lightquark {
                 body: body ? JSON.stringify(body) : undefined
             };
 
-            let response = await (await fetch(finalUl, options)).json();
+            let response = await (await fetch(finalUrl, options)).json();
             if (!response.request.success) throw response;
             return response;
         } catch (e) {
