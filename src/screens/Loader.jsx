@@ -10,7 +10,7 @@ export function Loader(props) {
 		setInterval(() => {
 			setSeconds(Math.floor((Date.now() - startTime) / 1000));
 		}, 1000)
-	}, []);
+	}, [startTime])
 	return (
 		<div className="loaderRoot">
 			<img src={spinner} className="spinner"></img>

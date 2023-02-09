@@ -19,10 +19,11 @@ function createWindow() {
 		height: 600,
 		webPreferences: {
 			nodeIntegration: true,
+			autoHideMenuBar: true
 		},
 		icon: path.join(__dirname, '../build/logo@1.25x.png')
 	});
-
+	win.setMenuBarVisibility(false);
 	// and load the index.html of the app.
 	// win.loadFile("index.html");
 	win.loadURL(

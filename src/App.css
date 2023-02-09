@@ -73,16 +73,15 @@
 
 .spinner {
     position: absolute;
-    top: 50%;
+    top: 45%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 50px;
-    /*animation: spin 1s linear infinite;*/
 }
 
 .spinnerSubtitle {
     position: absolute;
-    top: 50%;
+    top: 45%;
     left: 50%;
     transform: translate(-50%, 100%);
 

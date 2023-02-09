@@ -21,19 +21,25 @@ export default class Lightquark {
      * @returns {Promise<Response>} - Returns promise or throws error
      */
     async apiCall (path, method = "GET", body = undefined, version = undefined) {
-        let finalUrl = `${this.baseUrl}/${version || this.defaultVersion}/${path}`;
-        let headers = {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${this.token}`
-        };
-        let options = {
-            method: method,
-            headers: headers,
-            body: body ? JSON.stringify(body) : undefined
-        };
+        try {
+            let finalUrl = `${this.baseUrl}/${version || this.defaultVersion}/${path}`;
+            let headers = {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${this.token}`
+            };
+            let options = {
+                method: method,
+                headers: headers,
+                body: body ? JSON.stringify(body) : undefined
+            };
 
-        let response = await fetch(finalUrl, options);
-        if (!response.request.success) throw response;
-        return response;
+            let response = await (await fetch(finalUl, options)).json();
+            if (!response.request.success) throw response;
+            return response;
+        } catch (e) {
+            alert(e)
+            alert("Fatal error occurred. Exiting...")
+            window.close();
+        }
     }
 }
