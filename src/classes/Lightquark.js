@@ -6,7 +6,6 @@ export default class Lightquark {
     baseUrl = "https://lq.litdevs.org";
     defaultVersion = "v1"
     appContext;
-    apiContext;
     ws;
     retryCount = 0;
     heartbeat;
@@ -130,12 +129,27 @@ export default class Lightquark {
     /**
      * Fetches user data for array of user IDs
      * @param {string[]} userIds - Array of user IDs
-     * @returns {Promise<Response<unknown>>}
+     * @returns {Promise<*[]>}
      */
-    async inflateIdArray (userIds) {
+    async inflateUserIdArray (userIds) {
         let users = [];
         let apiPromises = [];
+        let tempCache = [];
         userIds.forEach(userId => {
+            // Check if user is already in cache
+            if (this.appContext.userCache.some(u => u._id === userId)) {
+                return apiPromises.push(Promise.resolve({
+                    request: {
+                        success: true
+                    },
+                    response: {
+                        user: this.appContext.userCache.find(u => u._id === userId)
+                    }
+                }))
+            }
+            // User is not in cache, make API call
+            if (tempCache.some(u => u._id === userId)) return;
+            tempCache.push(userId);
             apiPromises.push(this.apiCall(`/user/${userId}`));
         })
         let res = await Promise.all(apiPromises);
@@ -167,13 +181,13 @@ export default class Lightquark {
 
     /**
      * Fetch the user's quarks
-     * @returns Quark[]
+     * @returns {Promise<Quark[]>}
      */
     async getQuarks () {
         let res = await this.apiCall("/quark/me")
         let quarks = res.response.quarks;
         for (const quark in quarks) {
-            quarks[quark].members = await this.inflateIdArray(quarks[quark].members);
+            quarks[quark].members = await this.inflateUserIdArray(quarks[quark].members);
         }
         return res.response.quarks
     }

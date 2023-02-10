@@ -15,6 +15,10 @@ function App() {
     let [loading, setLoading] = useState(true);
     let [gatewayConnected, setGatewayConnected] = useState(false);
 	let [spinnerText, setSpinnerText] = useState("Loading")
+    let [quarks, setQuarks] = useState(undefined);
+    let [channels, setChannels] = useState([]);
+    let [userCache, setUserCache] = useState([]);
+
 
     useEffect(() => {
         localStorage.setItem("loggedIn", JSON.stringify(loggedIn));
@@ -23,8 +27,17 @@ function App() {
     }, [loggedIn, token]);
 
     return (
-        <AppContext.Provider value={{loggedIn, setLoggedIn, token, setToken, userData, setUserData, loading, setLoading, gatewayConnected, setGatewayConnected, spinnerText, setSpinnerText}}>        
-
+        <AppContext.Provider value={{
+            loggedIn, setLoggedIn,
+            token, setToken,
+            userData, setUserData,
+            loading, setLoading,
+            gatewayConnected, setGatewayConnected,
+            spinnerText, setSpinnerText,
+            quarks, setQuarks,
+            channels, setChannels,
+            userCache, setUserCache
+        }}>
             <Main/>
         </AppContext.Provider>
     );

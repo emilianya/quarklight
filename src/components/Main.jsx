@@ -27,13 +27,14 @@ export const Main = () => {
 			if (data.request.success) {
 				appContext.setUserData(data.response.jwtData);
 			}
+			appContext.setQuarks(await lq.getQuarks())
 		})()
 	}, [appContext.gatewayConnected])
 
 	useEffect(() => {
 		if (!appContext.loggedIn) appContext.setLoading(false);
-		if (appContext.loggedIn && appContext.userData && appContext.gatewayConnected) appContext.setLoading(false);
-	}, [appContext.userData, appContext.loggedIn, appContext.gatewayConnected]);
+		if (appContext.loggedIn && appContext.quarks && appContext.userData && appContext.gatewayConnected) appContext.setLoading(false);
+	}, [appContext.userData, appContext.loggedIn, appContext.gatewayConnected, appContext.quarks]);
 
 	return (
 		<div>

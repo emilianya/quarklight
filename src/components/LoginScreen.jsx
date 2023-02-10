@@ -38,13 +38,13 @@ export function LoginScreen(props) {
 	}
 
 	return (
-		<div className="screenRoot">
-			<form className="centerModal" onSubmit={(e) => attemptLogin(e)}>
+		<div className="screenRoot" data-testid="screenRoot">
+			<form data-testid="loginForm" className="centerModal" onSubmit={(e) => attemptLogin(e)}>
 				<p>Welcome back! Please log in using LITauth.</p>
-				<input className="input-box" placeholder="Email" type="email" name="email" required/>
-				<input className="input-box" placeholder="Password" type="password" name="password" required/><br/>
-				<input type="submit" className="button" disabled={processing} value={processing ? "..." : "Log in"}></input>
-				<p style={{color:"red"}}>{error}</p>
+				<input className="input-box" data-testid="emailInput" placeholder="Email" type="email" name="email" required/>
+				<input className="input-box" data-testid="passwordInput" placeholder="Password" type="password" name="password" required/><br/>
+				<input type="submit" data-testid="submitButton" className="button" disabled={processing} value={processing ? "..." : "Log in"}></input>
+				<p style={{color:"red"}} data-testid="errorText">{error}</p>
 			</form>
 			<div style={{bottom:0,position:"absolute"}}>
 				<img src={poweredBy} width="156px" alt="Powered by LITauth"/>
