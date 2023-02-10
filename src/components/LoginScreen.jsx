@@ -1,15 +1,13 @@
 import poweredBy from "../assets/poweredby.png";
 import {useState, useContext} from "react";
 import {AppContext} from "../contexts/AppContext";
-import {ApiContext} from "../contexts/ApiContext";
-
+import {lq} from "../classes/Lightquark";
 
 
 export function LoginScreen(props) {
 	let [error, setError] = useState(false);
 	let [processing, setProcessing] = useState(false);
 	let appContext = useContext(AppContext);
-	let apiContext = useContext(ApiContext);
 
 	/**
 	 * Log in
@@ -22,7 +20,7 @@ export function LoginScreen(props) {
 		e.preventDefault();
 
 		// Send credentials to API
-		let data = await apiContext.lq.login(
+		let data = await lq.login(
 			document.querySelector("input[name=email]").value,
 			document.querySelector("input[name=password]").value
 		)

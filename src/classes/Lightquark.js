@@ -13,23 +13,31 @@ export default class Lightquark {
     wygIndex = 0;
     reconnecting = false;
     dead = false;
-    lqSetter;
+    identifier = Math.random().toString(36).substring(7);
 
     /**
      * @param {string} token - JWT Token 
      */
-    constructor (appContext, lqSetter, token = undefined) {
+    constructor (appContext, token = undefined) {
         console.log("Lightquark constructor called");
         if (instance) {
-            console.log("Older instance found... Kerplooey!")
+            console.log("Older instance found... Kerplooey!");
             instance.destroy();
         }
         instance = this;
         this.appContext = appContext;
-        this.lqSetter = lqSetter;
         if (token) this.token = token;
 
         // If authenticated, setup websocket gateway
+        if (this.token) this.openGateway();
+    }
+
+    setAppContext (appContext) {
+        this.appContext = appContext;
+    }
+
+    setToken (token) {
+        this.token = token;
         if (this.token) this.openGateway();
     }
 
@@ -42,11 +50,10 @@ export default class Lightquark {
         setTimeout(() => {
             if (this.dead) return;
             if (!this.token) return;
-            this.lqSetter(this)
             console.log("Opening gateway connection");
             this.ws = new WebSocket("wss://lq-gateway.litdevs.org", this.token);
             this.registerWsListeners();
-        }, 1000)
+        }, 100)
     }
 
     /**
@@ -63,7 +70,7 @@ export default class Lightquark {
             if(this.heartbeat) clearInterval(this.heartbeat); // Clear heartbeat if it's already running
             // Send heartbeat to server every 15 seconds
             this.heartbeat = setInterval(() => {
-                console.log("Sending heartbeat", wantYouGone[this.wygIndex] )
+                console.log("Sending heartbeat", wantYouGone[this.wygIndex], this.identifier )
                 this.ws.send(JSON.stringify({event: "heartbeat", message: wantYouGone[this.wygIndex]}))
                 this.wygIndex += 1;
                 if(this.wygIndex === wantYouGone.length - 1) this.wygIndex = 0;
@@ -83,22 +90,26 @@ export default class Lightquark {
                     }
                 }
             }*/
-            console.log(message)
+            console.log(message);
         }
         this.ws.onclose = (message) => {
+            console.log(message)
             if (this.heartbeat) clearInterval(this.heartbeat);
             if (this.dead) return;
             this.appContext.setGatewayConnected(false);
             this.appContext.setLoading(true);
+            this.appContext.setSpinnerText("Reconnecting to gateway...");
             this.reconnecting = true;
             if (this.retryCount < 5) { // Max 5 retries
                 // Try to reconnect after 1*retryCount seconds
                 this.retryCount++;
+                this.appContext.setSpinnerText(`Gateway connection lost... Reconnecting in ${this.retryCount} seconds.`);
                 setTimeout(() => {
                     this.openGateway();
                 }, 1000 * this.retryCount);
             } else {
                 // TODO: Replace with connection error on Loader.jsx
+                this.appContext.setSpinnerText(`Gateway connection lost`);
                 alert("Can't open gateway connection, either your internet connection is broken, server is down or your login is wrong");
             }
         }
@@ -138,10 +149,6 @@ export default class Lightquark {
      * @returns {Promise<Response>} - Returns promise or throws error
      */
     async apiCall (path, method = "GET", body = undefined, version = undefined, no401Check = false) {
-        function delay(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
-        await delay(500)
         console.log(`API Call: ${method} ${path}`)
         console.log("Current state", this)
         try {
@@ -182,3 +189,7 @@ export default class Lightquark {
         return response.request.status_code === 200;
     }
 }
+
+const lq = new Lightquark()
+
+export {lq}

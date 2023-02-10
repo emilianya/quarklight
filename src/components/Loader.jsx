@@ -1,15 +1,15 @@
 import {useState, useContext, useEffect} from "react";
 import {AppContext} from "../contexts/AppContext";
 import spinner from "../assets/spinner_test_gif.gif";
+import {lq} from "../classes/Lightquark";
 
 export function Loader(props) {
 	let appContext = useContext(AppContext);
 	let [seconds, setSeconds] = useState(0);
-	let [spinnerText, setSpinnerText] = useState("Loading")
 
 	useEffect(() => {
-		if (!appContext.userData) return setSpinnerText("Loading user data")
-		if (!appContext.gatewayConnected) return setSpinnerText("Connecting to gateway")
+		if (!appContext.userData) return appContext.setSpinnerText("Loading user data")
+		if (!appContext.gatewayConnected && !lq.reconnecting) return appContext.setSpinnerText("Connecting to gateway")
 	}, [appContext.userData, appContext.gatewayConnected]);
 
 	useEffect(() => {
@@ -21,7 +21,7 @@ export function Loader(props) {
 	return (
 		<div className="loaderRoot">
 			<img src={spinner} className="spinner"></img>
-			<p className="spinnerSubtitle">{spinnerText}{".".repeat(3 + seconds)}</p>
+			<p className="spinnerSubtitle">{appContext.spinnerText}{".".repeat(3 + seconds)}</p>
 		</div>
 	);
 }
