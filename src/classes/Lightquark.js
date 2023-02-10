@@ -16,9 +16,10 @@ export default class Lightquark {
     identifier = Math.random().toString(36).substring(7);
 
     /**
+     * @param appContext - React Context
      * @param {string} token - JWT Token 
      */
-    constructor (appContext, token = undefined) {
+    constructor (appContext = undefined, token = undefined) {
         console.log("Lightquark constructor called");
         if (instance) {
             console.log("Older instance found... Kerplooey!");
@@ -26,7 +27,7 @@ export default class Lightquark {
         }
         instance = this;
         this.appContext = appContext;
-        if (token) this.token = token;
+        this.token = token;
 
         // If authenticated, setup websocket gateway
         if (this.token) this.openGateway();
@@ -93,13 +94,16 @@ export default class Lightquark {
             console.log(message);
         }
         this.ws.onclose = (message) => {
-            console.log(message)
+            console.log(message.wasClean ? "Gateway connection closed" : "Gateway connection lost")
             if (this.heartbeat) clearInterval(this.heartbeat);
             if (this.dead) return;
+            
+            // Make it very clear to everything that the gateway is disconnected
             this.appContext.setGatewayConnected(false);
             this.appContext.setLoading(true);
             this.appContext.setSpinnerText("Reconnecting to gateway...");
             this.reconnecting = true;
+
             if (this.retryCount < 5) { // Max 5 retries
                 // Try to reconnect after 1*retryCount seconds
                 this.retryCount++;
@@ -138,6 +142,22 @@ export default class Lightquark {
         this.appContext.setLoggedIn(false);
     }
 
+    /**
+     * Fetch the user's quarks
+     * @returns Quark[]
+     */
+    async getQuarks () {
+        let res = await this.apiCall("/quark/me")
+        return res.response.quarks
+    }
+
+    /**
+     * Get user information by ID
+     */
+    async getUser (id) {
+        let res = await this.apiCall(`/user/${id}`)
+        return res.response.user
+    }
 
     /**
      * Makes an API call to the Lightquark API

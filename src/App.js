@@ -21,8 +21,9 @@ function App() {
     }, [loggedIn, token]);
 
     return (
-        <AppContext.Provider value={{loggedIn, setLoggedIn, token, setToken, userData, setUserData, loading, setLoading, gatewayConnected, setGatewayConnected, spinnerText, setSpinnerText}}>
-                <Main/>
+        <AppContext.Provider value={{loggedIn, setLoggedIn, token, setToken, userData, setUserData, loading, setLoading, gatewayConnected, setGatewayConnected, spinnerText, setSpinnerText}}>        
+
+            <Main/>
         </AppContext.Provider>
     );
 }
