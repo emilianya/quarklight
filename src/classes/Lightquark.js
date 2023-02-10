@@ -128,6 +128,25 @@ export default class Lightquark {
     }
 
     /**
+     * Fetches user data for array of user IDs
+     * @param {string[]} userIds - Array of user IDs
+     * @returns {Promise<Response<unknown>>}
+     */
+    async inflateIdArray (userIds) {
+        let users = [];
+        let apiPromises = [];
+        userIds.forEach(userId => {
+            apiPromises.push(this.apiCall(`/user/${userId}`));
+        })
+        let res = await Promise.all(apiPromises);
+        res.forEach(resp => {
+            if (resp.request.success) users.push(resp.response.user)
+        })
+        return users;
+    }
+
+
+    /**
      * Logs in to Lightquark
      * @param email
      * @param password
@@ -152,6 +171,10 @@ export default class Lightquark {
      */
     async getQuarks () {
         let res = await this.apiCall("/quark/me")
+        let quarks = res.response.quarks;
+        for (const quark in quarks) {
+            quarks[quark].members = await this.inflateIdArray(quarks[quark].members);
+        }
         return res.response.quarks
     }
 
@@ -174,7 +197,6 @@ export default class Lightquark {
      */
     async apiCall (path, method = "GET", body = undefined, version = undefined, no401Check = false) {
         console.log(`API Call: ${method} ${path}`)
-        console.log("Current state", this)
         try {
             let finalUrl = `${this.baseUrl}/${version || this.defaultVersion}${path}`;
             let headers = {

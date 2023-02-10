@@ -1,5 +1,6 @@
 :root {
   --bg-color: #31393C;
+  --bg-dark: #1E2223;
   --blue-1: #2176FF;
   --blue-2: #3381FF;
   --blue-3: #33A1FD;
@@ -94,4 +95,15 @@
     100% {
         transform: rotate(360deg);
     }
+}
+
+.screenRoot {
+    margin: 0 0;
+    min-width: 100vw;
+    min-height: 100vh;
+    outline: none;
+}
+
+.hidden {
+    display: none;
 }
