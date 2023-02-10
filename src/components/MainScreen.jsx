@@ -2,17 +2,35 @@ import {useContext, useEffect, useState} from "react";
 import {AppContext} from "../contexts/AppContext";
 import { lq } from "../classes/Lightquark";
 import "./../main.css";
+import {Quark} from "./Quark";
+import {Channel} from "./Channel";
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
 export function MainScreen() {
 	let [quarkBoxes, setQuarkBoxes] = useState([]);
+	let [channelBoxes, setChannelBoxes] = useState([]);
 	let appContext = useContext(AppContext);
+	let [selectedQuark, setSelectedQuark] = useState(null);
+	let [selectedChannel, setSelectedChannel] = useState(null);
 
 	useEffect(() => {
 		setQuarkBoxes(appContext.quarks.map(quark => {
-			return (<p key={quark._id} className="quarkBox">{quark.name}</p>)
+			return (<Quark quark={quark} setSelectedQuark={setSelectedQuark} key={quark._id} />)
 		}));
 	}, [appContext.quarks])
+
+
+	useEffect(() => {
+		if (!selectedQuark) return;
+		(async () => {
+			console.log("Getting channels for quark " + selectedQuark)
+			lq.setAppContext(appContext);
+			appContext.channels = await lq.getChannels(selectedQuark);
+			setChannelBoxes(appContext.channels.map(channel => {
+				return (<Channel channel={channel} setSelectedChannel={setSelectedChannel} key={channel._id} />)
+			}));
+		})()
+	}, [selectedQuark])
 
 	let [konamiState, setKonamiState] = useState(0);
 	var konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
@@ -24,6 +42,8 @@ export function MainScreen() {
 				<img width={"128px"} src={appContext?.userData?.avatar || "https://quarky.vukky.net/assets/img/loading.png"} alt=""/>
 				<p>You are {appContext?.userData?.username || "loading..."}</p>
 				<p>Your email address is {appContext?.userData?.email || "loading..."}</p>
+				<p>Selected channel: {JSON.stringify(selectedChannel)}</p>
+				<p>Selected quark: {JSON.stringify(selectedQuark)}</p>
 				<p>Quarks: {JSON.stringify(appContext.quarks)}</p>
 				<button onClick={() => lq.logout()}>Loggery Outtery</button>
 				<button onClick={() => appContext.setToken("newTokenValue")}>killtoken</button>
@@ -48,8 +68,13 @@ export function MainScreen() {
 						<span className="username">{appContext?.userData?.username}</span><br />
 						<span>subtext</span>
 					</div>
-					<div>
-						{quarkBoxes}
+					<div className="quarkInfo">
+						<div className="channelContainer">
+							{channelBoxes}
+						</div>
+						<div className="quarkList">
+							{quarkBoxes}
+						</div>
 					</div>
 				</div>
 			</div>

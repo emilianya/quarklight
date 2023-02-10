@@ -193,6 +193,27 @@ export default class Lightquark {
     }
 
     /**
+     * Get channels in a quark
+     * @param quarkId
+     * @returns {Promise<Channel[]>}
+     */
+    async getChannels (quarkId) {
+        console.log(this.appContext.token)
+        let quark = this.appContext.quarks.find(q => q._id === quarkId);
+        let channelPromises = [];
+        quark.channels.forEach(channel => {
+            channelPromises.push(this.apiCall(`/channel/${channel}`));
+        })
+        let res = await Promise.all(channelPromises);
+        let channels = [];
+        res.forEach(resp => {
+            if (resp.request.success) channels.push(resp.response.channel)
+        })
+        console.log(channels)
+        return channels;
+    }
+
+    /**
      * Get user information by ID
      */
     async getUser (id) {

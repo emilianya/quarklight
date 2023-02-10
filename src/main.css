@@ -8,7 +8,10 @@
     min-height: 100vh;
     width: 100%;
 }
+
 .navContainer {
+    display: flex;
+    flex-direction: column;
     background-color: var(--bg-dark);
     min-height: 100vh;
     width: 16rem;
@@ -22,4 +25,37 @@
 
 .username {
     font-weight: 500;
+}
+
+.userBox {
+    margin-bottom: 1rem;
+}
+
+.quarkImage {
+    display: inline-block;
+}
+
+.quarkInfo {
+    display: flex;
+    flex-direction: row;
+    margin: 0 0;
+    justify-content: space-between;
+}
+
+.quarkBox {
+    display: flex;
+    flex-direction: row;
+    border-radius: 0.75rem;
+    margin: 0.5rem;
+    transition: border-radius 0.15s;
+}
+
+.quarkList {
+    border-radius: 0.5rem;
+    margin: 0.5rem;
+    background-color: var(--bg-medium);
+}
+
+.quarkBox:hover {
+    border-radius: 0.25rem
 }
