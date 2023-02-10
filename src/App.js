@@ -3,6 +3,7 @@ import './App.css';
 import {useEffect, useState} from "react";
 import {AppContext} from "./contexts/AppContext";
 import {Main} from "./components/Main";
+import {lq} from "./classes/Lightquark";
 
 function App() {
     const savedLoginState = localStorage.getItem("loggedIn") === "true" || false;
@@ -18,6 +19,7 @@ function App() {
     useEffect(() => {
         localStorage.setItem("loggedIn", JSON.stringify(loggedIn));
         localStorage.setItem("token", token);
+        if (token) lq.setToken(token);
     }, [loggedIn, token]);
 
     return (

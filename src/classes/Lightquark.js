@@ -30,7 +30,7 @@ export default class Lightquark {
         this.token = token;
 
         // If authenticated, setup websocket gateway
-        if (this.token) this.openGateway();
+        if (this.token && !this.ws) this.openGateway();
     }
 
     setAppContext (appContext) {
@@ -38,29 +38,31 @@ export default class Lightquark {
     }
 
     setToken (token) {
+        console.log("token updated", this.identifier)
         this.token = token;
-        if (this.token) this.openGateway();
+        if (this.token && !this.ws) this.openGateway();
     }
 
     destroy () {
+        console.log("destroy called")
         if (this.ws) this.ws.close();
         this.dead = true;
     }
 
     openGateway () {
-        setTimeout(() => {
-            if (this.dead) return;
-            if (!this.token) return;
-            console.log("Opening gateway connection");
-            this.ws = new WebSocket("wss://lq-gateway.litdevs.org", this.token);
-            this.registerWsListeners();
-        }, 100)
+        console.log("open gateway called")
+        if (this.dead) return;
+        if (!this.token) return;
+        console.log("Opening gateway connection");
+        this.ws = new WebSocket("wss://lq-gateway.litdevs.org", this.token);
+        this.registerWsListeners();
     }
 
     /**
      * Registers all websocket listeners
      */
     registerWsListeners () {
+        console.log("register ws listeners called", this.identifier)
         this.ws.onopen = () => {
             this.retryCount = 0; // Connection open, reset retry counter
             if (this.reconnecting) {
@@ -94,6 +96,7 @@ export default class Lightquark {
             console.log(message);
         }
         this.ws.onclose = (message) => {
+            console.log(message.code, message.reason)
             console.log(message.wasClean ? "Gateway connection closed" : "Gateway connection lost")
             if (this.heartbeat) clearInterval(this.heartbeat);
             if (this.dead) return;
@@ -109,6 +112,7 @@ export default class Lightquark {
                 this.retryCount++;
                 this.appContext.setSpinnerText(`Gateway connection lost... Reconnecting in ${this.retryCount} seconds.`);
                 setTimeout(() => {
+                    console.log("Retrying gateway connection", this.identifier)
                     this.openGateway();
                 }, 1000 * this.retryCount);
             } else {

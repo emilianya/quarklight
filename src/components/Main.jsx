@@ -1,7 +1,7 @@
 import {Loader} from "./Loader";
 import {LoginScreen} from "./LoginScreen";
 import {MainScreen} from "./MainScreen";
-import {useContext, useEffect, useState} from "react";
+import {useContext, useEffect} from "react";
 import {AppContext} from "../contexts/AppContext";
 import {lq} from "../classes/Lightquark";
 
@@ -11,7 +11,7 @@ export const Main = () => {
 	 * Keep the Lightquark instance up to date with the token
 	 */
 	useEffect(() => {
-		console.log("token changed, creating new Lightquark instance");
+		console.log("token changed, updating Lightquark instance", lq.identifier);
 		console.log("token: " + appContext.token)
 		lq.setToken(appContext.token);
 		lq.setAppContext(appContext);
@@ -32,9 +32,6 @@ export const Main = () => {
 
 	useEffect(() => {
 		if (!appContext.loggedIn) appContext.setLoading(false);
-		console.log("loggedIn: " + appContext.loggedIn)
-		console.log("userData: " + appContext.userData)
-		console.log("appContext.gatewayConnected: " + appContext.gatewayConnected)
 		if (appContext.loggedIn && appContext.userData && appContext.gatewayConnected) appContext.setLoading(false);
 	}, [appContext.userData, appContext.loggedIn, appContext.gatewayConnected]);
 
