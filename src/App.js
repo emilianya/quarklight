@@ -9,6 +9,7 @@ function App() {
     const savedLoginState = localStorage.getItem("loggedIn") === "true" || false;
     let savedToken = localStorage.getItem("token");
     if (savedToken === "undefined") savedToken = undefined;
+    if (savedToken === "null") savedToken = undefined;
     let [loggedIn, setLoggedIn] = useState(savedLoginState);
     let [token, setToken] = useState(savedToken);
     let [userData, setUserData] = useState(undefined);
