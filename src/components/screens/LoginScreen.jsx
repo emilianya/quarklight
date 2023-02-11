@@ -1,10 +1,10 @@
-import poweredBy from "../assets/poweredby.png";
+import poweredBy from "../../assets/poweredby.png";
 import {useState, useContext} from "react";
-import {AppContext} from "../contexts/AppContext";
-import {lq} from "../classes/Lightquark";
+import {AppContext} from "../../contexts/AppContext";
+import {lq} from "../../classes/Lightquark";
 
 
-export function LoginScreen(props) {
+export function LoginScreen() {
 	let [error, setError] = useState(false);
 	let [processing, setProcessing] = useState(false);
 	let appContext = useContext(AppContext);

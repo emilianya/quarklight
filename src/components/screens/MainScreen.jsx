@@ -1,9 +1,12 @@
 import {useContext, useEffect, useState} from "react";
-import {AppContext} from "../contexts/AppContext";
-import { lq } from "../classes/Lightquark";
-import "./../main.css";
-import {Quark} from "./Quark";
-import {Channel} from "./Channel";
+import {AppContext} from "../../contexts/AppContext";
+import { lq } from "../../classes/Lightquark";
+import "../../main.css";
+import {Quark} from "../quarks/Quark";
+import {Channel} from "../channels/Channel";
+import {NavContainer} from "../nav/NavContainer";
+import {ContentContainer} from "../messages/ContentContainer";
+import {MainContext} from "../../contexts/MainContext";
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
 export function MainScreen() {
@@ -13,27 +16,9 @@ export function MainScreen() {
 	let [selectedQuark, setSelectedQuark] = useState(null);
 	let [selectedChannel, setSelectedChannel] = useState(null);
 
-	useEffect(() => {
-		setQuarkBoxes(appContext.quarks.map(quark => {
-			return (<Quark quark={quark} setSelectedQuark={setSelectedQuark} key={quark._id} />)
-		}));
-	}, [appContext.quarks])
-
-
-	useEffect(() => {
-		if (!selectedQuark) return;
-		(async () => {
-			console.log("Getting channels for quark " + selectedQuark)
-			lq.setAppContext(appContext);
-			appContext.channels = await lq.getChannels(selectedQuark);
-			setChannelBoxes(appContext.channels.map(channel => {
-				return (<Channel channel={channel} setSelectedChannel={setSelectedChannel} key={channel._id} />)
-			}));
-		})()
-	}, [selectedQuark])
 
 	let [konamiState, setKonamiState] = useState(0);
-	var konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+	let konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
 
 	return (
 		<div data-testid="screenRoot" className="screenRoot" onKeyDown={a=>{a.key===konamiCode[konamiState]?setKonamiState(konamiState+1):setKonamiState(0)}} tabIndex="0">
@@ -59,24 +44,16 @@ export function MainScreen() {
 			</div> : 
 			// Actual application starts here
 			<div className="appContainer">
-				<div className="contentContainer">
+				<MainContext.Provider value={{
+						selectedChannel, setSelectedChannel,
+						selectedQuark, setSelectedQuark,
+						quarkBoxes, setQuarkBoxes,
+						channelBoxes, setChannelBoxes
+					}}>
 
-				</div>
-				<div className="navContainer">
-					<div className="userBox">
-						<img width={"48px"} className="avatar" src={appContext?.userData?.avatar || "https://quarky.vukky.net/assets/img/loading.png"} alt=""/>
-						<span className="username">{appContext?.userData?.username}</span><br />
-						<span>subtext</span>
-					</div>
-					<div className="quarkInfo">
-						<div className="channelContainer">
-							{channelBoxes}
-						</div>
-						<div className="quarkList">
-							{quarkBoxes}
-						</div>
-					</div>
-				</div>
+					<ContentContainer />
+					<NavContainer />
+				</MainContext.Provider>
 			</div>
 			}
 		</div>

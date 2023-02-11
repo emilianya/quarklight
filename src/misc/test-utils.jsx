@@ -10,6 +10,9 @@ const AllTheProviders = ({children}) => {
 	let [loading, setLoading] = useState(true);
 	let [gatewayConnected, setGatewayConnected] = useState(false);
 	let [spinnerText, setSpinnerText] = useState("Loading")
+	let [quarks, setQuarks] = useState([]);
+	let [channels, setChannels] = useState([]);
+	let [userCache, setUserCache] = useState([]);
 	return (
 		<AppContext.Provider value={{
 			loggedIn, setLoggedIn,
@@ -17,7 +20,10 @@ const AllTheProviders = ({children}) => {
 			userData, setUserData,
 			loading, setLoading,
 			gatewayConnected, setGatewayConnected,
-			spinnerText, setSpinnerText}}>
+			spinnerText, setSpinnerText,
+			quarks, setQuarks,
+			channels, setChannels,
+			userCache, setUserCache}}>
 			<>{lq.setAppContext(useContext(AppContext))}</>
 			{children}
 		</AppContext.Provider>
