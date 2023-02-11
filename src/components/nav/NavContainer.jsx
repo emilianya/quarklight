@@ -31,6 +31,7 @@ export function NavContainer() {
 			appContext.setChannels([]);
 			let channels = await lq.getChannels(mainContext.selectedQuark);
 			appContext.setChannels(channels);
+			if (channels.length > 0) mainContext.setSelectedChannel(channels[0]._id);
 			let quarks = appContext.quarks.filter(q => q._id !== mainContext.selectedQuark);
 			let updatedQuark = await lq.getQuark(mainContext.selectedQuark);
 			quarks.push(updatedQuark);

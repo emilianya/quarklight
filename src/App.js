@@ -4,6 +4,7 @@ import {useEffect, useState} from "react";
 import {AppContext} from "./contexts/AppContext";
 import {Main} from "./components/Main";
 import {lq} from "./classes/Lightquark";
+import pjson from '../package.json';
 
 function App() {
     const savedLoginState = localStorage.getItem("loggedIn") === "true" || false;
@@ -37,7 +38,8 @@ function App() {
             spinnerText, setSpinnerText,
             quarks, setQuarks,
             channels, setChannels,
-            userCache, setUserCache
+            userCache, setUserCache,
+            version: pjson.version
         }}>
             <Main/>
         </AppContext.Provider>

@@ -113,16 +113,91 @@
     height: 1.5rem;
 }
 
+.messageAvatar {
+    border-radius: 1.25rem;
+    margin: 0.25rem;
+    height: 2.5rem;
+    width: 2.5rem;
+}
+
+.messageTimestamp {
+    font-size: 0.75rem;
+    margin: 0.25rem;
+    color: lightgrey;
+}
+
+.messageUsernameRow {
+    font-weight: 400;
+    margin-left: 0.25rem;
+    font-size: 1rem;
+}
+
+.messageBody {
+    margin-left: 0.25rem;
+    font-weight: 300;
+    user-select: text;
+}
+
 .message {
-    margin: 0.5rem;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    background-color: var(--bg-medium);
     transition: background-color 0.15s;
     user-select: none;
+    display: flex;
+    flex-direction: row;
+    margin: 0.5rem;
+}
+
+.message:hover {
+    background-color: var(--bg-medium);
 }
 
 .messageView {
     overflow-y: scroll;
-    height: calc(100vh - 3.5rem);
+    height: calc(100vh - 4.5rem);
+}
+
+.messageBox {
+    background-color: var(--bg-medium);
+    min-height: 3.5rem;
+    margin: 0.5rem;
+    border-radius: 0.5rem;
+}
+
+.messageInput {
+    background-color: #0000;
+    outline: none;
+    border: none;
+    font-size: 0.85rem;
+    resize: none;
+    margin: 0.5rem;
+    width: calc(100% - 5rem);
+    max-height: 10rem;
+    color: white;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif
+}
+
+.messageSendButton {
+    font-size: 1.5rem;
+    margin: 0.85rem;
+    color: var(--orange);
+    transition: color 100ms;
+}
+
+.messageSendButton:hover {
+    cursor: pointer;
+    color: var(--yellow);
+}
+
+/*/
+/* Scrollbar
+/*/
+
+::-webkit-scrollbar {
+    width: 0.35rem;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-medium);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--tooltip);
+    border-radius: 5rem;
 }

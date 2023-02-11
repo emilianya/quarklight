@@ -20,6 +20,17 @@ export function MainScreen() {
 	let [konamiState, setKonamiState] = useState(0);
 	let konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
 
+	useEffect(() => {
+		if (!appContext.loading && !selectedQuark && appContext.quarks.length > 0) {
+			console.log(appContext.quarks)
+			setSelectedQuark(appContext.quarks[0]._id);
+		}
+		if (!appContext.loading && !selectedChannel && appContext.channels.length > 0) {
+			console.log(appContext.channels)
+			setSelectedChannel(appContext.channels[0]._id);
+		}
+	}, [appContext.loading, selectedQuark, selectedChannel, appContext.quarks, appContext.channels])
+
 	return (
 		<div data-testid="screenRoot" className="screenRoot" onKeyDown={a=>{a.key===konamiCode[konamiState]?setKonamiState(konamiState+1):setKonamiState(0)}} tabIndex="0">
 			{ // Debug menu 
@@ -50,7 +61,6 @@ export function MainScreen() {
 						quarkBoxes, setQuarkBoxes,
 						channelBoxes, setChannelBoxes
 					}}>
-
 					<ContentContainer />
 					<NavContainer />
 				</MainContext.Provider>
