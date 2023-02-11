@@ -5,8 +5,8 @@ import {AppContext} from "../contexts/AppContext";
 export function QuarkInfo() {
 	let mainContext = useContext(MainContext);
 	let appContext = useContext(AppContext);
-	if (!mainContext.selectedQuark) return (<span></span>);
+	if (!mainContext.selectedQuark) return (<span className="quarkTitle"></span>);
 	return (
-		<span style={{margin: "0 auto", fontWeight: "500", textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap", width: "13rem"}}>{appContext.quarks.find(q => q._id === mainContext.selectedQuark).name}</span>
+		<span className="quarkTitle">{appContext.quarks.find(q => q._id === mainContext.selectedQuark).name}</span>
 	);
 }

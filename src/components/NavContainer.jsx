@@ -15,7 +15,8 @@ export function NavContainer() {
 	let appContext = useContext(AppContext);
 
 	useEffect(() => {
-		mainContext.setQuarkBoxes(appContext.quarks.map(quark => {
+		let quarks = appContext.quarks.sort((a, b) => { return a.name.localeCompare(b.name) });
+		mainContext.setQuarkBoxes(quarks.map(quark => {
 			return (<Quark quark={quark} setSelectedQuark={mainContext.setSelectedQuark} key={quark._id} />)
 		}));
 	}, [appContext.quarks])
@@ -28,6 +29,13 @@ export function NavContainer() {
 			lq.setAppContext(appContext);
 			appContext.setChannels([]);
 			let channels = await lq.getChannels(mainContext.selectedQuark);
+			appContext.setChannels(channels);
+			let quarks = appContext.quarks.filter(q => q._id !== mainContext.selectedQuark);
+			console.log("Updating quark information for " + mainContext.selectedQuark);
+			let updatedQuark = await lq.getQuark(mainContext.selectedQuark);
+			quarks.push(updatedQuark);
+			appContext.setQuarks(quarks);
+			channels = await lq.getChannels(mainContext.selectedQuark);
 			appContext.setChannels(channels);
 		})()
 	}, [mainContext.selectedQuark])

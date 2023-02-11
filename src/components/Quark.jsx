@@ -19,7 +19,7 @@ export function Quark(props) {
 	return (
 		<>
 			<img onContextMenu={handleContextMenu} id={quark._id} data-tooltip-content={quark.name} onClick={() => props.setSelectedQuark(quark._id)} width={"48px"} height={"48px"} src={quark.iconUri} alt={quark.name} className="quarkImage quarkBox" />
-			<Tooltip anchorId={quark._id} place={"left"} style={{opacity: 1, backgroundColor: "var(--tooltip)"}} />
+			<Tooltip className="quarkTip" anchorId={quark._id} positionStrategy={"fixed"} place={"left"} style={{opacity: 1, backgroundColor: "var(--tooltip)"}} />
 			<Menu id={`${quark._id}_menu`} className="quarkMenu" theme={"dark"}>
 				<Item disabled={true}><span>{quark.name}</span></Item>
 				<Separator />

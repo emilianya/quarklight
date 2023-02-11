@@ -184,12 +184,19 @@ export default class Lightquark {
      * @returns {Promise<Quark[]>}
      */
     async getQuarks () {
-        let res = await this.apiCall("/quark/me")
+        let res = await this.apiCall("/quark/me", "GET", undefined, "v2")
         let quarks = res.response.quarks;
         for (const quark in quarks) {
             quarks[quark].members = await this.inflateUserIdArray(quarks[quark].members);
         }
         return res.response.quarks
+    }
+
+    async getQuark (quarkId) {
+        let res = await this.apiCall(`/quark/${quarkId}`)
+        let quark = res.response.quark;
+        quark.members = await this.inflateUserIdArray(quark.members);
+        return quark;
     }
 
     /**
@@ -202,7 +209,7 @@ export default class Lightquark {
         let quark = this.appContext.quarks.find(q => q._id === quarkId);
         let channelPromises = [];
         quark.channels.forEach(channel => {
-            channelPromises.push(this.apiCall(`/channel/${channel}`));
+            channelPromises.push(this.apiCall(`/channel/${channel._id}`));
         })
         let res = await Promise.all(channelPromises);
         let channels = [];
