@@ -38,6 +38,7 @@ export const Main = () => {
 
 	return (
 		<div>
+			dev
 			{appContext.loading ? <Loader/> : ""}
 			{!appContext.loggedIn && !appContext.loading ? <LoginScreen/> : ""}
 			{appContext.loggedIn && !appContext.loading ? <MainScreen/> : ""}
