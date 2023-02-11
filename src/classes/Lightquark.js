@@ -189,7 +189,6 @@ export default class Lightquark {
      * @returns {Promise<Channel[]>}
      */
     async getChannels (quarkId) {
-        console.log(this.appContext.token)
         let quark = this.appContext.quarks.find(q => q._id === quarkId);
         let channelPromises = [];
         quark.channels.forEach(channel => {
@@ -200,7 +199,6 @@ export default class Lightquark {
         res.forEach(resp => {
             if (resp.request.success) channels.push(resp.response.channel)
         })
-        console.log(channels)
         return channels;
     }
 
@@ -273,6 +271,17 @@ export default class Lightquark {
     async verifyToken() {
         let response = await this.apiCall("/user/me", "GET", undefined, undefined, true);
         return response.request.status_code === 200;
+    }
+
+    /**
+     * Get messages from a channel
+     * @param {string} channelId - ID of the channel
+     * @param {number} startTimestamp - Timestamp to start from
+     * @returns {Promise<Message[]>}
+     */
+    async getMessages (channelId, startTimestamp = undefined) {
+        let res = await this.apiCall(`/channel/${channelId}/messages${startTimestamp ? `?startTimestamp=${startTimestamp}` : ""}`)
+        return res.response.messages;
     }
 }
 

@@ -1,5 +1,5 @@
 :root {
-    /*overflow: hidden;*/
+    overflow-x: hidden;
 }
 
 .appContainer {
@@ -20,6 +20,11 @@
     background-color: var(--bg-dark);
     min-height: 100vh;
     width: 20rem;
+    transition: width 0.15s;
+}
+
+.navContainer-hidden {
+    width: 5rem;
 }
 
 .avatar {
@@ -106,4 +111,18 @@
     white-space: nowrap;
     width: 13rem;
     height: 1.5rem;
+}
+
+.message {
+    margin: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    background-color: var(--bg-medium);
+    transition: background-color 0.15s;
+    user-select: none;
+}
+
+.messageView {
+    overflow-y: scroll;
+    height: calc(100vh - 3.5rem);
 }

@@ -4,7 +4,7 @@ import {AppContext} from "../../contexts/AppContext";
 import {lq} from "../../classes/Lightquark";
 
 
-export function LoginScreen(props) {
+export function LoginScreen() {
 	let [error, setError] = useState(false);
 	let [processing, setProcessing] = useState(false);
 	let appContext = useContext(AppContext);
