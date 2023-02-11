@@ -40,7 +40,7 @@ export function MessageView() {
 	 * Scroll to bottom of message view when new messages are added
 	 */
 	useEffect(() => {
-		if (scrollDetached) return;
+		if (scrollDetached || messageElements.length < 1) return;
 		let messageView = document.querySelector(".messageView");
 		messageView.scrollTo(0, messageView.scrollHeight);
 	}, [messageElements])
