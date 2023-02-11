@@ -1,7 +1,7 @@
 import {useContext, useEffect} from "react";
-import {MainContext} from "../contexts/MainContext";
-import {AppContext} from "../contexts/AppContext";
-import {lq} from "../classes/Lightquark";
+import {MainContext} from "../../contexts/MainContext";
+import {AppContext} from "../../contexts/AppContext";
+import {lq} from "../../classes/Lightquark";
 import {Channel} from "./Channel";
 
 export function ChannelContainer() {

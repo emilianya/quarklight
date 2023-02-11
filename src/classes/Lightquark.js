@@ -132,31 +132,15 @@ export default class Lightquark {
      * @returns {Promise<*[]>}
      */
     async inflateUserIdArray (userIds) {
-        let users = [];
         let apiPromises = [];
         let tempCache = [];
         userIds.forEach(userId => {
-            // Check if user is already in cache
-            if (this.appContext.userCache.some(u => u._id === userId)) {
-                return apiPromises.push(Promise.resolve({
-                    request: {
-                        success: true
-                    },
-                    response: {
-                        user: this.appContext.userCache.find(u => u._id === userId)
-                    }
-                }))
-            }
-            // User is not in cache, make API call
             if (tempCache.some(u => u._id === userId)) return;
             tempCache.push(userId);
-            apiPromises.push(this.apiCall(`/user/${userId}`));
-        })
+            apiPromises.push(this.getUser(userId));
+        });
         let res = await Promise.all(apiPromises);
-        res.forEach(resp => {
-            if (resp.request.success) users.push(resp.response.user)
-        })
-        return users;
+        return res;
     }
 
 
@@ -224,8 +208,22 @@ export default class Lightquark {
      * Get user information by ID
      */
     async getUser (id) {
-        let res = await this.apiCall(`/user/${id}`)
-        return res.response.user
+        // check cache for a recent instance of the user
+        let cachedUser = this.appContext.userCache.find(u => u._id === id);
+        const getFromApi = async () => {
+            let res = await this.apiCall(`/user/${id}`)
+            this.appContext.setUserCache([...this.appContext.userCache, {user: res.response.user, cachedAt: new Date()}])
+            return res.response.user
+        }
+        if (!cachedUser) {
+            return await getFromApi();
+        } else {
+            // Check if user is cached for more than 5 minutes
+            if (new Date() - new Date(cachedUser.cachedAt) > 1000 * 60 * 5) {
+                return await getFromApi();
+            }
+            return cachedUser.user;
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 import {useState, useContext, useEffect} from "react";
-import {AppContext} from "../contexts/AppContext";
-import spinner from "../assets/spinner_test_gif.gif";
-import {lq} from "../classes/Lightquark";
+import {AppContext} from "../../contexts/AppContext";
+import spinner from "../../assets/spinner_test_gif.gif";
+import {lq} from "../../classes/Lightquark";
 
 export function Loader() {
 	let appContext = useContext(AppContext);

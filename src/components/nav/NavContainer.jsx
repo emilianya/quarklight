@@ -1,13 +1,13 @@
 import {UserBox} from "./UserBox";
-import {ChannelContainer} from "./ChannelContainer";
-import {QuarkList} from "./QuarkList";
-import {QuarkInfo} from "./QuarkInfo";
+import {ChannelContainer} from "../channels/ChannelContainer";
+import {QuarkList} from "../quarks/QuarkList";
+import {QuarkInfo} from "../quarks/QuarkInfo";
 import {useContext, useEffect} from "react";
-import {Quark} from "./Quark";
-import {lq} from "../classes/Lightquark";
-import {Channel} from "./Channel";
-import {AppContext} from "../contexts/AppContext";
-import {MainContext} from "../contexts/MainContext";
+import {Quark} from "../quarks/Quark";
+import {lq} from "../../classes/Lightquark";
+import {Channel} from "../channels/Channel";
+import {AppContext} from "../../contexts/AppContext";
+import {MainContext} from "../../contexts/MainContext";
 
 export function NavContainer() {
 

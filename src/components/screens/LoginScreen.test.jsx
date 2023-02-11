@@ -1,9 +1,9 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import { render, screen, act, fireEvent } from '../misc/test-utils';
+import { render, screen, act, fireEvent } from '../../misc/test-utils';
 import '@testing-library/jest-dom'
 import {LoginScreen} from './LoginScreen';
-import {AppContext} from '../contexts/AppContext';
+import {AppContext} from '../../contexts/AppContext';
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 // If this one fails something is SUPER wrong...

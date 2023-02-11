@@ -1,6 +1,6 @@
 import {useContext} from "react";
-import {MainContext} from "../contexts/MainContext";
-import {AppContext} from "../contexts/AppContext";
+import {MainContext} from "../../contexts/MainContext";
+import {AppContext} from "../../contexts/AppContext";
 
 export function QuarkInfo() {
 	let mainContext = useContext(MainContext);

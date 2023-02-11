@@ -1,12 +1,12 @@
 import {useContext, useEffect, useState} from "react";
-import {AppContext} from "../contexts/AppContext";
-import { lq } from "../classes/Lightquark";
-import "./../main.css";
-import {Quark} from "./Quark";
-import {Channel} from "./Channel";
-import {NavContainer} from "./NavContainer";
-import {ContentContainer} from "./ContentContainer";
-import {MainContext} from "../contexts/MainContext";
+import {AppContext} from "../../contexts/AppContext";
+import { lq } from "../../classes/Lightquark";
+import "../../main.css";
+import {Quark} from "../quarks/Quark";
+import {Channel} from "../channels/Channel";
+import {NavContainer} from "../nav/NavContainer";
+import {ContentContainer} from "../channels/ContentContainer";
+import {MainContext} from "../../contexts/MainContext";
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
 export function MainScreen() {

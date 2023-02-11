@@ -1,6 +1,6 @@
-import {Loader} from "./Loader";
-import {LoginScreen} from "./LoginScreen";
-import {MainScreen} from "./MainScreen";
+import {Loader} from "./screens/Loader";
+import {LoginScreen} from "./screens/LoginScreen";
+import {MainScreen} from "./screens/MainScreen";
 import {useContext, useEffect} from "react";
 import {AppContext} from "../contexts/AppContext";
 import {lq} from "../classes/Lightquark";

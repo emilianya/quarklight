@@ -1,4 +1,4 @@
-import { render, screen, act } from '../misc/test-utils';
+import { render, screen, act } from '../../misc/test-utils';
 import '@testing-library/jest-dom'
 import {Loader} from './Loader';
 const sleep = ms => new Promise(r => setTimeout(r, ms));
