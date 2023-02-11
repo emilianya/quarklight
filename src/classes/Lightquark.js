@@ -6,6 +6,7 @@ export default class Lightquark {
     baseUrl = "https://lq.litdevs.org";
     defaultVersion = "v1"
     appContext;
+    mainContext;
     ws;
     retryCount = 0;
     heartbeat;
@@ -13,6 +14,7 @@ export default class Lightquark {
     reconnecting = false;
     dead = false;
     identifier = Math.random().toString(36).substring(7);
+    messageState;
 
     /**
      * @param appContext - React Context
@@ -32,8 +34,16 @@ export default class Lightquark {
         if (this.token && !this.ws) this.openGateway();
     }
 
+    setMessageState (messageState) {
+        this.messageState = messageState;
+    }
+
     setAppContext (appContext) {
         this.appContext = appContext;
+    }
+
+    setMainContext (mainContext) {
+        this.mainContext = mainContext;
     }
 
     setToken (token) {
@@ -79,19 +89,15 @@ export default class Lightquark {
             }, 15000);
         }
         this.ws.onmessage = (message) => {
-            /*let data = JSON.parse(message.data);
-            if(data.eventId == "messageCreate") {
-                console.log(data);
-                if(data.message.channelId == currentChannel) { // render the message if it's in the current channel
-                    messageRender(cleanMessage(data))
+            let data = JSON.parse(message.data);
+            if(data.eventId === "messageCreate") {
+                if(data.message.channelId === this.mainContext.selectedChannel) { // render the message if it's in the current channel
+                    this.messageState.setMessages(prev => [...prev, data])
                 }
-                if(document.hidden || data.message.channelId != currentChannel) { // channel isn't focused
-                    if(settingGet("notify")) { // user has notifications on
-                        sendNotification(`${data.author.username} (#${channelBox[data.message.channelId].name}, ${channelBox[data.message.channelId].quark})`, data.message.content, true, data.author.avatarUri, function() { switchQuark(channelBox[data.message.channelId].quarkId, false);switchChannel(data.message.channelId, false) })
-                        console.log(data.author, channelBox)
-                    }
+                if(document.hidden || data.message.channelId !== this.mainContext.selectedChannel) { // channel isn't focused
+                    // TODO: notification
                 }
-            }*/
+            }
             console.log(message);
         }
         this.ws.onclose = (message) => {
@@ -115,15 +121,25 @@ export default class Lightquark {
                     this.openGateway();
                 }, 1000 * this.retryCount);
             } else {
-                // TODO: Replace with connection error on Loader.jsx
                 this.appContext.setSpinnerText(`Gateway connection lost`);
-                alert("Can't open gateway connection, either your internet connection is broken, server is down or your login is wrong");
             }
         }
 
         this.ws.onerror = (message) => {
             console.log(message)
         }
+    }
+
+    async sendMessage(message, channelId) {
+        await lq.apiCall(`/channel/${channelId}/messages`, "POST", {content: message});
+    }
+
+    /**
+     * Subscribes to gateway updates for a channel
+     * @param channelId
+     */
+    subscribeToChannel (channelId) {
+        this.ws.send(JSON.stringify({event: "subscribe", message: `channel_${channelId}`}))
     }
 
     /**
@@ -237,9 +253,11 @@ export default class Lightquark {
         console.log(`API Call: ${method} ${path}`)
         try {
             let finalUrl = `${this.baseUrl}/${version || this.defaultVersion}${path}`;
+            console.log(navigator.userAgent)
             let headers = {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${this.token}`
+                "Authorization": `Bearer ${this.token}`,
+                "lq-agent": `Quarklight ${navigator.userAgent.includes("Electron") ? "" : "Web "}${this?.appContext?.version || "0.0.0"}`
             };
             let options = {
                 method: method,
@@ -258,6 +276,7 @@ export default class Lightquark {
             return response;
         } catch (e) {
             // TODO: Figure out something better than this
+            console.log(e)
             alert(e)
             alert("Fatal error occurred. Exiting...")
             window.close();

@@ -2,6 +2,7 @@ import React, {useState, useContext} from 'react'
 import {render} from '@testing-library/react'
 import {AppContext} from "../contexts/AppContext";
 import {lq} from "../classes/Lightquark";
+import pjson from "../../package.json";
 
 const AllTheProviders = ({children}) => {
 	let [loggedIn, setLoggedIn] = useState(false);
@@ -23,7 +24,8 @@ const AllTheProviders = ({children}) => {
 			spinnerText, setSpinnerText,
 			quarks, setQuarks,
 			channels, setChannels,
-			userCache, setUserCache}}>
+			userCache, setUserCache,
+			version: pjson.version}}>
 			<>{lq.setAppContext(useContext(AppContext))}</>
 			{children}
 		</AppContext.Provider>

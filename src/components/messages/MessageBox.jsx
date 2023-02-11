@@ -1,6 +1,8 @@
 import {useContext, useState} from "react";
 import {lq} from "../../classes/Lightquark";
 import {MainContext} from "../../contexts/MainContext";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 
 export function MessageBox() {
 	let mainContext = useContext(MainContext);
@@ -8,13 +10,14 @@ export function MessageBox() {
 
 	return (
 		<div className="messageBox">
-			<textarea value={message} onInput={(e) => setMessage(e.target.value)} className="messageInput" placeholder="Type your message here..." />
-			<button className="messageSendButton" onClick={
+			<textarea className="messageInput" value={message} onInput={(e) => setMessage(e.target.value)} className="messageInput" placeholder="Type your message here..." />
+
+			<FontAwesomeIcon icon={faPaperPlane} className="messageSendButton" onClick={
 				() => {
-					lq.apiCall(`/channel/${mainContext.selectedChannel}/messages`, "POST", {content: message});
+					lq.sendMessage(message, mainContext.selectedChannel);
 					setMessage("");
 				}}
-			>Send</button>
+			>Send</FontAwesomeIcon>
 		</div>
 	);
 }

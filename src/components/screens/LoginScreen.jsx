@@ -27,6 +27,7 @@ export function LoginScreen() {
 
 		// Long operation over, remove indicator
 		setProcessing(false)
+		console.log(data);
 		if (data.request.success) {
 			// Show loading spinner while app opens
 			appContext.setLoading(true);

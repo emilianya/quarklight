@@ -1,6 +1,5 @@
 import {useContext, useEffect, useState} from "react";
 import {MainContext} from "../../contexts/MainContext";
-import {AppContext} from "../../contexts/AppContext";
 import {lq} from "../../classes/Lightquark";
 import {Message} from "./Message";
 
@@ -10,6 +9,10 @@ export function MessageView() {
 	let [messageElements, setMessageElements] = useState([]);
 	let [scrollDetached, setScrollDetached] = useState(false);
 
+	useEffect(() => {
+		lq.setMessageState({messages, setMessages});
+	})
+
 	/**
 	 * Get messages from selected channel when selected channel changes
 	 */
@@ -18,6 +21,7 @@ export function MessageView() {
 			if (!mainContext.selectedChannel) return;
 			let messages = await lq.getMessages(mainContext.selectedChannel);
 			setMessages(messages);
+			lq.subscribeToChannel(mainContext.selectedChannel);
 		})();
 	}, [mainContext.selectedChannel]);
 
