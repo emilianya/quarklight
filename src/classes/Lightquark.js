@@ -257,7 +257,7 @@ export default class Lightquark {
             let headers = {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${this.token}`,
-                "lq-agent": `Quarklight ${navigator.userAgent.includes("Electron") ? "" : "Web "}${this.appContext.version}`
+                "lq-agent": `Quarklight ${navigator.userAgent.includes("Electron") ? "" : "Web "}${this?.appContext?.version || "0.0.0"}`
             };
             let options = {
                 method: method,
@@ -276,6 +276,7 @@ export default class Lightquark {
             return response;
         } catch (e) {
             // TODO: Figure out something better than this
+            console.log(e)
             alert(e)
             alert("Fatal error occurred. Exiting...")
             window.close();
