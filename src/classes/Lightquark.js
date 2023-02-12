@@ -267,7 +267,7 @@ export default class Lightquark {
     async logout () {
         this.appContext.setToken(undefined);
         this.appContext.setLoggedIn(false);
-        this.appContext.setUserDate(undefined);
+        this.appContext.setUserData(undefined);
     }
 
     /**
