@@ -1,3 +1,5 @@
+import {Tooltip} from "react-tooltip";
+
 export function Message(props) {
 	let message = props.message.message;
 	let author = props.message.author;
@@ -7,23 +9,11 @@ export function Message(props) {
 	})
 
 	function formatDate(date) {
-		const msPerMinute = 60 * 1000;
-		const msPerHour = msPerMinute * 60;
-		const msPerDay = msPerHour * 24;
-		const msPerWeek = msPerDay * 7;
-		const elapsed = new Date() - date;
-		if (elapsed < msPerMinute) {
-			return dateFormatter.format(Math.floor(elapsed/1000), "second");
+		// If today
+		if (date.toLocaleDateString() === new Date().toLocaleDateString()) {
+			return `Today at ${date.toLocaleTimeString(navigator.language, {hour: "2-digit", minute: "2-digit"})}`;
 		}
-		else if (elapsed < msPerHour) {
-			return dateFormatter.format(Math.floor(elapsed/msPerMinute), "minute");
-		}
-		else if (elapsed < msPerDay ) {
-			return dateFormatter.format(Math.floor(elapsed/msPerHour), "hour");
-		}
-		else if (elapsed < msPerWeek) {
-			return dateFormatter.format(Math.floor(elapsed/msPerDay), "day");
-		}
+		
 		return date.toLocaleDateString();
 	}
 
@@ -33,7 +23,9 @@ export function Message(props) {
 			<div>
 				<div className="messageUsernameRow">
 					<span>{author.username}</span>
-					<small className="messageTimestamp">{formatDate(new Date(message.timestamp))} via {message.ua || "Unknown Client"}</small>
+					<small id={`${message._id}_timestamp`} data-tooltip-content={new Date(message.timestamp).toLocaleString()} className="messageTimestamp">{formatDate(new Date(message.timestamp))} via {message.ua || "Unknown Client"}</small>
+					<Tooltip className="timestampTip" anchorId={`${message._id}_timestamp`} positionStrategy={"fixed"} place={"top"} style={{opacity: 1, backgroundColor: "var(--tooltip)"}} />
+
 				</div>
 				<div className="messageBody">
 					<span>{message.content}</span>

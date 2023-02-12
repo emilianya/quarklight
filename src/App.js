@@ -20,6 +20,7 @@ function App() {
     let [quarks, setQuarks] = useState(undefined);
     let [channels, setChannels] = useState([]);
     let [userCache, setUserCache] = useState([]);
+    let [channelCache, setChannelCache] = useState([]);
 
 
     useEffect(() => {
@@ -39,6 +40,7 @@ function App() {
             quarks, setQuarks,
             channels, setChannels,
             userCache, setUserCache,
+            channelCache, setChannelCache,
             version: pjson.version
         }}>
             <Main/>
