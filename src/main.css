@@ -209,7 +209,7 @@
     font-size: 0.85rem;
     resize: none;
     margin: 0.5rem;
-    width: calc(100% - 5rem);
+    width: calc(100% - 6.5rem);
     max-height: 10rem;
     line-height: 1rem;
     color: white;
@@ -229,6 +229,43 @@ TODO: Make the positioning better
     position: relative;
     top: -0.75rem;
     right: -0.85rem;
+}
+
+.messageAttachButton {
+    font-size: 1.5rem;
+    display: inline-block;
+    color: var(--orange);
+    transition: color 100ms;
+    width: 1rem;
+    height: 1rem;
+    position: relative;
+    top: -0.75rem;
+    right: -0.85rem;
+    margin-right: 1rem;
+}
+
+.messageAttachButton:hover {
+    cursor: pointer;
+}
+
+.attachmentVideo {
+    max-width: 20rem;
+    max-height: 20rem;
+    border-radius: 0.25rem;
+}
+
+.attachmentAudio {
+    height: 2rem;
+
+}
+
+.messageSendButtonDisabled {
+    color: var(--tooltip);
+}
+
+.messageSendButtonDisabled:hover {
+    color: var(--tooltip) !important;
+    cursor: unset !important;
 }
 
 .messageSendButton:hover {
@@ -273,6 +310,13 @@ a:hover {
     display: flex;
     flex-direction: row;
     align-items: center;
+}
+
+.attachmentImage {
+    border-radius: 0.1rem;
+    max-height: 10rem;
+    max-width: 10rem;
+    margin-right: 0.5rem;
 }
 
 /*/

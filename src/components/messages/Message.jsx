@@ -32,7 +32,7 @@ export function Message(props) {
 						<span className={message.specialAttributes?.includes("/me") ? "messageItalic" : ""}>{message.content}</span>
 					</Linkify>
 					{message.attachments?.length > 0 ? <div className="messageAttachments">{message.attachments.map(attachment => {
-						return <Attachment attachment={attachment} key={attachment._id} />
+						return <Attachment attachment={attachment} key={attachment.url} scrollDetached={props.scrollDetached} />
 					})}</div>: null}
 				</div>
 

@@ -11,7 +11,7 @@ export function MessageView() {
 
 	useEffect(() => {
 		lq.setMessageState({messages, setMessages});
-	})
+	}, [messages])
 
 	/**
 	 * Get messages from selected channel when selected channel changes
@@ -35,7 +35,7 @@ export function MessageView() {
 		});
 		setMessageElements(messages.map(message => {
 			return (
-				<Message key={message.message._id} message={message} />
+				<Message key={message.message._id} message={message} scrollDetached={scrollDetached} />
 			);
 		}));
 	}, [messages]);
