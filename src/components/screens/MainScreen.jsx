@@ -15,6 +15,7 @@ export function MainScreen() {
 	let appContext = useContext(AppContext);
 	let [selectedQuark, setSelectedQuark] = useState(null);
 	let [selectedChannel, setSelectedChannel] = useState(null);
+	let [unreadChannels, setUnreadChannels] = useState([]);
 
 
 	let [konamiState, setKonamiState] = useState(0);
@@ -59,7 +60,8 @@ export function MainScreen() {
 						selectedChannel, setSelectedChannel,
 						selectedQuark, setSelectedQuark,
 						quarkBoxes, setQuarkBoxes,
-						channelBoxes, setChannelBoxes
+						channelBoxes, setChannelBoxes,
+						unreadChannels, setUnreadChannels
 					}}>
 					<ContentContainer />
 					<NavContainer />

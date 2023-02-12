@@ -1,5 +1,6 @@
 :root {
     overflow-x: hidden;
+    overflow-y: hidden;
 }
 
 .appContainer {
@@ -65,11 +66,17 @@
     margin: 0.5rem;
     background-color: var(--bg-medium);
     user-select: none;
+    overflow-y: auto;
+    height: calc(100vh - 10rem);
 }
 
 .quarkBox:hover {
     border-radius: 0.25rem;
     cursor: pointer;
+}
+
+.channelContainer {
+    overflow-y: scroll;
 }
 
 .channelBox {
@@ -83,6 +90,17 @@
     white-space: nowrap;
     padding: 0.5rem 0.25rem;
     user-select: none;
+    position: relative;
+}
+
+.channelInfo {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: var(--bg-dark);
+    height: 2.5rem;
+    padding-left: 0.5rem;
+    overflow: hidden;
 }
 
 .channelBox:hover {
@@ -96,6 +114,10 @@
 }
 
 .quarkMenu {
+    transition: 100ms;
+}
+
+.channelMenu {
     transition: 100ms;
 }
 
@@ -136,6 +158,8 @@
     margin-left: 0.25rem;
     font-weight: 300;
     user-select: text;
+    white-space: pre-wrap;
+    line-height: 1.1rem;
 }
 
 .message {
@@ -152,7 +176,7 @@
 
 .messageView {
     overflow-y: scroll;
-    height: calc(100vh - 4.5rem);
+    height: calc(100vh - 7rem);
 }
 
 .messageBox {
@@ -171,20 +195,39 @@
     margin: 0.5rem;
     width: calc(100% - 5rem);
     max-height: 10rem;
+    line-height: 1rem;
     color: white;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif
 }
 
+/*
+TODO: Make the positioning better
+ */
 .messageSendButton {
     font-size: 1.5rem;
-    margin: 0.85rem;
+    display: inline-block;
     color: var(--orange);
     transition: color 100ms;
+    width: 1rem;
+    height: 1rem;
+    position: relative;
+    top: -0.75rem;
+    right: -0.85rem;
 }
 
 .messageSendButton:hover {
     cursor: pointer;
     color: var(--yellow);
+}
+
+.unreadIndicator {
+    background-color: var(--orange);
+    border-radius: 0.5rem;
+    width: 0.4rem;
+    height: 0.4rem;
+    position: absolute;
+    left: 0.5rem;
+    top: 0.5rem;
 }
 
 /*/

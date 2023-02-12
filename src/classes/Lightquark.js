@@ -1,4 +1,6 @@
 import wantYouGone from "../misc/wantYouGone";
+import notificationWav from "../assets/notification.wav";
+import EventEmitter from "events";
 let instance = null;
 export default class Lightquark {
     
@@ -15,6 +17,7 @@ export default class Lightquark {
     dead = false;
     identifier = Math.random().toString(36).substring(7);
     messageState;
+    eventBus = new EventEmitter();
 
     /**
      * @param appContext - React Context
@@ -32,6 +35,65 @@ export default class Lightquark {
 
         // If authenticated, setup websocket gateway
         if (this.token && !this.ws) this.openGateway();
+
+        this.eventBus.on("gatewayEvent", (event) => {
+            switch (event.eventId) {
+                case "messageCreate":
+                    this.messageCreate(event);
+                    break;
+                case "messageUpdate":
+                    break;
+                case "messageDelete":
+                    break;
+                case "quarkUpdate":
+                    break;
+                case "quarkDelete":
+                    break;
+                case "channelCreate":
+                    break;
+                case "channelUpdate":
+                    break;
+                case "channelDelete":
+                    break;
+                case "memberUpdate":
+                    break;
+                case "memberLeave":
+                    break;
+                case "memberJoin":
+                    break;
+                case "subscribe":
+                    break;
+                case "heartbeat":
+                    break;
+                default:
+                    console.log("Unknown event", event)
+                    break;
+            }
+        })
+    }
+
+    messageCreate (data) {
+        if(data.eventId === "messageCreate") {
+            if(data.message.channelId === this.mainContext.selectedChannel) { // render the message if it's in the current channel
+                this.messageState.setMessages(prev => [...prev, data])
+
+            }
+            if(document.hidden || data.message.channelId !== this.mainContext.selectedChannel) { // channel isn't focused
+                this.mainContext.setUnreadChannels(prev => {
+                    if(!prev.includes(data.message.channelId)) {
+                        return [...prev, data.message.channelId]
+                    }
+                    return prev;
+                })
+                let notificationAudio = new Audio(notificationWav);
+                try {
+                    notificationAudio.play();
+                } catch (e) {
+                    console.log("Failed to play notification sound", e);
+                }
+                // TODO: notification
+            }
+        }
     }
 
     setMessageState (messageState) {
@@ -90,14 +152,7 @@ export default class Lightquark {
         }
         this.ws.onmessage = (message) => {
             let data = JSON.parse(message.data);
-            if(data.eventId === "messageCreate") {
-                if(data.message.channelId === this.mainContext.selectedChannel) { // render the message if it's in the current channel
-                    this.messageState.setMessages(prev => [...prev, data])
-                }
-                if(document.hidden || data.message.channelId !== this.mainContext.selectedChannel) { // channel isn't focused
-                    // TODO: notification
-                }
-            }
+            this.eventBus.emit("gatewayEvent", data);
             console.log(message);
         }
         this.ws.onclose = (message) => {
@@ -253,7 +308,6 @@ export default class Lightquark {
         console.log(`API Call: ${method} ${path}`)
         try {
             let finalUrl = `${this.baseUrl}/${version || this.defaultVersion}${path}`;
-            console.log(navigator.userAgent)
             let headers = {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${this.token}`,
