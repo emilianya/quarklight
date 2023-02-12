@@ -314,8 +314,8 @@ a:hover {
 
 .attachmentImage {
     border-radius: 0.1rem;
-    max-height: 10rem;
-    max-width: 10rem;
+    max-height: 15rem;
+    max-width: 15rem;
     margin-right: 0.5rem;
 }
 
