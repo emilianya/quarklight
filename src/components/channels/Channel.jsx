@@ -17,7 +17,7 @@ export function Channel(props) {
 	return (
 		<>
 			<div onContextMenu={handleContextMenu} id={`${channel._id}`} className="channelBox" onClick={() => props.setSelectedChannel(channel._id)}>
-				<span># {channel.name}{props.showUnread ? " !!!" : ""}</span>
+				<span># {channel.name}</span>
 				{props.showUnread ? <div className="unreadIndicator"></div> : null}
 
 			</div>

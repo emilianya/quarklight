@@ -1,13 +1,10 @@
 import {Tooltip} from "react-tooltip";
 import Linkify from "react-linkify";
+import {Attachment} from "./Attachment";
 
 export function Message(props) {
 	let message = props.message.message;
 	let author = props.message.author;
-	let dateFormatter = new Intl.RelativeTimeFormat(navigator.language, {
-		numeric: "auto",
-		style: "long"
-	})
 
 	function formatDate(date) {
 		// If today
@@ -29,7 +26,14 @@ export function Message(props) {
 
 				</div>
 				<div className="messageBody">
-					<Linkify componentDecorator={(decoratedHref, decoratedText, key) => ( <a target="_blank" rel="noopener noreferrer" href={decoratedHref} key={key}>{decoratedText}</a> )}><span>{message.content}</span></Linkify>
+					<Linkify componentDecorator={(decoratedHref, decoratedText, key) => (
+						<a target="_blank" rel="noopener noreferrer" href={decoratedHref} key={key}>{decoratedText}</a>
+					)}>
+						<span className={message.specialAttributes?.includes("/me") ? "messageItalic" : ""}>{message.content}</span>
+					</Linkify>
+					{message.attachments?.length > 0 ? <div className="messageAttachments">{message.attachments.map(attachment => {
+						return <Attachment attachment={attachment} key={attachment._id} />
+					})}</div>: null}
 				</div>
 
 			</div>

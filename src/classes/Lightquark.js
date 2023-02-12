@@ -1,6 +1,7 @@
 import wantYouGone from "../misc/wantYouGone";
 import notificationWav from "../assets/notification.wav";
 import EventEmitter from "events";
+import humanFileSize from "../misc/humanFileSize";
 let instance = null;
 export default class Lightquark {
     
@@ -72,11 +73,30 @@ export default class Lightquark {
         })
     }
 
-    messageCreate (data) {
+    async messageParser(data) {
+        data.message.attachments = await Promise.all(data.message.attachments.map(async attachment => {
+            let res = await fetch(attachment, {
+                method: "HEAD",
+                headers: {
+                    Range: "bytes=0-99999999999999999999999999999999",
+                }
+            })
+            let newAttachment = { url: attachment }
+            let fileSize = humanFileSize(res.headers.get("content-length"));
+            newAttachment.size = fileSize;
+            newAttachment.name = res.headers.get("content-disposition").split("filename=")[1].replace(/"/g, "");
+            newAttachment.type = res.headers.get("content-type");
+            return newAttachment;
+        }))
+        console.log(data)
+        return data;
+    }
+
+    async messageCreate (data) {
         if(data.eventId === "messageCreate") {
             if(data.message.channelId === this.mainContext.selectedChannel) { // render the message if it's in the current channel
-                this.messageState.setMessages(prev => [...prev, data])
-
+                let parsedMessage = await this.messageParser(data)
+                this.messageState.setMessages(prev => [...prev, parsedMessage])
             }
             if(document.hidden || data.message.channelId !== this.mainContext.selectedChannel) { // channel isn't focused
                 this.mainContext.setUnreadChannels(prev => {
@@ -186,7 +206,7 @@ export default class Lightquark {
     }
 
     async sendMessage(message, channelId) {
-        await lq.apiCall(`/channel/${channelId}/messages`, "POST", {content: message});
+        await lq.apiCall(`/channel/${channelId}/messages`, "POST", {content: message, specialAttributes: []}, "v2");
     }
 
     /**
@@ -195,6 +215,14 @@ export default class Lightquark {
      */
     subscribeToChannel (channelId) {
         this.ws.send(JSON.stringify({event: "subscribe", message: `channel_${channelId}`}))
+    }
+
+    /**
+     * Subscribes to gateway updates for a quark
+     * @param quarkId
+     */
+    subscribeToQuark (quarkId) {
+        this.ws.send(JSON.stringify({event: "subscribe", message: `quark_${quarkId}`}))
     }
 
     /**
@@ -242,7 +270,12 @@ export default class Lightquark {
         let res = await this.apiCall("/quark/me", "GET", undefined, "v2")
         let quarks = res.response.quarks;
         for (const quark in quarks) {
-            quarks[quark].members = await this.inflateUserIdArray(quarks[quark].members);
+            //quarks[quark].members = await this.inflateUserIdArray(quarks[quark].members); Perhaps dont do that...
+            quarks[quark].channels.forEach(channel => {
+                this.subscribeToChannel(channel._id);
+                this.appContext.setChannelCache(prevState => [...prevState, {channel, cachedAt: new Date()}]);
+            })
+            this.subscribeToQuark(quarks[quark]._id);
         }
         return res.response.quarks
     }
@@ -263,14 +296,35 @@ export default class Lightquark {
         let quark = this.appContext.quarks.find(q => q._id === quarkId);
         let channelPromises = [];
         quark.channels.forEach(channel => {
-            channelPromises.push(this.apiCall(`/channel/${channel._id}`));
+            channelPromises.push(this.getChannel(channel._id));
         })
         let res = await Promise.all(channelPromises);
-        let channels = [];
-        res.forEach(resp => {
-            if (resp.request.success) channels.push(resp.response.channel)
-        })
-        return channels;
+        return res;
+    }
+
+    /**
+     * Get channel by ID
+     * @param channelId
+     * @returns {Promise<Channel>}
+     */
+    async getChannel (channelId) {
+        let cachedChannel = this.appContext.channelCache.find(c => c.channel._id === channelId);
+        const getFromApi = async () => {
+            let res = await this.apiCall(`/channel/${channelId}`)
+            this.appContext.setChannelCache([...this.appContext.channelCache, {channel: res.response.channel, cachedAt: new Date()}])
+            return res.response.channel
+        }
+
+        if (!cachedChannel) {
+            return await getFromApi();
+        } else {
+            // Check if channel is cached for more than 5 minutes
+            if (new Date() - cachedChannel.cachedAt > 1000 * 60 * 5) {
+                this.appContext.setChannelCache(this.appContext.channelCache.filter(c => c.channel._id !== channelId));
+                return await getFromApi();
+            }
+            return cachedChannel.channel;
+        }
     }
 
     /**
@@ -288,7 +342,7 @@ export default class Lightquark {
             return await getFromApi();
         } else {
             // Check if user is cached for more than 5 minutes
-            if (new Date() - new Date(cachedUser.cachedAt) > 1000 * 60 * 5) {
+            if (new Date() - cachedUser.cachedAt > 1000 * 60 * 5) {
                 return await getFromApi();
             }
             return cachedUser.user;
@@ -354,7 +408,7 @@ export default class Lightquark {
      */
     async getMessages (channelId, startTimestamp = undefined) {
         let res = await this.apiCall(`/channel/${channelId}/messages${startTimestamp ? `?startTimestamp=${startTimestamp}` : ""}`)
-        return res.response.messages;
+        return await Promise.all(res.response.messages.map(async m => await this.messageParser(m)));
     }
 }
 
