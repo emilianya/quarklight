@@ -10,9 +10,17 @@ export function ChannelContainer() {
 
 	useEffect(() => {
 		mainContext.setChannelBoxes(appContext.channels.map(channel => {
-			return (<Channel channel={channel} setSelectedChannel={mainContext.setSelectedChannel} key={channel._id} />)
+			let unread = mainContext.unreadChannels.includes(channel._id);
+			let selected = mainContext.selectedChannel === channel._id;
+
+			let showUnread = unread && !selected;
+			if (unread && selected) {
+				mainContext.setUnreadChannels(mainContext.unreadChannels.filter(id => id !== channel._id));
+			}
+
+			return (<Channel channel={channel} showUnread={showUnread} setSelectedChannel={mainContext.setSelectedChannel} key={channel._id} />)
 		}));
-	}, [appContext.channels]);
+	}, [appContext.channels, mainContext.selectedChannel, mainContext.unreadChannels]);
 
 	return (
 		<div className="channelContainer">

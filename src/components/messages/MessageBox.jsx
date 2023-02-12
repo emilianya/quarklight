@@ -8,16 +8,24 @@ export function MessageBox() {
 	let mainContext = useContext(MainContext);
 	let [message, setMessage] = useState("");
 
+	async function send() {
+		lq.sendMessage(message, mainContext.selectedChannel);
+		setMessage("");
+	}
+
+	function handleMessageboxKey(e) {
+		if (e.key === "Enter" && !e.shiftKey) {
+			e.preventDefault();
+			send();
+		}
+	}
+
 	return (
 		<div className="messageBox">
-			<textarea className="messageInput" value={message} onInput={(e) => setMessage(e.target.value)} className="messageInput" placeholder="Type your message here..." />
-
-			<FontAwesomeIcon icon={faPaperPlane} className="messageSendButton" onClick={
-				() => {
-					lq.sendMessage(message, mainContext.selectedChannel);
-					setMessage("");
-				}}
-			>Send</FontAwesomeIcon>
+			<textarea onKeyDown={handleMessageboxKey} className="messageInput" value={message} onInput={(e) => setMessage(e.target.value)} placeholder="Type your message here..." />
+			<div className="messageSendButton" onClick={() => {send();}}>
+				<FontAwesomeIcon icon={faPaperPlane}>Send</FontAwesomeIcon>
+			</div>
 		</div>
 	);
 }
