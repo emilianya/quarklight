@@ -97,8 +97,31 @@ export function MessageBox() {
 		});
 	}
 
+	function handleDrop(e) {
+		e.preventDefault();
+		let files = e.dataTransfer.files;
+		let promises = [];
+		for (let i = 0; i < files.length; i++) {
+			promises.push(new Promise((resolve) => {
+				let reader = new FileReader();
+				reader.readAsArrayBuffer(files[i]);
+				reader.onload = () => {
+					attachments.push({
+						filename: files[i].name,
+						data: arrayBufferToBase64(reader.result)
+					});
+					resolve();
+				}
+			}))
+		}
+		Promise.all(promises).then(() => {
+			setAttachments(attachments);
+			evaluateSendDisabled();
+		});
+	}
+
 	return (
-		<div className="messageBox">
+		<div className="messageBox" onDrop={handleDrop}>
 			<input type="file" className="messageFile" hidden={true} multiple onChange={handleFileChange} name="file" id="fileInput"/>
 			<textarea onPaste={handlePaste} onKeyDown={handleMessageboxKey} className="messageInput" value={message} onInput={(e) => setMessage(e.target.value)} placeholder="Type your message here..." />
 			<div className={"messageAttachButton"} onClick={() => {document.querySelector("#fileInput").click();}}>

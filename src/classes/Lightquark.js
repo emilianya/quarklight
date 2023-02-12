@@ -98,7 +98,7 @@ export default class Lightquark {
                 let parsedMessage = await this.messageParser(data)
                 this.messageState.setMessages(prev => [...prev, parsedMessage])
             }
-            if(document.hidden || data.message.channelId !== this.mainContext.selectedChannel) { // channel isn't focused
+            if((document.hidden || data.message.channelId !== this.mainContext.selectedChannel) && data.author._id !== this.appContext.userData._id) { // channel isn't focused
                 this.mainContext.setUnreadChannels(prev => {
                     if(!prev.includes(data.message.channelId)) {
                         return [...prev, data.message.channelId]
@@ -267,6 +267,7 @@ export default class Lightquark {
     async logout () {
         this.appContext.setToken(undefined);
         this.appContext.setLoggedIn(false);
+        this.appContext.setUserDate(undefined);
     }
 
     /**
