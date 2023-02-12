@@ -1,4 +1,5 @@
 import {Tooltip} from "react-tooltip";
+import Linkify from "react-linkify";
 
 export function Message(props) {
 	let message = props.message.message;
@@ -28,7 +29,7 @@ export function Message(props) {
 
 				</div>
 				<div className="messageBody">
-					<span>{message.content}</span>
+					<Linkify componentDecorator={(decoratedHref, decoratedText, key) => ( <a target="_blank" rel="noopener noreferrer" href={decoratedHref} key={key}>{decoratedText}</a> )}><span>{message.content}</span></Linkify>
 				</div>
 
 			</div>

@@ -232,6 +232,18 @@ TODO: Make the positioning better
     top: 0.5rem;
 }
 
+a {
+    color: var(--blue-3);
+}
+
+a:visited {
+    color: var(--blue-2);
+}
+
+a:hover {
+    color: var(--blue-1);
+}
+
 /*/
 /* Scrollbar
 /*/
