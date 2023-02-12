@@ -35,13 +35,13 @@ export function MainScreen() {
 	return (
 		<div data-testid="screenRoot" className="screenRoot" onKeyDown={a=>{a.key===konamiCode[konamiState]?setKonamiState(konamiState+1):setKonamiState(0)}} tabIndex="0">
 			{ // Debug menu 
-			konamiState === konamiCode.length ? <div>
+			konamiState === konamiCode.length ? <div style={{overflowY: "scroll"}} >
 				<img width={"128px"} src={appContext?.userData?.avatar || "https://quarky.vukky.net/assets/img/loading.png"} alt=""/>
 				<p>You are {appContext?.userData?.username || "loading..."}</p>
 				<p>Your email address is {appContext?.userData?.email || "loading..."}</p>
 				<p>Selected channel: {JSON.stringify(selectedChannel)}</p>
 				<p>Selected quark: {JSON.stringify(selectedQuark)}</p>
-				<p>Quarks: {JSON.stringify(appContext.quarks)}</p>
+				<details><summary>Quarks</summary>{JSON.stringify(appContext.quarks)}</details>
 				<button onClick={() => lq.logout()}>Loggery Outtery</button>
 				<button onClick={() => appContext.setToken("newTokenValue")}>killtoken</button>
 				<button onClick={() => lq.ws.close()}>killws</button>
