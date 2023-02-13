@@ -19,6 +19,7 @@ export function MessageBox() {
 
 	useEffect(() => {
 		evaluateSendDisabled();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [message, uploading, attachments])
 
 	function arrayBufferToBase64( buffer ) {

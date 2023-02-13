@@ -1,7 +1,6 @@
 import {useContext, useEffect} from "react";
 import {MainContext} from "../../contexts/MainContext";
 import {AppContext} from "../../contexts/AppContext";
-import {lq} from "../../classes/Lightquark";
 import {Channel} from "./Channel";
 
 export function ChannelContainer() {
@@ -20,6 +19,8 @@ export function ChannelContainer() {
 
 			return (<Channel channel={channel} showUnread={showUnread} setSelectedChannel={mainContext.setSelectedChannel} key={channel._id} />)
 		}));
+		
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [appContext.channels, mainContext.selectedChannel, mainContext.unreadChannels]);
 
 	return (

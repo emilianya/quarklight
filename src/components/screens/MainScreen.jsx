@@ -2,8 +2,6 @@ import {useContext, useEffect, useState} from "react";
 import {AppContext} from "../../contexts/AppContext";
 import { lq } from "../../classes/Lightquark";
 import "../../main.css";
-import {Quark} from "../quarks/Quark";
-import {Channel} from "../channels/Channel";
 import {NavContainer} from "../nav/NavContainer";
 import {ContentContainer} from "../messages/ContentContainer";
 import {MainContext} from "../../contexts/MainContext";
