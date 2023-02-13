@@ -1,0 +1,29 @@
+name: Publish windows build
+
+on:
+  push:
+    branches:
+      - "dev"
+      - "prod"
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: npm ci
+    - run: npm run updateReleaseJson ${{ github.ref_name }}
+    - run: npm run publish
+      env:
+        RELEASE_PASSWORD: ${{ secrets.RELEASE_PASSWORD }}
