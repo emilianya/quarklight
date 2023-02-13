@@ -5,7 +5,6 @@ import {QuarkInfo} from "../quarks/QuarkInfo";
 import {useContext, useEffect, useState} from "react";
 import {Quark} from "../quarks/Quark";
 import {lq} from "../../classes/Lightquark";
-import {Channel} from "../channels/Channel";
 import {AppContext} from "../../contexts/AppContext";
 import {MainContext} from "../../contexts/MainContext";
 
@@ -21,6 +20,8 @@ export function NavContainer() {
 		mainContext.setQuarkBoxes(quarks.map(quark => {
 			return (<Quark quark={quark} setSelectedQuark={mainContext.setSelectedQuark} key={quark._id} />)
 		}));
+		
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [appContext.quarks])
 
 
@@ -39,6 +40,7 @@ export function NavContainer() {
 			channels = await lq.getChannels(mainContext.selectedQuark);
 			appContext.setChannels(channels);
 		})()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [mainContext.selectedQuark])
 
 	return (

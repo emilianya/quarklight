@@ -1,5 +1,5 @@
 import { Tooltip } from 'react-tooltip'
-import { Menu, Item, Separator, Submenu, useContextMenu } from 'react-contexify';
+import { Menu, Item, Separator, useContextMenu } from 'react-contexify';
 import {useContext, useEffect, useState} from "react";
 import {MainContext} from "../../contexts/MainContext";
 
@@ -18,6 +18,7 @@ export function Quark(props) {
 		if (showUnread) console.log("we has unread", quark._id)
 		console.log(quarkChannelIds)
 		console.log(mainContext?.unreadChannels)
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [mainContext.unreadChannels])
 
 	function handleContextMenu(event){

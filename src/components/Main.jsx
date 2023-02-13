@@ -15,6 +15,7 @@ export const Main = () => {
 		console.log("token: " + appContext.token)
 		lq.setToken(appContext.token);
 		lq.setAppContext(appContext);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [appContext.token]);
 
 	/**
@@ -29,11 +30,13 @@ export const Main = () => {
 			}
 			appContext.setQuarks(await lq.getQuarks())
 		})()
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [appContext.gatewayConnected])
 
 	useEffect(() => {
 		if (!appContext.loggedIn) appContext.setLoading(false);
 		if (appContext.loggedIn && appContext.quarks && appContext.userData && appContext.gatewayConnected) appContext.setLoading(false);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [appContext.userData, appContext.loggedIn, appContext.gatewayConnected, appContext.quarks]);
 
 	return (

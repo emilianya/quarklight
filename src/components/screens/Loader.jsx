@@ -11,6 +11,8 @@ export function Loader() {
 		if (!appContext.userData) return appContext.setSpinnerText("Loading user data")
 		if (!appContext.quarks) return appContext.setSpinnerText("Loading quarks")
 		if (!appContext.gatewayConnected && !lq.reconnecting) return appContext.setSpinnerText("Connecting to gateway")
+	
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [appContext.userData, appContext.gatewayConnected]);
 
 	useEffect(() => {
@@ -21,7 +23,7 @@ export function Loader() {
 	}, [])
 	return (
 		<div className="loaderRoot" data-testid="loaderRoot">
-			<img src={spinner} className="spinner" data-testid="spinner"></img>
+			<img alt="3 circles spinning" src={spinner} className="spinner" data-testid="spinner"></img>
 			<p className="spinnerSubtitle" data-testid="spinnerSubtitle">{appContext.spinnerText}{".".repeat(3 + seconds)}</p>
 		</div>
 	);

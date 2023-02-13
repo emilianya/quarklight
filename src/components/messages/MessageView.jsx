@@ -7,11 +7,13 @@ export function MessageView() {
 	let mainContext = useContext(MainContext);
 	let [messages, setMessages] = useState([]);
 	let [messageElements, setMessageElements] = useState([]);
+	
+	// eslint-disable-next-line no-unused-vars
 	let [scrollDetached, setScrollDetached] = useState(false);
 
 	useEffect(() => {
 		lq.setMessageState({messages, setMessages});
-	})
+	}, [messages])
 
 	/**
 	 * Get messages from selected channel when selected channel changes
@@ -35,9 +37,10 @@ export function MessageView() {
 		});
 		setMessageElements(messages.map(message => {
 			return (
-				<Message key={message.message._id} message={message} />
+				<Message key={message.message._id} message={message} scrollDetached={scrollDetached} />
 			);
 		}));
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [messages]);
 
 	/**
@@ -47,6 +50,7 @@ export function MessageView() {
 		if (scrollDetached || messageElements.length < 1) return;
 		let messageView = document.querySelector(".messageView");
 		messageView.scrollTo(0, messageView.scrollHeight);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [messageElements])
 
 	return (

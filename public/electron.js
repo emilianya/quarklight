@@ -1,8 +1,52 @@
 const path = require('path');
 
-const { app, BrowserWindow, shell } = require('electron');
+const { app, BrowserWindow, shell, autoUpdater, dialog } = require('electron');
 if (require('electron-squirrel-startup')) app.quit();
 const isDev = require('electron-is-dev');
+
+const fs = require('fs');
+
+// Do not check for updates in dev mode
+if (!isDev) {
+	let releaseJson = JSON.parse(fs.readFileSync(path.join(__dirname, '../build/release.json')).toString())
+
+	const releaseChannel = releaseJson.channel
+	const server = releaseJson.updateServer
+	let platform = process.platform;
+	if (platform === 'win32') platform = 'win64'
+	const updateUrl = `${server}/update/${platform}/${releaseJson.version}/${releaseChannel}`
+
+	autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
+		console.log("Update downloaded.")
+		const dialogOpts = {
+		  	type: 'info',
+		  	buttons: ['Restart', 'Later'],
+		  	title: 'Application Update',
+		  	message: process.platform === 'win32' ? releaseNotes : releaseName,
+		  	detail: 'A new version has been downloaded. Restart the application to apply the updates.'
+		}
+	  
+		dialog.showMessageBox(dialogOpts).then((returnValue) => {
+		    if (returnValue.response === 0) autoUpdater.quitAndInstall()
+		})
+	})
+	
+	autoUpdater.on('error', (message) => {
+		console.error('There was a problem updating the application')
+		console.error(message)
+	})
+
+	autoUpdater.setFeedURL({ url: updateUrl })
+
+	autoUpdater.checkForUpdates();
+
+	setInterval(() => {
+		console.log("Checking for updates...")
+		autoUpdater.checkForUpdates()
+	  }, 60000)
+}
+
+
 
 let installExtension, REACT_DEVELOPER_TOOLS;
 

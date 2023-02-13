@@ -2,11 +2,11 @@ import {useContext, useEffect, useState} from "react";
 import {AppContext} from "../../contexts/AppContext";
 import { lq } from "../../classes/Lightquark";
 import "../../main.css";
-import {Quark} from "../quarks/Quark";
-import {Channel} from "../channels/Channel";
 import {NavContainer} from "../nav/NavContainer";
 import {ContentContainer} from "../messages/ContentContainer";
 import {MainContext} from "../../contexts/MainContext";
+import pjson from '../../../package.json';
+
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
 export function MainScreen() {
@@ -41,6 +41,7 @@ export function MainScreen() {
 				<p>Your email address is {appContext?.userData?.email || "loading..."}</p>
 				<p>Selected channel: {JSON.stringify(selectedChannel)}</p>
 				<p>Selected quark: {JSON.stringify(selectedQuark)}</p>
+				<p>You are on {pjson.version} (probably)</p>
 				<details><summary>Quarks</summary>{JSON.stringify(appContext.quarks)}</details>
 				<button onClick={() => lq.logout()}>Loggery Outtery</button>
 				<button onClick={() => appContext.setToken("newTokenValue")}>killtoken</button>

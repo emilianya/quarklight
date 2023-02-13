@@ -78,11 +78,11 @@ export default class Lightquark {
             let res = await fetch(attachment, {
                 method: "HEAD",
                 headers: {
-                    Range: "bytes=0-99999999999999999999999999999999",
+                    Range: "bytes=0-0",
                 }
             })
             let newAttachment = { url: attachment }
-            let fileSize = humanFileSize(res.headers.get("content-length"));
+            let fileSize = humanFileSize(res.headers.get("content-range").split("/")[1].replace(/"/g, ""));
             newAttachment.size = fileSize;
             newAttachment.name = res.headers.get("content-disposition").split("filename=")[1].replace(/"/g, "");
             newAttachment.type = res.headers.get("content-type");
@@ -98,7 +98,7 @@ export default class Lightquark {
                 let parsedMessage = await this.messageParser(data)
                 this.messageState.setMessages(prev => [...prev, parsedMessage])
             }
-            if(document.hidden || data.message.channelId !== this.mainContext.selectedChannel) { // channel isn't focused
+            if((document.hidden || data.message.channelId !== this.mainContext.selectedChannel) && data.author._id !== this.appContext.userData._id) { // channel isn't focused
                 this.mainContext.setUnreadChannels(prev => {
                     if(!prev.includes(data.message.channelId)) {
                         return [...prev, data.message.channelId]
@@ -205,8 +205,15 @@ export default class Lightquark {
         }
     }
 
-    async sendMessage(message, channelId) {
-        await lq.apiCall(`/channel/${channelId}/messages`, "POST", {content: message, specialAttributes: []}, "v2");
+    /**
+     * Sends a message to a channel
+     * @param message{string} - Message content
+     * @param attachments{{filename: string, data: string}[]} - Array of attachments, data in base64
+     * @param channelId - Channel ID
+     * @returns {Promise<void>} - Resolves when api call is complete
+     */
+    async sendMessage(message, attachments, channelId) {
+        await lq.apiCall(`/channel/${channelId}/messages`, "POST", {content: message, attachments, specialAttributes: []}, "v2");
     }
 
     /**
@@ -260,6 +267,7 @@ export default class Lightquark {
     async logout () {
         this.appContext.setToken(undefined);
         this.appContext.setLoggedIn(false);
+        this.appContext.setUserData(undefined);
     }
 
     /**
