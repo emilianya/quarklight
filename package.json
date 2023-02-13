@@ -74,7 +74,8 @@
 					"name": "@electron-forge/maker-squirrel",
 					"config": {
 						"loadingGif": "build/spinner.gif",
-						"setupIcon": "build/logo@1.25x.ico"
+						"setupIcon": "build/logo@1.25x.ico",
+						"remoteReleases": "https://releases.quarklight.tech/"
 					}
 				},
 				{
