@@ -14,6 +14,7 @@ module.exports = {
             "name": "@electron-forge/maker-squirrel",
             "config": {
                 "loadingGif": "build/spinner.gif",
+                "iconUrl": 'https://quarklight.tech/logo@2.5x.ico',
                 "setupIcon": "build/logo@1.25x.ico"
             }
         },

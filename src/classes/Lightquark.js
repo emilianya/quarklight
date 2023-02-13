@@ -88,7 +88,6 @@ export default class Lightquark {
             newAttachment.type = res.headers.get("content-type");
             return newAttachment;
         }))
-        console.log(data)
         return data;
     }
 
@@ -108,6 +107,8 @@ export default class Lightquark {
                 let notificationAudio = new Audio(notificationWav);
                 try {
                     notificationAudio.play();
+                    console.log((await this.getChannel(data.message.channelId)).name)
+                    new Notification(`${data.author.username} in #${(await this.getChannel(data.message.channelId)).name}`, {body: data.message.content || "Attachment", tag: "quarklight", icon: data.author.avatarUri})
                 } catch (e) {
                     console.log("Failed to play notification sound", e);
                 }
@@ -373,7 +374,7 @@ export default class Lightquark {
             let headers = {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${this.token}`,
-                "lq-agent": `Quarklight ${navigator.userAgent.includes("Electron") ? "" : "Web "}${this?.appContext?.version || "0.0.0"}`
+                "lq-agent": `Quarklight ${navigator.userAgent.includes("Electron") ? "" : "Web "}${this?.appContext?.version?.split("-")?.[0] || "0.0.0"}`
             };
             let options = {
                 method: method,
