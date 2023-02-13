@@ -43,7 +43,7 @@ export function MainScreen() {
 				<p>Your email address is {appContext?.userData?.email || "loading..."}</p>
 				<p>Selected channel: {JSON.stringify(selectedChannel)}</p>
 				<p>Selected quark: {JSON.stringify(selectedQuark)}</p>
-				<p>You are on {pjson.version}</p>
+				<p>You are on {pjson.version} (probably)</p>
 				<details><summary>Quarks</summary>{JSON.stringify(appContext.quarks)}</details>
 				<button onClick={() => lq.logout()}>Loggery Outtery</button>
 				<button onClick={() => appContext.setToken("newTokenValue")}>killtoken</button>
