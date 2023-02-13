@@ -2,8 +2,9 @@ name: Publish linux build
 
 on:
   push:
-    tags:
-    - '*'
+    branches:
+      - "dev"
+      - "prod"
 
 jobs:
   build:
