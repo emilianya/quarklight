@@ -22,5 +22,5 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
-    - run: npm run updateReleaseJson
+    - run: npm run updateReleaseJson ${{ github.ref_name }}
     - run: npm run publish
