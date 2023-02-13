@@ -10,10 +10,16 @@ const channel = refToChannel[process.argv[2]]
 console.log("Publishing to channel: " + channel)
 console.log("Version: " + pjson.version)
 
+let version = pjson.version
+if (channel === "stable") {
+    version = `${pjson.version}-release`;
+    pjson.version = version
+    fs.writeFileSync('package.json', JSON.stringify(pjson, null, 4))
+}
 
 const releaseJson = {
     "channel": channel,
-    "version": pjson.version,
+    "version": version,
     "updateServer": "https://releases.quarklight.tech"
 }
 
