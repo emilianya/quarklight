@@ -25,3 +25,5 @@ jobs:
     - run: npm ci
     - run: npm run updateReleaseJson ${{ github.ref_name }}
     - run: npm run publish
+      env:
+        RELEASE_PASSWORD: ${{ secrets.RELEASE_PASSWORD }}
