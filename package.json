@@ -1,6 +1,6 @@
 {
 	"name": "quarklight",
-	"version": "0.0.10",
+	"version": "0.0.11",
 	"author": "LIT Devs",
 	"description": "A simple lightquark client",
 	"dependencies": {
