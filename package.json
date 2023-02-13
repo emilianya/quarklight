@@ -19,6 +19,7 @@
 		"package": "react-scripts build && electron-forge package",
 		"make": "react-scripts build && electron-forge make",
 		"publish": "react-scripts build && electron-forge publish",
+		"updateReleaseJson": "node updateReleaseJson.js",
 		"makelinux": "react-scripts build && electron-forge make --platform=linux --targets=@electron-forge/maker-deb"
 	},
 	"eslintConfig": {

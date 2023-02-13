@@ -1,5 +1,5 @@
 {
-    "channel": "quantum",
-    "updateServer": "https://releases.quarklight.tech",
-    "version": "0.0.6"
+  "channel": "quantum",
+  "version": "0.0.0",
+  "updateServer": "https://releases.quarklight.tech"
 }
