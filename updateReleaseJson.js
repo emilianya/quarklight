@@ -6,7 +6,8 @@ const refToChannel = {
     "dev": "quantum"
 }
 
-const channel = refToChannel[process.argv[2]]
+const channel = refToChannel[process.env.GITHUB_REF_NAME]
+console.log("Github ref name: " + process.env.GITHUB_REF_NAME)
 console.log("Publishing to channel: " + channel)
 console.log("Version: " + pjson.version)
 
