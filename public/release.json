@@ -1,0 +1,5 @@
+{
+    "channel": "quantum",
+    "updateServer": "https://releases.quarklight.tech",
+    "version": "0.0.6"
+}
