@@ -24,6 +24,13 @@ module.exports = {
             ]
         },
         {
+            "name": "@electron-forge/maker-dmg",
+            "config": {
+                "background": 'build/logo@5x.png',
+                "format": 'ULFO'
+            }
+        },
+        {
             "name": "@electron-forge/maker-deb",
             "config": {
                 "options": {
