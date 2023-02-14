@@ -6,6 +6,8 @@ export function Message(props) {
 	let message = props.message.message;
 	let author = props.message.author;
 
+	let botMessage = message?.specialAttributes?.find(a => a.type === "botMessage")
+
 	function formatDate(date) {
 		// If today
 		if (date.toLocaleDateString() === new Date().toLocaleDateString()) {
@@ -17,10 +19,10 @@ export function Message(props) {
 
 	return (
 		<div className="message">
-			<img src={author.avatarUri} alt="" width={"32px"} className="messageAvatar" />
+			<img src={botMessage?.avatarUri || author.avatarUri} alt="" width={"32px"} className="messageAvatar" />
 			<div>
 				<div className="messageUsernameRow">
-					<span>{author.username}</span>
+					<span>{botMessage?.username || author.username}</span>{botMessage ? <><span id={`${message._id}_bot`} data-tooltip-content={`This message was sent by a bot called ${author.username}`} className="botBadge">{author.username}</span><Tooltip className="botTip" anchorId={`${message._id}_bot`} positionStrategy={"fixed"} place={"top"} style={{opacity: 1, backgroundColor: "var(--tooltip)"}} /></> : null}
 					<small id={`${message._id}_timestamp`} data-tooltip-content={new Date(message.timestamp).toLocaleString()} className="messageTimestamp">{formatDate(new Date(message.timestamp))} via {message.ua || "Unknown Client"}</small>
 					<Tooltip className="timestampTip" anchorId={`${message._id}_timestamp`} positionStrategy={"fixed"} place={"top"} style={{opacity: 1, backgroundColor: "var(--tooltip)"}} />
 
@@ -29,7 +31,7 @@ export function Message(props) {
 					<Linkify componentDecorator={(decoratedHref, decoratedText, key) => (
 						<a target="_blank" rel="noopener noreferrer" href={decoratedHref} key={key}>{decoratedText}</a>
 					)}>
-						<span className={message.specialAttributes?.includes("/me") ? "messageItalic" : ""}>{message.content}</span>
+						<span className={message.specialAttributes?.some(a => a.type === "/me") ? "messageItalic" : ""}>{message.content}</span>
 					</Linkify>
 					{message.attachments?.length > 0 ? <div className="messageAttachments">{message.attachments.map(attachment => {
 						return <Attachment attachment={attachment} key={attachment.url} scrollDetached={props.scrollDetached} />
