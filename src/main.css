@@ -178,6 +178,16 @@
     line-height: 1.1rem;
 }
 
+.botBadge {
+    border: var(--orange) 0.1rem solid;
+    border-radius: 0.25rem;
+    margin-left: 0.25rem;
+    font-size: 0.75rem;
+    padding: 0.25rem;
+    color: white;
+    font-weight: 500;
+}
+
 .message {
     transition: background-color 0.15s;
     user-select: none;
@@ -277,6 +287,25 @@ TODO: Make the positioning better
     font-style: italic;
 }
 
+.messageReply {
+    color: lightgrey;
+}
+
+.messageReplyUsername {
+    margin-right: 0.25rem;
+}
+
+.messageReplyBody {
+    font-weight: 300;
+    width: 5rem;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.messageReplyIcon {
+    font-size: smaller;
+    margin-right: 0.25rem;
+}
 
 .unreadIndicator {
     background-color: var(--orange);
