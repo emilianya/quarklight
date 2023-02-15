@@ -287,6 +287,25 @@ TODO: Make the positioning better
     font-style: italic;
 }
 
+.messageReply {
+    color: lightgrey;
+}
+
+.messageReplyUsername {
+    margin-right: 0.25rem;
+}
+
+.messageReplyBody {
+    font-weight: 300;
+    width: 5rem;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.messageReplyIcon {
+    font-size: smaller;
+    margin-right: 0.25rem;
+}
 
 .unreadIndicator {
     background-color: var(--orange);
