@@ -27,3 +27,6 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm test
+      env:
+        TESTPASS: ${{ secrets.TESTPASS }}
+        TESTUSER: ${{ secrets.TESTUSER }}
