@@ -16,7 +16,9 @@ export function NavContainer() {
 	let [showNav, setShowNav] = useState(true);
 
 	useEffect(() => {
+		console.log("Updating quarkboxes")
 		let quarks = appContext.quarks.sort((a, b) => { return a.name.localeCompare(b.name) });
+		console.log("at render time", quarks)
 		mainContext.setQuarkBoxes(quarks.map(quark => {
 			return (<Quark quark={quark} setSelectedQuark={mainContext.setSelectedQuark} key={quark._id} />)
 		}));
@@ -33,12 +35,6 @@ export function NavContainer() {
 			let channels = await lq.getChannels(mainContext.selectedQuark);
 			appContext.setChannels(channels);
 			if (channels.length > 0) mainContext.setSelectedChannel(channels[0]._id);
-			let quarks = appContext.quarks.filter(q => q._id !== mainContext.selectedQuark);
-			let updatedQuark = await lq.getQuark(mainContext.selectedQuark);
-			quarks.push(updatedQuark);
-			appContext.setQuarks(quarks);
-			channels = await lq.getChannels(mainContext.selectedQuark);
-			appContext.setChannels(channels);
 		})()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [mainContext.selectedQuark])

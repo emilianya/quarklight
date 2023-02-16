@@ -107,7 +107,6 @@ export default class Lightquark {
                 let notificationAudio = new Audio(notificationWav);
                 try {
                     notificationAudio.play();
-                    console.log((await this.getChannel(data.message.channelId)).name)
                     new Notification(`${data.author.username} in #${(await this.getChannel(data.message.channelId)).name}`, {body: data.message.content || "Attachment", tag: "quarklight", icon: data.author.avatarUri})
                 } catch (e) {
                     console.log("Failed to play notification sound", e);
@@ -250,6 +249,42 @@ export default class Lightquark {
         return res;
     }
 
+    /**
+     * Checks if an invite code is valid
+     * 
+     * @param {string} inviteCode 
+     * @returns {Promise<{valid: boolean, quark?: Quark}>} 
+     */
+    async checkInvite (inviteCode) {
+        let res = await this.apiCall(`/quark/invite/${inviteCode}`);
+        return {
+            valid: res.request.success,
+            alreadyMember: this.appContext.quarks.some(q => q._id === res.response?.quark?._id) || false,
+            quark: res.response.quark || undefined
+        }
+    }
+
+    /**
+     * Joins a quark using an invite code
+     * @param inviteCode
+     * @returns {Promise<void>}
+    */
+    async joinQuark (inviteCode) {
+        let res = await this.apiCall(`/quark/invite/${inviteCode}`, "POST");
+        let newQuark = await this.getQuark(res.response.quark._id);
+        this.appContext.setQuarks(o => [...o, newQuark]); // Get full quark data
+    }
+
+    async leaveQuark (quarkId) {
+        let res = await this.apiCall(`/quark/${quarkId}/leave`, "POST");
+        if (res.request.success) {
+            let newQuarks = this.appContext.quarks.filter(q => q._id !== quarkId);
+            this.appContext.setQuarks(newQuarks);
+            console.log("after Leaving", newQuarks)
+        } else {
+            console.error("Failed to leave quark", res);
+        }
+    }
 
     /**
      * Logs in to Lightquark

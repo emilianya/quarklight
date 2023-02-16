@@ -318,6 +318,60 @@ TODO: Make the positioning better
     top: 0.5rem;
 }
 
+.joinModal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--bg-medium);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    width: 30rem;
+    height: 25rem;
+    z-index: 999;
+}
+
+.joinModalQuark {
+    background-color: var(--bg-dark);
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    height: 4.5rem;
+    position: relative;
+}
+
+.joinModalQuarkIcon {
+    height: 4.5rem;
+    width: 4.5rem;
+    border-radius:0.5rem;
+    margin-right: 1rem;
+    float: left;
+}
+
+.joinModalQuarkName {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-top: 0.5rem;
+    width: 18rem;
+    overflow: hidden;
+    display: inline-block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.joinModalQuarkDetail {
+    color: lightgray;
+}
+
+.joinModalQuarkJoinButton {
+    float: right;
+    margin-right: 1rem;
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    transform: translateY(-50%);
+}
+
 a {
     color: var(--blue-3);
 }
