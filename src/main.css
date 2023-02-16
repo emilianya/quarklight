@@ -133,6 +133,10 @@
     transition: 100ms;
 }
 
+.messageMenu {
+    transition: 100ms;
+}
+
 .channelMenu {
     transition: 100ms;
 }

@@ -4,7 +4,7 @@ import {MainContext} from "../../contexts/MainContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faPaperclip, faPaperPlane} from '@fortawesome/free-solid-svg-icons'
 
-export function MessageBox() {
+export function MessageBox(props) {
 	let mainContext = useContext(MainContext);
 	let [message, setMessage] = useState("");
 	let [attachments, setAttachments] = useState([]);
@@ -36,11 +36,12 @@ export function MessageBox() {
 		if (sendDisabled) return;
 		setUploading(true);
 		let fileInput = document.getElementById("fileInput");
-		await lq.sendMessage(message, [...attachments], mainContext.selectedChannel);
+		await lq.sendMessage(message, [...attachments], mainContext.selectedChannel, props.replyTo);
 		fileInput.value = "";
 		setMessage("");
 		setAttachments([]);
 		setUploading(false);
+		props.setReplyTo(null);
 	}
 
 	function handleMessageboxKey(e) {
@@ -121,6 +122,8 @@ export function MessageBox() {
 		});
 	}
 
+	// TODO: Show visual indicator for attachments and reply
+	// Also, add a way to remove attachments
 	return (
 		<div className="messageBox" onDrop={handleDrop}>
 			<input type="file" className="messageFile" hidden={true} multiple onChange={handleFileChange} name="file" id="fileInput"/>

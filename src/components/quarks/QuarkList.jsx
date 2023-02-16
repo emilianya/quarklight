@@ -1,4 +1,4 @@
-import {useContext, useState} from "react";
+import {useContext} from "react";
 import {MainContext} from "../../contexts/MainContext";
 import {Tooltip} from "react-tooltip";
 import joinQuark from "../../assets/joinQuark.png";

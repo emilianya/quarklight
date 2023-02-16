@@ -43,8 +43,10 @@ export default class Lightquark {
                     this.messageCreate(event);
                     break;
                 case "messageUpdate":
+                    this.messageUpdate(event);
                     break;
                 case "messageDelete":
+                    this.messageState.setMessages(this.messageState.messages.filter(message => message.message._id !== event.message._id));
                     break;
                 case "quarkUpdate":
                     break;
@@ -73,6 +75,7 @@ export default class Lightquark {
         })
     }
 
+
     async messageParser(data) {
         data.message.attachments = await Promise.all(data.message.attachments.map(async attachment => {
             let res = await fetch(attachment, {
@@ -91,8 +94,19 @@ export default class Lightquark {
         return data;
     }
 
+    async messageUpdate (data) {
+        if(data.message.channelId === this.mainContext.selectedChannel) { // render the message if it's in the current channel
+            data.author = await this.getUser(data.message.authorId)
+            let parsedMessage = await this.messageParser(data)
+            let filteredMessages = this.messageState.messages.filter(message => message.message._id !== data.message._id)
+            filteredMessages.push(parsedMessage)
+            this.messageState.setMessages(filteredMessages)
+        }
+    }
+
+
     async messageCreate (data) {
-        if(data.eventId === "messageCreate") {
+        if(data.eventId === "messageCreate") { // Redundant check due to old setup, too scared to remove it
             if(data.message.channelId === this.mainContext.selectedChannel) { // render the message if it's in the current channel
                 let parsedMessage = await this.messageParser(data)
                 this.messageState.setMessages(prev => [...prev, parsedMessage])
@@ -111,7 +125,6 @@ export default class Lightquark {
                 } catch (e) {
                     console.log("Failed to play notification sound", e);
                 }
-                // TODO: notification
             }
         }
     }
@@ -210,10 +223,17 @@ export default class Lightquark {
      * @param message{string} - Message content
      * @param attachments{{filename: string, data: string}[]} - Array of attachments, data in base64
      * @param channelId - Channel ID
+     * @param replyTo - Message ID to reply to
      * @returns {Promise<void>} - Resolves when api call is complete
      */
-    async sendMessage(message, attachments, channelId) {
-        await lq.apiCall(`/channel/${channelId}/messages`, "POST", {content: message, attachments, specialAttributes: []}, "v2");
+    async sendMessage(message, attachments, channelId, replyTo = null) {
+        let specialAttributes = [];
+        if(replyTo) specialAttributes.push({type: "reply", replyTo: replyTo});
+        await lq.apiCall(`/channel/${channelId}/messages`, "POST", {content: message, attachments, specialAttributes}, "v2");
+    }
+
+    async deleteMessage(messageId, channelId) {
+        await lq.apiCall(`/channel/${channelId}/messages/${messageId}`, "DELETE");
     }
 
     /**

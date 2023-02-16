@@ -3,7 +3,7 @@ import {MainContext} from "../../contexts/MainContext";
 import {lq} from "../../classes/Lightquark";
 import {Message} from "./Message";
 
-export function MessageView() {
+export function MessageView(props) {
 	let mainContext = useContext(MainContext);
 	let [messages, setMessages] = useState([]);
 	let [messageElements, setMessageElements] = useState([]);
@@ -37,7 +37,7 @@ export function MessageView() {
 		});
 		setMessageElements(messages.map(message => {
 			return (
-				<Message key={message.message._id} messages={messages} message={message} scrollDetached={scrollDetached} />
+				<Message setReplyTo={props.setReplyTo} key={message.message._id} messages={messages} message={message} scrollDetached={scrollDetached} />
 			);
 		}));
 		// eslint-disable-next-line react-hooks/exhaustive-deps
