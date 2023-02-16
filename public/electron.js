@@ -6,6 +6,17 @@ const isDev = require('electron-is-dev');
 
 const fs = require('fs');
 
+if (process.defaultApp) {
+	if (process.argv.length >= 2) {
+	  app.setAsDefaultProtocolClient('lightquark', process.execPath, [path.resolve(process.argv[1])])
+	}
+  } else {
+	  app.setAsDefaultProtocolClient('lightquark')
+}
+
+
+
+
 // Do not check for updates in dev mode
 if (!isDev) {
 	let releaseJson = JSON.parse(fs.readFileSync(path.join(__dirname, '../build/release.json')).toString())
@@ -56,9 +67,11 @@ if (isDev) {
 	REACT_DEVELOPER_TOOLS = devTools.REACT_DEVELOPER_TOOLS;
 }
 
+let win 
+
 function createWindow() {
 	// Create the browser window.
-	const win = new BrowserWindow({
+	win = new BrowserWindow({
 		width: 800,
 		height: 600,
 		minWidth: 800,
@@ -90,18 +103,38 @@ function createWindow() {
 
 }
 
+const gotTheLock = app.requestSingleInstanceLock()
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
-	createWindow();
+if (!gotTheLock) {
+	app.quit();
+} else {
+	app.on('second-instance', (event, commandLine, workingDirectory) => {
+		// Someone tried to run a second instance, we should focus our window.
+		if (win) {
+		  if (win.isMinimized()) win.restore()
+		  win.focus()
+		}
+		
+		dialog.showErrorBox('Welcome Back', `You arrived from: ${commandLine.pop().slice(0,-1)}`)
+	})
 
-	if (isDev) {
-		installExtension(REACT_DEVELOPER_TOOLS)
-			.then(name => console.log(`Added Extension:  ${name}`))
-			.catch(error => console.log(`An error occurred: , ${error}`));
-	}
-});
+	app.whenReady().then(() => {
+		createWindow();
+	
+		if (isDev) {
+			installExtension(REACT_DEVELOPER_TOOLS)
+				.then(name => console.log(`Added Extension:  ${name}`))
+				.catch(error => console.log(`An error occurred: , ${error}`));
+		}
+	});
+
+	app.on('open-url', (event, url) => {
+		dialog.showErrorBox('Welcome Back', `You arrived from: ${url}`)
+	})
+}
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
