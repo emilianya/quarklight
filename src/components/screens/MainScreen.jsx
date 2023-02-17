@@ -25,11 +25,10 @@ export function MainScreen() {
 
 	useEffect(() => {
 		if (!appContext.loading && !selectedQuark && appContext.quarks.length > 0) {
-			//console.log(appContext.quarks)
 			setSelectedQuark(appContext.quarks[0]._id);
 		}
 		if (!appContext.loading && !selectedChannel && appContext.channels.length > 0) {
-			//console.log(appContext.channels)
+			console.log("Selecting first channel")
 			setSelectedChannel(appContext.channels[0]._id);
 		}
 	}, [appContext.loading, selectedQuark, selectedChannel, appContext.quarks, appContext.channels])

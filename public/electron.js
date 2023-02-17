@@ -1,6 +1,6 @@
 const path = require('path');
 
-const { app, BrowserWindow, shell, autoUpdater, dialog } = require('electron');
+const { app, BrowserWindow, shell, autoUpdater, dialog, ipcMain } = require('electron');
 if (require('electron-squirrel-startup')) app.quit();
 const isDev = require('electron-is-dev');
 
@@ -78,6 +78,7 @@ function createWindow() {
 		minHeight: 600,
 		webPreferences: {
 			nodeIntegration: true,
+			contextIsolation: false,
 			autoHideMenuBar: true
 		},
 		icon: path.join(__dirname, '../build/logo@1.25x.png')
@@ -118,7 +119,7 @@ if (!gotTheLock) {
 		  win.focus()
 		}
 		
-		dialog.showErrorBox('Welcome Back', `You arrived from: ${commandLine.pop().slice(0,-1)}`)
+		win.webContents.send('open-url', commandLine.pop())
 	})
 
 	app.whenReady().then(() => {
@@ -132,7 +133,7 @@ if (!gotTheLock) {
 	});
 
 	app.on('open-url', (event, url) => {
-		dialog.showErrorBox('Welcome Back', `You arrived from: ${url}`)
+		win.webContents.send('open-url', url)
 	})
 }
 

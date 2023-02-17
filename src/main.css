@@ -376,6 +376,16 @@ TODO: Make the positioning better
     transform: translateY(-50%);
 }
 
+.link {
+    color: var(--blue-3);
+    text-decoration: underline;
+}
+
+.link:hover {
+    color: var(--blue-1);
+    cursor: pointer;
+}
+
 a {
     color: var(--blue-3);
 }

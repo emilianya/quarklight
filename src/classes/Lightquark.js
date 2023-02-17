@@ -474,6 +474,31 @@ export default class Lightquark {
         let res = await this.apiCall(`/channel/${channelId}/messages${startTimestamp ? `?startTimestamp=${startTimestamp}` : ""}`)
         return await Promise.all(res.response.messages.map(async m => await this.messageParser(m)));
     }
+
+    /**
+     * Open a lightquark:// protocol link
+     * @param {string} link 
+     * @returns {Promise<boolean>} Was the link opened?
+     */
+    async openLqLink (link) {
+        console.log("uwu hai", link)
+        // lightquark://{quarkId}/{channelId?}/{messageId?}
+        // lightquark://638b815b4d55b470d9d6fa1a/63eb7cc7ecc96ed5edc267f
+        let linkParts = link.split("://")[1].split("/");
+        let quarkId = linkParts[0];
+        let channelId = linkParts?.[1];
+        let messageId = linkParts?.[2];
+        console.log(quarkId, channelId, messageId)
+        if (this.appContext.quarks.some(q => q._id === quarkId)) {
+            this.mainContext.setSelectedQuark(quarkId);
+            if (channelId) {
+                this.mainContext.setSelectedChannel(channelId);
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 const lq = new Lightquark()

@@ -13,6 +13,17 @@ export function Message(props) {
 	let appContext = useContext(AppContext);
 
 	let message = props.message.message;
+
+	// Regex for lightquark:// links
+	// Groups: protocol, quarkId, channelId?, messageId?
+	let lightquarkRegex = /(?<protocol>lightquark:\/\/)(?<quarkId>[a-zA-Z0-9]+)(?<channelId>\/[a-zA-Z0-9]*)?(?<mesageId>\/[a-zA-Z0-9]*)?/gm
+
+	// Replace regex matches with links
+	message.content = message.content.replace(lightquarkRegex, (match, protocol, quarkId, channelId, messageId) => {
+		return `https://lq.litdevs.org/d/${quarkId}${channelId || ""}${messageId || ""}`;
+	});
+
+
 	let author = props.message.author;
 
 	let botMessage = message?.specialAttributes?.find(a => a.type === "botMessage")
@@ -58,9 +69,18 @@ export function Message(props) {
 						<Tooltip className="timestampTip" anchorId={`${message._id}_timestamp`} positionStrategy={"fixed"} place={"top"} style={{opacity: 1, backgroundColor: "var(--tooltip)"}} />
 					</div>
 					<div className="messageBody">
-						<Linkify componentDecorator={(decoratedHref, decoratedText, key) => (
-							<a target="_blank" rel="noopener noreferrer" href={decoratedHref} key={key}>{decoratedText}</a>
-						)}>
+						<Linkify componentDecorator={(decoratedHref, decoratedText, key) => {
+							if (decoratedHref.startsWith("https://lq.litdevs.org/d/")) {
+								let lqPart = decoratedHref.split("https://lq.litdevs.org/d/")[1];
+								let lqProtocol = `lightquark://${lqPart}`;
+								return (
+									<span className="link" onClick={() => lq.openLqLink(lqProtocol)} key={key}>{lqProtocol}</span>
+								)
+							}
+							return (
+								<a target="_blank" rel="noopener noreferrer" href={decoratedHref} key={key}>{decoratedText}</a>
+							)
+						}}>
 							<span className={message.specialAttributes?.some(a => a.type === "/me") ? "messageItalic" : ""}>{message.content}</span><small style={{color: "lightgray", userSelect: "none"}} hidden={!message?.edited}> (edited)</small>
 						</Linkify>
 						{message.attachments?.length > 0 ? <div className="messageAttachments">{message.attachments.map(attachment => {

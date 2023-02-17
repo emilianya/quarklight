@@ -34,7 +34,7 @@ export function NavContainer() {
 			appContext.setChannels([]);
 			let channels = await lq.getChannels(mainContext.selectedQuark);
 			appContext.setChannels(channels);
-			if (channels.length > 0) mainContext.setSelectedChannel(channels[0]._id);
+			if (channels.length > 0 && !channels.some(c => c._id === mainContext.selectedChannel)) mainContext.setSelectedChannel(channels[0]._id);
 		})()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [mainContext.selectedQuark])

@@ -18,7 +18,6 @@ export function Quark(props) {
 		let quarkChannelIds = quark.channels.map(c => c._id)
 		let quarkHasUnreadChannel = mainContext?.unreadChannels?.some(id => quarkChannelIds.includes(id))
 		setShowUnread(quarkHasUnreadChannel)
-		if (showUnread) console.log("we has unread", quark._id)
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [mainContext.unreadChannels])
 

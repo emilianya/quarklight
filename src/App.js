@@ -6,6 +6,7 @@ import {Main} from "./components/Main";
 import {lq} from "./classes/Lightquark";
 import pjson from '../package.json';
 
+
 function App() {
     const savedLoginState = localStorage.getItem("loggedIn") === "true" || false;
     let savedToken = localStorage.getItem("token");
