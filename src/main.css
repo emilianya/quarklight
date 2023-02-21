@@ -180,7 +180,7 @@
     user-select: text;
     white-space: pre-wrap;
     line-height: 1.1rem;
-    line-break: anywhere;
+    word-break: break-all;
 }
 
 .botBadge {
