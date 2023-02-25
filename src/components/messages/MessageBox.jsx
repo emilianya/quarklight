@@ -4,6 +4,11 @@ import {MainContext} from "../../contexts/MainContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faPaperclip, faPaperPlane} from '@fortawesome/free-solid-svg-icons'
 
+// TODO: Indicator for replying and attachments
+// TODO: Upload progress indicator
+// TODO: Upload cancel button
+// TODO: Allow sending other messages while uploading in background
+
 export function MessageBox(props) {
 	let mainContext = useContext(MainContext);
 	let [message, setMessage] = useState("");
@@ -12,6 +17,8 @@ export function MessageBox(props) {
 	let [uploading, setUploading] = useState(false);
 
 	const evaluateSendDisabled = () => {
+		// If there is no message content and no attachments, disable the send button
+		// While uploading, disable the send button
 		if ((message.trim().length === 0 && attachments.length === 0) || uploading) setSendDisabled(true);
 		else setSendDisabled(false);
 
@@ -35,10 +42,10 @@ export function MessageBox(props) {
 	async function send() {
 		if (sendDisabled) return;
 		setUploading(true);
+		setMessage("");
 		let fileInput = document.getElementById("fileInput");
 		await lq.sendMessage(message, [...attachments], mainContext.selectedChannel, props.replyTo);
 		fileInput.value = "";
-		setMessage("");
 		setAttachments([]);
 		setUploading(false);
 		props.setReplyTo(null);
@@ -127,7 +134,7 @@ export function MessageBox(props) {
 	return (
 		<div className="messageBox" onDrop={handleDrop}>
 			<input type="file" className="messageFile" hidden={true} multiple onChange={handleFileChange} name="file" id="fileInput"/>
-			<textarea onPaste={handlePaste} onKeyDown={handleMessageboxKey} className="messageInput" value={message} onInput={(e) => setMessage(e.target.value)} placeholder="Type your message here..." />
+			<textarea onPaste={handlePaste} onKeyDown={handleMessageboxKey} disabled={uploading} className="messageInput" value={message} onInput={(e) => setMessage(e.target.value)} placeholder={uploading ? "Sending message..." : "Type your message here..."} />
 			<div className={"messageAttachButton"} onClick={() => {document.querySelector("#fileInput").click();}}>
 				<FontAwesomeIcon icon={faPaperclip}>Send</FontAwesomeIcon>
 			</div>

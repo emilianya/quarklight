@@ -2,6 +2,8 @@ import { useContext, useState } from 'react';
 import { MainContext } from '../../contexts/MainContext';
 import { lq } from '../../classes/Lightquark';
 import { Tooltip } from 'react-tooltip';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faX} from "@fortawesome/free-solid-svg-icons";
 
 export function JoinModal() {
     let [quark, setQuark] = useState(null);
@@ -11,6 +13,7 @@ export function JoinModal() {
     return (
 		<div className="joinModal" hidden={!mainContext.showJoinModal}>
             <h2>Join a Quark</h2>
+            <FontAwesomeIcon icon={faX} className="closeButton" onClick={() => {mainContext.setShowJoinModal(false)}} />
             <p>Enter the invite code for a Quark you would like to join!</p>
             <input type="text" className="input-box" onInput={(e) => {setInviteCode(e.target.value);setError(null)}} placeholder="Invite Code" />
             <br />

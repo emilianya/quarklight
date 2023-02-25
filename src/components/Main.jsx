@@ -22,7 +22,7 @@ export const Main = () => {
 	 * Update user data when the Lightquark instance is ready
 	 */
 	useEffect(() => {
-		if (!appContext.loggedIn) return;
+		if (!appContext.loggedIn || !appContext.gatewayConnected) return;
 		(async () => {
 			let data = await lq.apiCall("/user/me");
 			if (data.request.success) {

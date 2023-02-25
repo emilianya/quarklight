@@ -300,9 +300,20 @@ export default class Lightquark {
         if (res.request.success) {
             let newQuarks = this.appContext.quarks.filter(q => q._id !== quarkId);
             this.appContext.setQuarks(newQuarks);
-            console.log("after Leaving", newQuarks)
         } else {
             console.error("Failed to leave quark", res);
+        }
+    }
+
+    async createQuark (name) {
+        let res = await this.apiCall("/quark/create", "POST", {name});
+        if (res.request.success) {
+            let newQuark = await this.getQuark(res.response.quark._id);
+            this.appContext.setQuarks(o => [...o, newQuark]);
+            return {error: false, quark: newQuark};
+        } else {
+            console.error("Failed to create quark", res);
+            return {error: res.response.error};
         }
     }
 
