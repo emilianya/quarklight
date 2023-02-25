@@ -53,11 +53,13 @@ export function Message(props) {
 
 	return (
 		<>
-			<div className="message" onContextMenu={handleContextMenu}>
+			<div className="message" id={`${message._id}_message`} onContextMenu={handleContextMenu}>
 				<img src={botMessage?.avatarUri || author.avatarUri} alt="" width={"32px"} className="messageAvatar" />
 				<div>
 					{replyMessage ?
-					<div className="messageReply">
+					<div className="messageReply" onClick={() => {
+						document.getElementById(`${replyMessage.replyTo}_message`).scrollIntoView();
+					}}>
 						<FontAwesomeIcon className="messageReplyIcon" icon={faReply} />
 						<small className="messageReplyUsername">{props.messages.find(m => m.message._id === replyMessage.replyTo)?.author.username || "Unknown User"}</small>
 						<small className="messageReplyBody">{props.messages.find(m => m.message._id === replyMessage.replyTo)?.message.content || "Unknown Message"}</small>

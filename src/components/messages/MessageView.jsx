@@ -53,8 +53,23 @@ export function MessageView(props) {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [messageElements])
 
+	/**
+	 * Set scrollDetached to true if user scrolls up
+	 * Set scrollDetached to false if user scrolls to bottom
+	 * @param e
+	 */
+	function handleMessageViewScroll(e) {
+		// I don't know how this works, copilot wrote it.
+		let messageView = document.querySelector(".messageView");
+		if (messageView.scrollTop + messageView.clientHeight >= messageView.scrollHeight) {
+			setScrollDetached(false);
+		} else {
+			setScrollDetached(true);
+		}
+	}
+
 	return (
-		<div className="messageView">
+		<div className="messageView" onScroll={handleMessageViewScroll} style={{backgroundColor: scrollDetached ? "#333333" : "inherit"}}>
 			{messageElements}
 		</div>
 	);

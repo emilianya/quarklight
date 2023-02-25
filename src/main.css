@@ -207,6 +207,7 @@
 
 .messageView {
     overflow-y: scroll;
+    scroll-behavior: smooth;
     height: calc(100vh - 7rem);
 }
 
@@ -305,6 +306,11 @@ TODO: Make the positioning better
 
 .messageReply {
     color: lightgrey;
+}
+
+.messageReply:hover {
+    cursor: pointer;
+    color: white;
 }
 
 .messageReplyUsername {
