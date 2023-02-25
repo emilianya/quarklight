@@ -11,9 +11,11 @@ export function QuarkList() {
 
 	useEffect(() => {
 		if (mainContext.showJoinModal && mainContext.showCreateModal) mainContext.setShowCreateModal(false);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	},  [mainContext.showJoinModal])
 	useEffect(() => {
 		if (mainContext.showJoinModal && mainContext.showCreateModal) mainContext.setShowJoinModal(false);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	},  [mainContext.showCreateModal])
 	
 	return (

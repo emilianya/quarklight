@@ -1,7 +1,6 @@
 import { useContext, useState } from 'react';
 import { MainContext } from '../../contexts/MainContext';
 import { lq } from '../../classes/Lightquark';
-import { Tooltip } from 'react-tooltip';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faX} from "@fortawesome/free-solid-svg-icons";
 
