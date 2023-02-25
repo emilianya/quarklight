@@ -129,6 +129,10 @@ export function MessageBox(props) {
 		});
 	}
 
+	useEffect(() => {
+		document.getElementById("messageTextInput").focus();
+	}, [uploading])
+
 	// TODO: Show visual indicator for attachments
 	// Also, add a way to remove attachments
 	return (
@@ -140,7 +144,7 @@ export function MessageBox(props) {
 				<FontAwesomeIcon className="messageReplyCancel" onClick={() => {props.setReplyTo(undefined)}} icon={faX}></FontAwesomeIcon>
 			</div>}
 			<input type="file" className="messageFile" hidden={true} multiple onChange={handleFileChange} name="file" id="fileInput"/>
-			<textarea onPaste={handlePaste} onKeyDown={handleMessageboxKey} disabled={uploading} className="messageInput" value={message} onInput={(e) => setMessage(e.target.value)} placeholder={uploading ? "Sending message..." : "Type your message here..."} />
+			<textarea id="messageTextInput" onPaste={handlePaste} onKeyDown={handleMessageboxKey} disabled={uploading} className="messageInput" value={message} onInput={(e) => setMessage(e.target.value)} placeholder={uploading ? "Sending message..." : "Type your message here..."} />
 			<div className={"messageAttachButton"} onClick={() => {document.querySelector("#fileInput").click();}}>
 				<FontAwesomeIcon icon={faPaperclip}>Send</FontAwesomeIcon>
 			</div>

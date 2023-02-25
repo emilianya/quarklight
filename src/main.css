@@ -129,6 +129,11 @@
     --contexify-activeItem-color: var(--orange);
 }
 
+.deleteButton {
+    --contexify-item-color: red;
+    --contexify-activeItem-color: red;
+}
+
 .quarkMenu {
     transition: 100ms;
 }
