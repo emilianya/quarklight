@@ -6,7 +6,6 @@ import {Main} from "./components/Main";
 import {lq} from "./classes/Lightquark";
 import pjson from '../package.json';
 
-
 function App() {
     const savedLoginState = localStorage.getItem("loggedIn") === "true" || false;
     let savedToken = localStorage.getItem("token");
@@ -42,7 +41,7 @@ function App() {
             channels, setChannels,
             userCache, setUserCache,
             channelCache, setChannelCache,
-            version: pjson.version
+            version: `${lq.isDev ? "dev" : pjson.version}`
         }}>
             <Main/>
         </AppContext.Provider>

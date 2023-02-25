@@ -7,11 +7,17 @@ import 'react-contexify/ReactContexify.css';
 import { lq } from './classes/Lightquark';
 
 try {
-  const { ipcRenderer } = window.require("electron");
-  
-  ipcRenderer.on("open-url", (event, url) => {
-      lq.openLqLink(url);
-  })
+    const { ipcRenderer } = window.require("electron");
+
+    ipcRenderer.on("open-url", (event, url) => {
+        lq.openLqLink(url);
+    })
+
+    // Receive the isDev flag from electron
+    ipcRenderer.on("is-dev", (event, dev) => {
+        lq.isDev = dev;
+    })
+
 } catch (e) {
   console.log("Not running in electron, ignoring links.")
 }

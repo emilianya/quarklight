@@ -308,6 +308,21 @@ TODO: Make the positioning better
     color: lightgrey;
 }
 
+.messageBoxReply {
+    color: lightgrey;
+    margin-left: 0.25rem;
+}
+
+.messageReplyCancel {
+    margin-left: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.messageReplyCancel:hover {
+    cursor: pointer;
+    color: white;
+}
+
 .messageReply:hover {
     cursor: pointer;
     color: white;
@@ -315,18 +330,23 @@ TODO: Make the positioning better
 
 .messageReplyUsername {
     margin-right: 0.25rem;
+    vertical-align: top;
 }
 
 .messageReplyBody {
     font-weight: 300;
-    width: 5rem;
+    width: 10rem;
     text-overflow: ellipsis;
+    display: inline-block;
+    white-space: nowrap;
     overflow: hidden;
+    vertical-align: top;
 }
 
 .messageReplyIcon {
     font-size: smaller;
     margin-right: 0.25rem;
+    vertical-align: baseline;
 }
 
 .unreadIndicator {

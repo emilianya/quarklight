@@ -2,7 +2,7 @@ import {useContext, useEffect, useState} from "react";
 import {lq} from "../../classes/Lightquark";
 import {MainContext} from "../../contexts/MainContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faPaperclip, faPaperPlane} from '@fortawesome/free-solid-svg-icons'
+import {faPaperclip, faPaperPlane, faReply, faX} from '@fortawesome/free-solid-svg-icons'
 
 // TODO: Indicator for replying and attachments
 // TODO: Upload progress indicator
@@ -129,10 +129,16 @@ export function MessageBox(props) {
 		});
 	}
 
-	// TODO: Show visual indicator for attachments and reply
+	// TODO: Show visual indicator for attachments
 	// Also, add a way to remove attachments
 	return (
 		<div className="messageBox" onDrop={handleDrop}>
+			{props.replyTo && <div className="messageBoxReply">
+				<FontAwesomeIcon className="messageReplyIcon" icon={faReply} />
+				<small className="messageReplyUsername">{props.messages.find(m => m.message._id === props.replyTo)?.author?.username || "Unknown User"}</small>
+				<small className="messageReplyBody">{props.messages.find(m => m.message._id === props.replyTo)?.message?.content || "Unknown Message"}</small>
+				<FontAwesomeIcon className="messageReplyCancel" onClick={() => {props.setReplyTo(undefined)}} icon={faX}></FontAwesomeIcon>
+			</div>}
 			<input type="file" className="messageFile" hidden={true} multiple onChange={handleFileChange} name="file" id="fileInput"/>
 			<textarea onPaste={handlePaste} onKeyDown={handleMessageboxKey} disabled={uploading} className="messageInput" value={message} onInput={(e) => setMessage(e.target.value)} placeholder={uploading ? "Sending message..." : "Type your message here..."} />
 			<div className={"messageAttachButton"} onClick={() => {document.querySelector("#fileInput").click();}}>

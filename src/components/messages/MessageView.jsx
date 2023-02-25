@@ -5,15 +5,15 @@ import {Message} from "./Message";
 
 export function MessageView(props) {
 	let mainContext = useContext(MainContext);
-	let [messages, setMessages] = useState([]);
 	let [messageElements, setMessageElements] = useState([]);
 	
 	// eslint-disable-next-line no-unused-vars
 	let [scrollDetached, setScrollDetached] = useState(false);
 
 	useEffect(() => {
-		lq.setMessageState({messages, setMessages});
-	}, [messages])
+		lq.setMessageState({messages: props.messages, setMessages: props.setMessages});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [props.messages])
 
 	/**
 	 * Get messages from selected channel when selected channel changes
@@ -22,9 +22,10 @@ export function MessageView(props) {
 		(async () => {
 			if (!mainContext.selectedChannel) return;
 			let messages = await lq.getMessages(mainContext.selectedChannel);
-			setMessages(messages);
+			props.setMessages(messages);
 			lq.subscribeToChannel(mainContext.selectedChannel);
 		})();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [mainContext.selectedChannel]);
 
 	/**
@@ -32,16 +33,16 @@ export function MessageView(props) {
 	 * Sort messages by timestamp
 	 */
 	useEffect(() => {
-		messages.sort((a, b) => {
+		props.messages.sort((a, b) => {
 			return a.message.timestamp - b.message.timestamp;
 		});
-		setMessageElements(messages.map(message => {
+		setMessageElements(props.messages.map(message => {
 			return (
-				<Message setReplyTo={props.setReplyTo} key={message.message._id} messages={messages} message={message} scrollDetached={scrollDetached} />
+				<Message setReplyTo={props.setReplyTo} key={message.message._id} messages={props.messages} message={message} scrollDetached={scrollDetached} />
 			);
 		}));
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [messages]);
+	}, [props.messages]);
 
 	/**
 	 * Scroll to bottom of message view when new messages are added
@@ -69,7 +70,10 @@ export function MessageView(props) {
 	}
 
 	return (
-		<div className="messageView" onScroll={handleMessageViewScroll} style={{backgroundColor: scrollDetached ? "#333333" : "inherit"}}>
+		<div className="messageView" onScroll={handleMessageViewScroll} style={
+			{backgroundColor: scrollDetached && false ? "#333333" : "inherit",
+				height: props.replyTo ? "calc(100vh - 8.3rem)" : ""
+			}}>
 			{messageElements}
 		</div>
 	);

@@ -9,6 +9,7 @@ import {ChannelInfo} from "../channels/ChannelInfo";
 export function ContentContainer() {
 	let mainContext = useContext(MainContext);
 	let appContext = useContext(AppContext);
+	let [messages, setMessages] = useState([]);
 	let [replyTo, setReplyTo] = useState(null);
 
 	useEffect(() => {
@@ -22,8 +23,8 @@ export function ContentContainer() {
 	return (
 		<div className="contentContainer">
 			<ChannelInfo channel={appContext.channels.find(c => c._id === mainContext.selectedChannel)} />
-			<MessageView setReplyTo={setReplyTo} />
-			<MessageBox setReplyTo={setReplyTo} replyTo={replyTo} />
+			<MessageView messages={messages} setMessages={setMessages} replyTo={replyTo} setReplyTo={setReplyTo} />
+			<MessageBox messages={messages} setReplyTo={setReplyTo} replyTo={replyTo} />
 		</div>
 	);
 }

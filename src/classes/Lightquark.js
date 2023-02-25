@@ -19,6 +19,7 @@ export default class Lightquark {
     identifier = Math.random().toString(36).substring(7);
     messageState;
     eventBus = new EventEmitter();
+    isDev = false;
 
     /**
      * @param appContext - React Context
