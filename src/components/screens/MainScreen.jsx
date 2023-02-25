@@ -16,6 +16,8 @@ export function MainScreen() {
 	let [selectedQuark, setSelectedQuark] = useState(null);
 	let [selectedChannel, setSelectedChannel] = useState(null);
 	let [unreadChannels, setUnreadChannels] = useState([]);
+	let [showJoinModal, setShowJoinModal] = useState(false);
+	let [showCreateModal, setShowCreateModal] = useState(false);
 
 
 	let [konamiState, setKonamiState] = useState(0);
@@ -23,17 +25,16 @@ export function MainScreen() {
 
 	useEffect(() => {
 		if (!appContext.loading && !selectedQuark && appContext.quarks.length > 0) {
-			console.log(appContext.quarks)
 			setSelectedQuark(appContext.quarks[0]._id);
 		}
 		if (!appContext.loading && !selectedChannel && appContext.channels.length > 0) {
-			console.log(appContext.channels)
+			console.log("Selecting first channel")
 			setSelectedChannel(appContext.channels[0]._id);
 		}
 	}, [appContext.loading, selectedQuark, selectedChannel, appContext.quarks, appContext.channels])
 
 	return (
-		<div data-testid="screenRoot" className="screenRoot" onKeyDown={a=>{a.key===konamiCode[konamiState]?setKonamiState(konamiState+1):setKonamiState(0);if (!a.shiftKey && !a.ctrlKey && !a.altKey) document.querySelector(".messageInput").focus()}} tabIndex="0">
+		<div data-testid="screenRoot" className="screenRoot" onKeyDown={a=>{a.key===konamiCode[konamiState]?setKonamiState(konamiState+1):setKonamiState(0);if (!a.shiftKey && !a.ctrlKey && !a.altKey);if(!showJoinModal && !showCreateModal) document.querySelector(".messageInput").focus();}} tabIndex="0">
 			{ // Debug menu 
 			konamiState === konamiCode.length ? <div style={{overflowY: "scroll", height: "100vh"}} >
 				<img width={"128px"} src={appContext?.userData?.avatar || "https://quarky.vukky.net/assets/img/loading.png"} alt=""/>
@@ -62,7 +63,9 @@ export function MainScreen() {
 						selectedQuark, setSelectedQuark,
 						quarkBoxes, setQuarkBoxes,
 						channelBoxes, setChannelBoxes,
-						unreadChannels, setUnreadChannels
+						unreadChannels, setUnreadChannels,
+						showJoinModal, setShowJoinModal,
+						showCreateModal, setShowCreateModal
 					}}>
 					<ContentContainer />
 					<NavContainer />

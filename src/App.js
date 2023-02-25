@@ -41,7 +41,7 @@ function App() {
             channels, setChannels,
             userCache, setUserCache,
             channelCache, setChannelCache,
-            version: pjson.version
+            version: `${lq.isDev ? "dev" : pjson.version}`
         }}>
             <Main/>
         </AppContext.Provider>

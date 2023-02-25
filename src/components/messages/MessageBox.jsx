@@ -2,9 +2,14 @@ import {useContext, useEffect, useState} from "react";
 import {lq} from "../../classes/Lightquark";
 import {MainContext} from "../../contexts/MainContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faPaperclip, faPaperPlane} from '@fortawesome/free-solid-svg-icons'
+import {faPaperclip, faPaperPlane, faReply, faX} from '@fortawesome/free-solid-svg-icons'
 
-export function MessageBox() {
+// TODO: Indicator for replying and attachments
+// TODO: Upload progress indicator
+// TODO: Upload cancel button
+// TODO: Allow sending other messages while uploading in background
+
+export function MessageBox(props) {
 	let mainContext = useContext(MainContext);
 	let [message, setMessage] = useState("");
 	let [attachments, setAttachments] = useState([]);
@@ -12,6 +17,8 @@ export function MessageBox() {
 	let [uploading, setUploading] = useState(false);
 
 	const evaluateSendDisabled = () => {
+		// If there is no message content and no attachments, disable the send button
+		// While uploading, disable the send button
 		if ((message.trim().length === 0 && attachments.length === 0) || uploading) setSendDisabled(true);
 		else setSendDisabled(false);
 
@@ -35,12 +42,13 @@ export function MessageBox() {
 	async function send() {
 		if (sendDisabled) return;
 		setUploading(true);
-		let fileInput = document.getElementById("fileInput");
-		await lq.sendMessage(message, [...attachments], mainContext.selectedChannel);
-		fileInput.value = "";
 		setMessage("");
+		let fileInput = document.getElementById("fileInput");
+		await lq.sendMessage(message, [...attachments], mainContext.selectedChannel, props.replyTo);
+		fileInput.value = "";
 		setAttachments([]);
 		setUploading(false);
+		props.setReplyTo(null);
 	}
 
 	function handleMessageboxKey(e) {
@@ -121,10 +129,18 @@ export function MessageBox() {
 		});
 	}
 
+	// TODO: Show visual indicator for attachments
+	// Also, add a way to remove attachments
 	return (
 		<div className="messageBox" onDrop={handleDrop}>
+			{props.replyTo && <div className="messageBoxReply">
+				<FontAwesomeIcon className="messageReplyIcon" icon={faReply} />
+				<small className="messageReplyUsername">{props.messages.find(m => m.message._id === props.replyTo)?.author?.username || "Unknown User"}</small>
+				<small className="messageReplyBody">{props.messages.find(m => m.message._id === props.replyTo)?.message?.content || "Unknown Message"}</small>
+				<FontAwesomeIcon className="messageReplyCancel" onClick={() => {props.setReplyTo(undefined)}} icon={faX}></FontAwesomeIcon>
+			</div>}
 			<input type="file" className="messageFile" hidden={true} multiple onChange={handleFileChange} name="file" id="fileInput"/>
-			<textarea onPaste={handlePaste} onKeyDown={handleMessageboxKey} className="messageInput" value={message} onInput={(e) => setMessage(e.target.value)} placeholder="Type your message here..." />
+			<textarea onPaste={handlePaste} onKeyDown={handleMessageboxKey} disabled={uploading} className="messageInput" value={message} onInput={(e) => setMessage(e.target.value)} placeholder={uploading ? "Sending message..." : "Type your message here..."} />
 			<div className={"messageAttachButton"} onClick={() => {document.querySelector("#fileInput").click();}}>
 				<FontAwesomeIcon icon={faPaperclip}>Send</FontAwesomeIcon>
 			</div>

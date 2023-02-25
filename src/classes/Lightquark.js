@@ -19,6 +19,7 @@ export default class Lightquark {
     identifier = Math.random().toString(36).substring(7);
     messageState;
     eventBus = new EventEmitter();
+    isDev = false;
 
     /**
      * @param appContext - React Context
@@ -43,8 +44,10 @@ export default class Lightquark {
                     this.messageCreate(event);
                     break;
                 case "messageUpdate":
+                    this.messageUpdate(event);
                     break;
                 case "messageDelete":
+                    this.messageState.setMessages(this.messageState.messages.filter(message => message.message._id !== event.message._id));
                     break;
                 case "quarkUpdate":
                     break;
@@ -73,6 +76,7 @@ export default class Lightquark {
         })
     }
 
+
     async messageParser(data) {
         data.message.attachments = await Promise.all(data.message.attachments.map(async attachment => {
             let res = await fetch(attachment, {
@@ -91,8 +95,19 @@ export default class Lightquark {
         return data;
     }
 
+    async messageUpdate (data) {
+        if(data.message.channelId === this.mainContext.selectedChannel) { // render the message if it's in the current channel
+            data.author = await this.getUser(data.message.authorId)
+            let parsedMessage = await this.messageParser(data)
+            let filteredMessages = this.messageState.messages.filter(message => message.message._id !== data.message._id)
+            filteredMessages.push(parsedMessage)
+            this.messageState.setMessages(filteredMessages)
+        }
+    }
+
+
     async messageCreate (data) {
-        if(data.eventId === "messageCreate") {
+        if(data.eventId === "messageCreate") { // Redundant check due to old setup, too scared to remove it
             if(data.message.channelId === this.mainContext.selectedChannel) { // render the message if it's in the current channel
                 let parsedMessage = await this.messageParser(data)
                 this.messageState.setMessages(prev => [...prev, parsedMessage])
@@ -107,12 +122,10 @@ export default class Lightquark {
                 let notificationAudio = new Audio(notificationWav);
                 try {
                     notificationAudio.play();
-                    console.log((await this.getChannel(data.message.channelId)).name)
                     new Notification(`${data.author.username} in #${(await this.getChannel(data.message.channelId)).name}`, {body: data.message.content || "Attachment", tag: "quarklight", icon: data.author.avatarUri})
                 } catch (e) {
                     console.log("Failed to play notification sound", e);
                 }
-                // TODO: notification
             }
         }
     }
@@ -211,10 +224,17 @@ export default class Lightquark {
      * @param message{string} - Message content
      * @param attachments{{filename: string, data: string}[]} - Array of attachments, data in base64
      * @param channelId - Channel ID
+     * @param replyTo - Message ID to reply to
      * @returns {Promise<void>} - Resolves when api call is complete
      */
-    async sendMessage(message, attachments, channelId) {
-        await lq.apiCall(`/channel/${channelId}/messages`, "POST", {content: message, attachments, specialAttributes: []}, "v2");
+    async sendMessage(message, attachments, channelId, replyTo = null) {
+        let specialAttributes = [];
+        if(replyTo) specialAttributes.push({type: "reply", replyTo: replyTo});
+        await lq.apiCall(`/channel/${channelId}/messages`, "POST", {content: message, attachments, specialAttributes}, "v2");
+    }
+
+    async deleteMessage(messageId, channelId) {
+        await lq.apiCall(`/channel/${channelId}/messages/${messageId}`, "DELETE");
     }
 
     /**
@@ -250,6 +270,53 @@ export default class Lightquark {
         return res;
     }
 
+    /**
+     * Checks if an invite code is valid
+     * 
+     * @param {string} inviteCode 
+     * @returns {Promise<{valid: boolean, quark?: Quark}>} 
+     */
+    async checkInvite (inviteCode) {
+        let res = await this.apiCall(`/quark/invite/${inviteCode}`);
+        return {
+            valid: res.request.success,
+            alreadyMember: this.appContext.quarks.some(q => q._id === res.response?.quark?._id) || false,
+            quark: res.response.quark || undefined
+        }
+    }
+
+    /**
+     * Joins a quark using an invite code
+     * @param inviteCode
+     * @returns {Promise<void>}
+    */
+    async joinQuark (inviteCode) {
+        let res = await this.apiCall(`/quark/invite/${inviteCode}`, "POST");
+        let newQuark = await this.getQuark(res.response.quark._id);
+        this.appContext.setQuarks(o => [...o, newQuark]); // Get full quark data
+    }
+
+    async leaveQuark (quarkId) {
+        let res = await this.apiCall(`/quark/${quarkId}/leave`, "POST");
+        if (res.request.success) {
+            let newQuarks = this.appContext.quarks.filter(q => q._id !== quarkId);
+            this.appContext.setQuarks(newQuarks);
+        } else {
+            console.error("Failed to leave quark", res);
+        }
+    }
+
+    async createQuark (name) {
+        let res = await this.apiCall("/quark/create", "POST", {name});
+        if (res.request.success) {
+            let newQuark = await this.getQuark(res.response.quark._id);
+            this.appContext.setQuarks(o => [...o, newQuark]);
+            return {error: false, quark: newQuark};
+        } else {
+            console.error("Failed to create quark", res);
+            return {error: res.response.error};
+        }
+    }
 
     /**
      * Logs in to Lightquark
@@ -418,6 +485,31 @@ export default class Lightquark {
     async getMessages (channelId, startTimestamp = undefined) {
         let res = await this.apiCall(`/channel/${channelId}/messages${startTimestamp ? `?startTimestamp=${startTimestamp}` : ""}`)
         return await Promise.all(res.response.messages.map(async m => await this.messageParser(m)));
+    }
+
+    /**
+     * Open a lightquark:// protocol link
+     * @param {string} link 
+     * @returns {Promise<boolean>} Was the link opened?
+     */
+    async openLqLink (link) {
+        console.log("uwu hai", link)
+        // lightquark://{quarkId}/{channelId?}/{messageId?}
+        // lightquark://638b815b4d55b470d9d6fa1a/63eb7cc7ecc96ed5edc267f
+        let linkParts = link.split("://")[1].split("/");
+        let quarkId = linkParts[0];
+        let channelId = linkParts?.[1];
+        let messageId = linkParts?.[2];
+        console.log(quarkId, channelId, messageId)
+        if (this.appContext.quarks.some(q => q._id === quarkId)) {
+            this.mainContext.setSelectedQuark(quarkId);
+            if (channelId) {
+                this.mainContext.setSelectedChannel(channelId);
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 

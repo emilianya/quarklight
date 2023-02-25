@@ -133,6 +133,10 @@
     transition: 100ms;
 }
 
+.messageMenu {
+    transition: 100ms;
+}
+
 .channelMenu {
     transition: 100ms;
 }
@@ -176,6 +180,7 @@
     user-select: text;
     white-space: pre-wrap;
     line-height: 1.1rem;
+    word-break: break-all;
 }
 
 .botBadge {
@@ -202,6 +207,7 @@
 
 .messageView {
     overflow-y: scroll;
+    scroll-behavior: smooth;
     height: calc(100vh - 7rem);
 }
 
@@ -224,6 +230,17 @@
     line-height: 1rem;
     color: white;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif
+}
+
+.closeButton {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    padding: 0.5rem;
+}
+
+.closeButton:hover {
+    cursor: pointer;
 }
 
 /*
@@ -287,6 +304,50 @@ TODO: Make the positioning better
     font-style: italic;
 }
 
+.messageReply {
+    color: lightgrey;
+}
+
+.messageBoxReply {
+    color: lightgrey;
+    margin-left: 0.25rem;
+}
+
+.messageReplyCancel {
+    margin-left: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.messageReplyCancel:hover {
+    cursor: pointer;
+    color: white;
+}
+
+.messageReply:hover {
+    cursor: pointer;
+    color: white;
+}
+
+.messageReplyUsername {
+    margin-right: 0.25rem;
+    vertical-align: top;
+}
+
+.messageReplyBody {
+    font-weight: 300;
+    width: 10rem;
+    text-overflow: ellipsis;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align: top;
+}
+
+.messageReplyIcon {
+    font-size: smaller;
+    margin-right: 0.25rem;
+    vertical-align: baseline;
+}
 
 .unreadIndicator {
     background-color: var(--orange);
@@ -296,6 +357,84 @@ TODO: Make the positioning better
     position: absolute;
     left: 0.5rem;
     top: 0.5rem;
+}
+
+.joinModal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--bg-medium);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    width: 30rem;
+    height: 25rem;
+    z-index: 999;
+}
+
+.createModal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--bg-medium);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    width: 30rem;
+    height: 25rem;
+    z-index: 999;
+}
+
+.joinModalQuark {
+    background-color: var(--bg-dark);
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    height: 4.5rem;
+    position: relative;
+}
+
+.joinModalQuarkIcon {
+    height: 4.5rem;
+    width: 4.5rem;
+    border-radius:0.5rem;
+    margin-right: 1rem;
+    float: left;
+}
+
+.joinModalQuarkName {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-top: 0.5rem;
+    width: 18rem;
+    overflow: hidden;
+    display: inline-block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.joinModalQuarkDetail {
+    color: lightgray;
+}
+
+.joinModalQuarkJoinButton {
+    float: right;
+    margin-right: 1rem;
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    transform: translateY(-50%);
+}
+
+.link {
+    color: var(--blue-3);
+    text-decoration: underline;
+}
+
+.link:hover {
+    color: var(--blue-1);
+    cursor: pointer;
 }
 
 a {

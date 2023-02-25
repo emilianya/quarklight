@@ -1,6 +1,6 @@
 {
 	"name": "quarklight",
-	"version": "0.0.14",
+	"version": "0.0.24",
 	"author": "LIT Devs",
 	"description": "A simple lightquark client",
 	"dependencies": {
@@ -15,7 +15,7 @@
 		"test": "react-scripts test",
 		"eject": "react-scripts eject",
 		"dev": "concurrently -k \"npm start\" \"npm:electron\"",
-		"electron": "wait-on tcp:3000 && electron-forge start",
+		"electron": "electron-forge start",
 		"package": "react-scripts build && electron-forge package",
 		"make": "react-scripts build && electron-forge make",
 		"publish": "react-scripts build && electron-forge publish",
@@ -63,7 +63,6 @@
 		"react-dom": "^18.2.0",
 		"react-linkify": "^1.0.0-alpha",
 		"react-scripts": "5.0.1",
-		"react-tooltip": "^5.7.5",
-		"wait-on": "^7.0.1"
+		"react-tooltip": "^5.7.5"
 	}
 }
