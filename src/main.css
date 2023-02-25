@@ -176,6 +176,7 @@
 
 .messageBody {
     margin-left: 0.25rem;
+    margin-top: 0.25rem;
     font-weight: 300;
     user-select: text;
     white-space: pre-wrap;
@@ -187,6 +188,7 @@
     border: var(--orange) 0.1rem solid;
     border-radius: 0.25rem;
     margin-left: 0.25rem;
+    margin-bottom: 0.25rem;
     font-size: 0.75rem;
     padding: 0.25rem;
     color: white;
