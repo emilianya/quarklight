@@ -38,7 +38,7 @@ export function MessageView(props) {
 		});
 		setMessageElements(props.messages.map(message => {
 			return (
-				<Message setReplyTo={props.setReplyTo} key={message.message._id} messages={props.messages} message={message} scrollDetached={scrollDetached} />
+				<Message setEditing={props.setEditing} setReplyTo={props.setReplyTo} key={message.message._id} messages={props.messages} message={message} scrollDetached={scrollDetached} />
 			);
 		}));
 		// eslint-disable-next-line react-hooks/exhaustive-deps

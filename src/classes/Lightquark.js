@@ -239,6 +239,17 @@ export default class Lightquark {
         await lq.apiCall(`/channel/${channelId}/messages`, "POST", {content: message, attachments, specialAttributes}, "v2");
     }
 
+    /**
+     * Edits a message
+     * @param messageId
+     * @param channelId
+     * @param message New content
+     * @returns {Promise<void>}
+     */
+    async editMessage(messageId, channelId, message) {
+        await lq.apiCall(`/channel/${channelId}/messages/${messageId}`, "PATCH", {content: message});
+    }
+
     async deleteMessage(messageId, channelId) {
         await lq.apiCall(`/channel/${channelId}/messages/${messageId}`, "DELETE");
     }

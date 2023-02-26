@@ -234,6 +234,11 @@
     margin-right: 0.25rem;
 }
 
+.messageAttachmentCancel:hover {
+    cursor: pointer;
+    color: white;
+}
+
 .messageInput {
     background-color: #0000;
     outline: none;
@@ -327,6 +332,26 @@ TODO: Make the positioning better
 .messageBoxReply {
     color: lightgrey;
     margin-left: 0.25rem;
+}
+
+.messageBoxEditing {
+    color: lightgrey;
+    margin-left: 0.25rem;
+}
+
+.messageEditingIcon {
+    font-size: smaller;
+    margin-right: 0.25rem;
+}
+
+.messageEditingCancel {
+    margin-left: 0.25rem;
+    font-size: 0.85rem;
+}
+
+.messageEditingCancel:hover {
+    cursor: pointer;
+    color: white;
 }
 
 .messageBoxAttachment {
