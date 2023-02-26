@@ -2,6 +2,9 @@ import {useContext, useEffect} from "react";
 import {MainContext} from "../../contexts/MainContext";
 import {AppContext} from "../../contexts/AppContext";
 import {Channel} from "./Channel";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faPlus} from "@fortawesome/free-solid-svg-icons";
+import {AddChannelModal} from "../modals/AddChannelModal";
 
 export function ChannelContainer() {
 	let mainContext = useContext(MainContext);
@@ -26,6 +29,14 @@ export function ChannelContainer() {
 	return (
 		<div className="channelContainer">
 			{mainContext.channelBoxes}
+
+			{appContext.quarks.find(q => q._id === mainContext.selectedQuark)?.owners?.includes(appContext.userData._id) &&
+				<div className="addChannelButton channelBox" onClick={() => mainContext.setShowModal("addChannel")}>
+					<FontAwesomeIcon icon={faPlus} className="addChannelIcon"/>
+					Add Channel
+				</div>
+			}
+			<AddChannelModal />
 		</div>
 	);
 }

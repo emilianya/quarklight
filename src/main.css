@@ -434,6 +434,20 @@ TODO: Make the positioning better
     z-index: 999;
 }
 
+.addModal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--bg-medium);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    width: 20rem;
+    height: 15rem;
+    z-index: 999;
+}
+
 .joinModalQuark {
     background-color: var(--bg-dark);
     padding: 0.5rem;

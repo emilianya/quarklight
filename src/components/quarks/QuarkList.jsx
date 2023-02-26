@@ -23,11 +23,11 @@ export function QuarkList() {
 			{mainContext.quarkBoxes}
 
 			<div className="quarkBox">
-				<img id="joinQuark" data-tooltip-content="Join a Quark" onClick={() => {mainContext.setShowJoinModal(p => !p)}} width={"48px"} height={"48px"} src={joinQuark} alt={"Join a Quark"} className="quarkImage"></img>
+				<img id="joinQuark" data-tooltip-content="Join a Quark" onClick={() => {mainContext.setShowModal(p => p === "joinQuark" ? "" : "joinQuark")}} width={"48px"} height={"48px"} src={joinQuark} alt={"Join a Quark"} className="quarkImage"></img>
 				<Tooltip className="quarkTip" anchorId="joinQuark" positionStrategy={"fixed"} place={"left"} style={{opacity: 1, backgroundColor: "var(--tooltip)"}} />
 			</div>
 			<div className="quarkBox">
-				<img id="createQuark" data-tooltip-content="Create a Quark" onClick={() => {mainContext.setShowCreateModal(p => !p)}} width={"48px"} height={"48px"} src={createQuark} alt={"Create a Quark"} className="quarkImage"></img>
+				<img id="createQuark" data-tooltip-content="Create a Quark" onClick={() => {mainContext.setShowModal(p => p === "createQuark" ? "" : "createQuark")}} width={"48px"} height={"48px"} src={createQuark} alt={"Create a Quark"} className="quarkImage"></img>
 				<Tooltip className="quarkTip" anchorId="createQuark" positionStrategy={"fixed"} place={"left"} style={{opacity: 1, backgroundColor: "var(--tooltip)"}} />
 			</div>
 			<JoinModal />

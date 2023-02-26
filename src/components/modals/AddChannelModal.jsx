@@ -4,24 +4,24 @@ import { lq } from '../../classes/Lightquark';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faX} from "@fortawesome/free-solid-svg-icons";
 
-export function CreateModal() {
+export function AddChannelModal() {
     let [name, setName] = useState(null);
     let [error, setError] = useState(null);
     let mainContext = useContext(MainContext);
     return (
-		<div className="createModal" hidden={!(mainContext.showModal === "createQuark")}>
-            <h2>Create a Quark</h2>
+		<div className="addModal" hidden={!(mainContext.showModal === "addChannel")}>
+            <h2>Add a channel</h2>
             <FontAwesomeIcon icon={faX} className="closeButton" onClick={() => {mainContext.setShowModal(null)}} />
-            <p>Enter a name for your new Quark!</p>
-            <input type="text" className="input-box" onInput={(e) => {setName(e.target.value);setError(null)}} placeholder="My awesome quark" />
+            <p>Name:</p>
+            <input type="text" className="input-box" onInput={(e) => {setName(e.target.value);setError(null)}} placeholder="my channel" />
             <br />
             <button className="button" onClick={async () => {
-                if (!name) return setError("Please enter a name for your Quark");
-                if (name.length > 64) return setError("Quark names must be 64 characters or less");
-                let res = await lq.createQuark(name);
+                if (!name) return setError("Enter a name for the channel");
+                if (name.length > 64) return setError("Channel names must be 64 characters or less");
+                let res = await lq.createChannel(name, mainContext.selectedQuark);
                 if (!res.error) {
                     mainContext.setShowModal(null);
-                    mainContext.setSelectedQuark(res.quark._id);
+                    mainContext.setSelectedChannel(res.channel._id);
                 } else {
                     setError(res.error);
                 }

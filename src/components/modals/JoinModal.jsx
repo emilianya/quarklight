@@ -11,9 +11,9 @@ export function JoinModal() {
     let [error, setError] = useState(null);
     let mainContext = useContext(MainContext);
     return (
-		<div className="joinModal" hidden={!mainContext.showJoinModal}>
+		<div className="joinModal" hidden={!(mainContext.showModal === "joinQuark")}>
             <h2>Join a Quark</h2>
-            <FontAwesomeIcon icon={faX} className="closeButton" onClick={() => {mainContext.setShowJoinModal(false)}} />
+            <FontAwesomeIcon icon={faX} className="closeButton" onClick={() => {mainContext.setShowModal(null)}} />
             <p>Enter the invite code for a Quark you would like to join!</p>
             <input type="text" className="input-box" onInput={(e) => {setInviteCode(e.target.value);setError(null)}} placeholder="Invite Code" />
             <br />
@@ -36,7 +36,7 @@ export function JoinModal() {
                 <span className="joinModalQuarkDetail">{quark?.members?.length} Members {quark?.channels?.length} Channels</span>
                 <button className="button joinModalQuarkJoinButton" onClick={() => {
                     lq.joinQuark(inviteCode);
-                    mainContext.setShowJoinModal(false);
+                    mainContext.setShowModal(null);
                 }}>Join</button>
             </div>
         </div>

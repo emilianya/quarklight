@@ -431,6 +431,28 @@ export default class Lightquark {
     }
 
     /**
+     * Create a channel in a quark
+     * @param name
+     * @param quarkId
+     * @returns {Promise<{error}|{channel: Channel, error: boolean}>}
+     */
+    async createChannel (name, quarkId) {
+        let res = await this.apiCall("/channel/create", "POST", {name, quark: quarkId});
+        if (res.request.success) {
+            let newChannel = await this.getChannel(res.response.channel._id);
+            let quarks = this.appContext.quarks;
+            let quark = quarks.find(q => q._id === quarkId);
+            quark.channels.push(newChannel);
+            this.appContext.setQuarks(quarks);
+            this.appContext.setChannels(prevState => [...prevState, newChannel])
+            return {error: false, channel: newChannel};
+        } else {
+            console.error("Failed to create channel", res);
+            return {error: res.response.error};
+        }
+    }
+
+    /**
      * Delete a channel
      * @param channelId
      * @returns {Promise<void>}
@@ -546,7 +568,9 @@ export default class Lightquark {
      * @returns {Promise<boolean>} Was the link opened?
      */
     async openLqLink (link) {
-        console.log("uwu hai", link)
+        // TODO: scroll to message
+            // May require the API endpoint for getting a message by ID
+
         // lightquark://{quarkId}/{channelId?}/{messageId?}
         // lightquark://638b815b4d55b470d9d6fa1a/63eb7cc7ecc96ed5edc267f
         let linkParts = link.split("://")[1].split("/");
