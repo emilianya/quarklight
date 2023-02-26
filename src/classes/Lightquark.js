@@ -54,10 +54,27 @@ export default class Lightquark {
                 case "quarkDelete":
                     break;
                 case "channelCreate":
+                    this.appContext.setChannelCache(prev => [...prev, {cachedAt: new Date(), channel: event.channel}]);
+                    if (event.channel.quark === this.mainContext.selectedQuark) {
+                        this.mainContext.setChannels(prev => [...prev, event.channel]);
+                    }
                     break;
                 case "channelUpdate":
+                    let channelCache = this.appContext.channelCache;
+                    channelCache = channelCache.filter(channel => channel.channel._id !== event.channel._id);
+                    channelCache.push({cachedAt: new Date(), channel: event.channel});
+                    this.appContext.setChannelCache(channelCache);
+                    if (event.channel.quark === this.mainContext.selectedQuark) {
+                        this.mainContext.setChannels(prev => {
+                            let channels = prev.filter(channel => channel._id !== event.channel._id);
+                            channels.push(event.channel);
+                            return channels;
+                        })
+                    }
                     break;
                 case "channelDelete":
+                    this.appContext.setChannelCache(prev => prev.filter(channel => channel.channel._id !== event.channel._id));
+                    this.mainContext.setChannels(prev => prev.filter(channel => channel._id !== event.channel._id));
                     break;
                 case "memberUpdate":
                     break;

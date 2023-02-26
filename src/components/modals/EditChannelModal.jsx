@@ -13,6 +13,7 @@ export function EditChannelModal(props) {
     useEffect(() => {
         setName(props.editingChannel?.name || "");
         setDescription(props.editingChannel?.description || "");
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [mainContext.showModal]);
 
 
