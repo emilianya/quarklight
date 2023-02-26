@@ -95,6 +95,8 @@ export function Message(props) {
 				{message?.authorId === appContext.userData._id ? 
 				<Item onClick={() => lq.deleteMessage(message._id, message.channelId)}>Delete message</Item> : null}
 				<Item onClick={() => props.setReplyTo(message._id)}>Reply</Item>
+				<Item onClick={async () => navigator.clipboard.writeText(`lightquark://${(await lq.getChannel(message.channelId)).quark}/${message.channelId}/${message._id}`)}>Copy Lightquark link</Item>
+				<Item onClick={async () => navigator.clipboard.writeText(`https://lq.litdevs.org/d/${(await lq.getChannel(message.channelId)).quark}/${message.channelId}/${message._id}`)}>Copy web link</Item>
 				<Item onClick={() => navigator.clipboard.writeText(message._id)}>Copy ID</Item>
 			</Menu>
 		</>
