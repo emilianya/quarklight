@@ -431,6 +431,31 @@ export default class Lightquark {
     }
 
     /**
+     * Delete a channel
+     * @param channelId
+     * @returns {Promise<void>}
+     */
+    async deleteChannel (channelId) {
+        let channel = await this.getChannel(channelId);
+        let res = await this.apiCall(`/channel/${channelId}`, "DELETE");
+        if (res.request.success) {
+            await this.updateQuark(channel.quark);
+            if (this.mainContext.selectedChannel === channel._id) this.mainContext.setSelectedChannel(null);
+        } else {
+            console.error("Failed to delete channel", res);
+        }
+    }
+
+    async updateQuark (quarkId) {
+        console.log("Updating quark", quarkId)
+        let quark = await this.getQuark(quarkId);
+        let quarks = this.appContext.quarks.filter(q => q._id !== quarkId);
+        this.appContext.setQuarks([...quarks, quark]);
+        this.appContext.setChannels(quark.channels);
+        console.log("Updated quark", quark)
+    }
+
+    /**
      * Get user information by ID
      */
     async getUser (id) {
@@ -510,6 +535,7 @@ export default class Lightquark {
      * @returns {Promise<Message[]>}
      */
     async getMessages (channelId, startTimestamp = undefined) {
+        if (!channelId) return [];
         let res = await this.apiCall(`/channel/${channelId}/messages${startTimestamp ? `?startTimestamp=${startTimestamp}` : ""}`)
         return await Promise.all(res.response.messages.map(async m => await this.messageParser(m)));
     }

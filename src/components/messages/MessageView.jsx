@@ -20,7 +20,6 @@ export function MessageView(props) {
 	 */
 	useEffect(() => {
 		(async () => {
-			if (!mainContext.selectedChannel) return;
 			let messages = await lq.getMessages(mainContext.selectedChannel);
 			props.setMessages(messages);
 			lq.subscribeToChannel(mainContext.selectedChannel);
