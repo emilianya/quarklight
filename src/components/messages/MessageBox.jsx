@@ -4,7 +4,6 @@ import {MainContext} from "../../contexts/MainContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faFile, faPaperclip, faPaperPlane, faReply, faX} from '@fortawesome/free-solid-svg-icons'
 
-// TODO: Indicator for replying and attachments
 // TODO: Upload progress indicator
 // TODO: Upload cancel button
 // TODO: Allow sending other messages while uploading in background
@@ -139,8 +138,6 @@ export function MessageBox(props) {
 		document.getElementById("messageTextInput").focus();
 	}, [uploading])
 
-	// TODO: Show visual indicator for attachments
-	// Also, add a way to remove attachments
 	return (
 		<div className="messageBox" onDrop={handleDrop}>
 			{props.replyTo && <div className="messageBoxReply">
