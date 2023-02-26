@@ -34,7 +34,7 @@ export function MainScreen() {
 	}, [appContext.loading, selectedQuark, selectedChannel, appContext.quarks, appContext.channels])
 
 	return (
-		<div data-testid="screenRoot" className="screenRoot" onKeyDown={a=>{a.key===konamiCode[konamiState]?setKonamiState(konamiState+1):setKonamiState(0);if (!a.shiftKey && !a.ctrlKey && !a.altKey);if(!showJoinModal && !showCreateModal) document.querySelector(".messageInput").focus();}} tabIndex="0">
+		<div data-testid="screenRoot" className="screenRoot" onKeyDown={a=>{a.key===konamiCode[konamiState]?setKonamiState(konamiState+1):setKonamiState(0);if (!a.shiftKey && !a.ctrlKey && !a.altKey && !a.metaKey);if(!showJoinModal && !showCreateModal) document.querySelector(".messageInput").focus();}} tabIndex="0">
 			{ // Debug menu 
 			konamiState === konamiCode.length ? <div style={{overflowY: "scroll", height: "100vh"}} >
 				<img width={"128px"} src={appContext?.userData?.avatar || "https://quarky.vukky.net/assets/img/loading.png"} alt=""/>
