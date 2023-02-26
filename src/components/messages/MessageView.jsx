@@ -71,9 +71,7 @@ export function MessageView(props) {
 
 	return (
 		<div className="messageView" onScroll={handleMessageViewScroll} style={
-			{backgroundColor: scrollDetached && false ? "#333333" : "inherit",
-				height: props.replyTo ? "calc(100vh - 8.3rem)" : ""
-			}}>
+			{backgroundColor: scrollDetached && false ? "#333333" : "inherit"}}>
 			{messageElements}
 		</div>
 	);
