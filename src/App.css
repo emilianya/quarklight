@@ -38,6 +38,10 @@
     margin-bottom: 10px;
 }
 
+.input-box-wider {
+    width: 24rem;
+}
+
 .input-box:focus {
     outline: 2px solid var(--blue-2);
 }

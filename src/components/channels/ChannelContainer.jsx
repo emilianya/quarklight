@@ -1,14 +1,16 @@
-import {useContext, useEffect} from "react";
+import {useContext, useEffect, useState} from "react";
 import {MainContext} from "../../contexts/MainContext";
 import {AppContext} from "../../contexts/AppContext";
 import {Channel} from "./Channel";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import {AddChannelModal} from "../modals/AddChannelModal";
+import {EditChannelModal} from "../modals/EditChannelModal";
 
 export function ChannelContainer() {
 	let mainContext = useContext(MainContext);
 	let appContext = useContext(AppContext);
+	let [editingChannel, setEditingChannel] = useState(null);
 
 	useEffect(() => {
 		mainContext.setChannelBoxes(appContext.channels.map(channel => {
@@ -20,7 +22,7 @@ export function ChannelContainer() {
 				mainContext.setUnreadChannels(mainContext.unreadChannels.filter(id => id !== channel._id));
 			}
 
-			return (<Channel channel={channel} showUnread={showUnread} setSelectedChannel={mainContext.setSelectedChannel} key={channel._id} />)
+			return (<Channel setEditingChannel={setEditingChannel} channel={channel} showUnread={showUnread} setSelectedChannel={mainContext.setSelectedChannel} key={channel._id} />)
 		}));
 		
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -37,6 +39,7 @@ export function ChannelContainer() {
 				</div>
 			}
 			<AddChannelModal />
+			<EditChannelModal setEditingChannel={setEditingChannel} editingChannel={editingChannel} />
 		</div>
 	);
 }

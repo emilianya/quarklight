@@ -453,6 +453,29 @@ export default class Lightquark {
     }
 
     /**
+     * Update a channel
+     * @param name
+     * @param description
+     * @param channelId
+     * @returns {Promise<{error}|{channel: Channel, error: boolean}>}
+     */
+    async updateChannel (name, description, channelId) {
+        let res = await this.apiCall(`/channel/${channelId}`, "PATCH", {name, description});
+        if (res.request.success) {
+            let newChannel = res.response.channel;
+            let channels = this.appContext.channels;
+            let channel = channels.find(c => c._id === channelId);
+            channel.name = newChannel.name;
+            channel.description = newChannel.description;
+            this.appContext.setChannels(channels);
+            return {error: false, channel: newChannel};
+        } else {
+            console.error("Failed to update channel", res);
+            return {error: res.response.error};
+        }
+    }
+
+    /**
      * Delete a channel
      * @param channelId
      * @returns {Promise<void>}
