@@ -122,7 +122,13 @@ export default class Lightquark {
                 let notificationAudio = new Audio(notificationWav);
                 try {
                     notificationAudio.play();
-                    new Notification(`${data.author.username} in #${(await this.getChannel(data.message.channelId)).name}`, {body: data.message.content || "Attachment", tag: "quarklight", icon: data.author.avatarUri})
+                    let username = data.author.username;
+                    let avatar = data.author.avatarUri;
+                    if (data.message.specialAttributes.some(attr => attr.type === "botMessage")) {
+                        username = data.message.specialAttributes.find(attr => attr.type === "botMessage").username
+                        avatar = data.message.specialAttributes.find(attr => attr.type === "botMessage").avatarUri
+                    }
+                    new Notification(`${username} in #${(await this.getChannel(data.message.channelId)).name}`, {body: data.message.content || "Attachment", tag: "quarklight", icon: avatar})
                 } catch (e) {
                     console.log("Failed to play notification sound", e);
                 }
