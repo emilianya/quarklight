@@ -229,6 +229,11 @@
     flex-shrink: 0;
 }
 
+.messageAttachmentFilename {
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
+}
+
 .messageInput {
     background-color: #0000;
     outline: none;
