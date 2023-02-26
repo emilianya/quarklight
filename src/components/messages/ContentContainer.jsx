@@ -13,6 +13,10 @@ export function ContentContainer() {
 	let [replyTo, setReplyTo] = useState(null);
 
 	useEffect(() => {
+		setReplyTo(undefined);
+	}, [mainContext.selectedChannel]);
+
+	useEffect(() => {
 		lq.setMainContext(mainContext)
 	}, [mainContext]);
 

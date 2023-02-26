@@ -16,9 +16,7 @@ export function NavContainer() {
 	let [showNav, setShowNav] = useState(true);
 
 	useEffect(() => {
-		console.log("Updating quarkboxes")
 		let quarks = appContext.quarks.sort((a, b) => { return a.name.localeCompare(b.name) });
-		console.log("at render time", quarks)
 		mainContext.setQuarkBoxes(quarks.map(quark => {
 			return (<Quark quark={quark} setSelectedQuark={mainContext.setSelectedQuark} key={quark._id} />)
 		}));

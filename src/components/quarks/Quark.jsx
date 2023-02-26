@@ -38,10 +38,22 @@ export function Quark(props) {
 			<Menu id={`${quark._id}_menu`} className="quarkMenu" theme={"dark"}>
 				<Item disabled={true}><span>{quark.name}</span></Item>
 				<Separator />
+
+				<Item onClick={() => navigator.clipboard.writeText(quark.invite)}>Copy invite</Item>
+
 				<Item onClick={() => {
 					mainContext.setSelectedQuark(null);
 					lq.leaveQuark(quark._id)
 				}} disabled={quark.owners.includes(appContext.userData._id)} className="leaveButton">Leave</Item>
+
+				{quark.owners.includes(appContext.userData._id) &&
+					<Item onClick={() => {
+						if (!window.confirm("Are you sure you want to delete this quark?")) return;
+						if (!window.confirm("Are you REALLY sure?")) return;
+						if (mainContext.selectedQuark === quark._id) mainContext.setSelectedQuark(null);
+						lq.deleteQuark(quark._id)
+					}} className="deleteButton">Delete</Item>
+				}
 				<Item onClick={() => navigator.clipboard.writeText(quark._id)}>Copy ID</Item>
 			</Menu>
 		</div>

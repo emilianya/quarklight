@@ -11,8 +11,10 @@
 }
 
 .contentContainer {
-    min-height: 100vh;
+    height: 100vh;
     width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .navContainer {
@@ -112,6 +114,7 @@
 .channelInfo {
     display: flex;
     flex-direction: row;
+    flex-shrink: 0;
     align-items: center;
     background-color: var(--bg-dark);
     height: 2.5rem;
@@ -127,6 +130,11 @@
 .leaveButton {
     --contexify-item-color: var(--orange);
     --contexify-activeItem-color: var(--orange);
+}
+
+.deleteButton {
+    --contexify-item-color: red;
+    --contexify-activeItem-color: red;
 }
 
 .quarkMenu {
@@ -176,6 +184,7 @@
 
 .messageBody {
     margin-left: 0.25rem;
+    margin-top: 0.25rem;
     font-weight: 300;
     user-select: text;
     white-space: pre-wrap;
@@ -187,6 +196,7 @@
     border: var(--orange) 0.1rem solid;
     border-radius: 0.25rem;
     margin-left: 0.25rem;
+    margin-bottom: 0.25rem;
     font-size: 0.75rem;
     padding: 0.25rem;
     color: white;
@@ -208,7 +218,7 @@
 .messageView {
     overflow-y: scroll;
     scroll-behavior: smooth;
-    height: calc(100vh - 7rem);
+    flex-grow: 1;
 }
 
 .messageBox {
@@ -216,6 +226,7 @@
     min-height: 3.5rem;
     margin: 0.5rem;
     border-radius: 0.5rem;
+    flex-shrink: 0;
 }
 
 .messageInput {
@@ -311,6 +322,12 @@ TODO: Make the positioning better
 .messageBoxReply {
     color: lightgrey;
     margin-left: 0.25rem;
+}
+
+.messageBoxAttachment {
+    color: lightgrey;
+    margin-left: 0.25rem;
+    display: inline-block;
 }
 
 .messageReplyCancel {

@@ -318,6 +318,16 @@ export default class Lightquark {
         }
     }
 
+    async deleteQuark (quarkId) {
+        let res = await this.apiCall(`/quark/${quarkId}`, "DELETE");
+        if (res.request.success) {
+            let newQuarks = this.appContext.quarks.filter(q => q._id !== quarkId);
+            this.appContext.setQuarks(newQuarks);
+        } else {
+            console.error("Failed to delete quark", res);
+        }
+    }
+
     /**
      * Logs in to Lightquark
      * @param email
