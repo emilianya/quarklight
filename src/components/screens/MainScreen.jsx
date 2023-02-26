@@ -49,7 +49,7 @@ export function MainScreen() {
 				<button onClick={() => lq.ws.close()}>killws</button>
 				<button onClick={async () => appContext.setQuarks(await lq.getQuarks())}>Get quarks</button>
 				<button onClick={async () => appContext.setQuarks([await lq.getUser(appContext.quarks[0].owners[0])])}>Get quark owner :O</button>
-				<button onClick={async () => console.log(await lq.apiCall("/user/me"))}>Crashery :3</button>
+				<button onClick={async () => console.log(await lq.apiCall("/user/me"))}>Log user info</button>
 				<button onClick={async () => {
 					appContext.setLoading(true)
 					await delay(5000);
