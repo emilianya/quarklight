@@ -40,6 +40,8 @@ export function Quark(props) {
 				<Separator />
 
 				<Item onClick={() => navigator.clipboard.writeText(quark.invite)}>Copy invite</Item>
+				<Item onClick={() => navigator.clipboard.writeText(`lightquark://${quark._id}`)}>Copy Lightquark link</Item>
+				<Item onClick={() => navigator.clipboard.writeText(`https://lq.litdevs.org/d/${quark._id}`)}>Copy web link</Item>
 
 				<Item onClick={() => {
 					mainContext.setSelectedQuark(null);

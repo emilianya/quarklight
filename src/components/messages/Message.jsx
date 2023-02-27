@@ -61,8 +61,8 @@ export function Message(props) {
 						document.getElementById(`${replyMessage.replyTo}_message`).scrollIntoView();
 					}}>
 						<FontAwesomeIcon className="messageReplyIcon" icon={faReply} />
-						<small className="messageReplyUsername">{props.messages.find(m => m.message._id === replyMessage.replyTo)?.author.username || "Unknown User"}</small>
-						<small className="messageReplyBody">{props.messages.find(m => m.message._id === replyMessage.replyTo)?.message.content || "Unknown Message"}</small>
+						<small className="messageReplyUsername">{message.reply.author.username || "Unknown User"}</small>
+						<small className="messageReplyBody">{message.reply.message.content || "Unknown Message"}</small>
 					</div>
 					: null}
 					<div className="messageUsernameRow">
@@ -93,8 +93,14 @@ export function Message(props) {
 			</div>
 			<Menu id={`${message._id}_menu`} className="messageMenu" theme={"dark"}>
 				{message?.authorId === appContext.userData._id ? 
-				<Item onClick={() => lq.deleteMessage(message._id, message.channelId)}>Delete message</Item> : null}
+					<>
+						<Item onClick={() => lq.deleteMessage(message._id, message.channelId)}>Delete message</Item>
+						<Item onClick={() => props.setEditing(message._id)}>Edit</Item>
+					</> : null}
 				<Item onClick={() => props.setReplyTo(message._id)}>Reply</Item>
+				<Item onClick={async () => navigator.clipboard.writeText(`lightquark://${(await lq.getChannel(message.channelId)).quark}/${message.channelId}/${message._id}`)}>Copy Lightquark link</Item>
+				<Item onClick={async () => navigator.clipboard.writeText(`https://lq.litdevs.org/d/${(await lq.getChannel(message.channelId)).quark}/${message.channelId}/${message._id}`)}>Copy web link</Item>
+				<Item onClick={async () => navigator.clipboard.writeText(message.content)}>Copy message contents</Item>
 				<Item onClick={() => navigator.clipboard.writeText(message._id)}>Copy ID</Item>
 			</Menu>
 		</>

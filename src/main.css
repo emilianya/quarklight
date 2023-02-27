@@ -229,6 +229,16 @@
     flex-shrink: 0;
 }
 
+.messageAttachmentFilename {
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
+}
+
+.messageAttachmentCancel:hover {
+    cursor: pointer;
+    color: white;
+}
+
 .messageInput {
     background-color: #0000;
     outline: none;
@@ -241,6 +251,21 @@
     line-height: 1rem;
     color: white;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif
+}
+
+.loadingMessages {
+    text-align: center;
+}
+
+.editNickButton {
+    font-size: small;
+    color: lightgrey;
+    margin-left: 0.5rem;
+}
+
+.editNickButton:hover {
+    cursor: pointer;
+    color: white;
 }
 
 .closeButton {
@@ -324,6 +349,26 @@ TODO: Make the positioning better
     margin-left: 0.25rem;
 }
 
+.messageBoxEditing {
+    color: lightgrey;
+    margin-left: 0.25rem;
+}
+
+.messageEditingIcon {
+    font-size: smaller;
+    margin-right: 0.25rem;
+}
+
+.messageEditingCancel {
+    margin-left: 0.25rem;
+    font-size: 0.85rem;
+}
+
+.messageEditingCancel:hover {
+    cursor: pointer;
+    color: white;
+}
+
 .messageBoxAttachment {
     color: lightgrey;
     margin-left: 0.25rem;
@@ -390,7 +435,49 @@ TODO: Make the positioning better
     z-index: 999;
 }
 
+.nickModal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--bg-medium);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    width: 30rem;
+    height: 15rem;
+    z-index: 999;
+}
+
 .createModal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--bg-medium);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    width: 30rem;
+    height: 25rem;
+    z-index: 999;
+}
+
+.addModal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--bg-medium);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    width: 20rem;
+    height: 15rem;
+    z-index: 999;
+}
+
+.channelEditModal {
     position: absolute;
     top: 50%;
     left: 50%;

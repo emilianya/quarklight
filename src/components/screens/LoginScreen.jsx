@@ -32,6 +32,7 @@ export function LoginScreen() {
 			appContext.setLoading(true);
 			appContext.setToken(data.response.access_token);
 			appContext.setLoggedIn(true);
+			window.location.reload();
 		} else {
 			setError(`Login failed. Please try again.\n${data.response.message}`);
 		}

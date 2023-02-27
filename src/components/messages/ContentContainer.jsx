@@ -11,6 +11,15 @@ export function ContentContainer() {
 	let appContext = useContext(AppContext);
 	let [messages, setMessages] = useState([]);
 	let [replyTo, setReplyTo] = useState(null);
+	let [editing, setEditing] = useState(null);
+
+	// This could cause problems, but I have no idea if it will
+	useEffect(() => {
+		if (appContext.channels.length === 0) {
+			setMessages([]);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [mainContext.selectedQuark, mainContext.selectedChannel, appContext.quarks, appContext.channels])
 
 	useEffect(() => {
 		setReplyTo(undefined);
@@ -27,8 +36,8 @@ export function ContentContainer() {
 	return (
 		<div className="contentContainer">
 			<ChannelInfo channel={appContext.channels.find(c => c._id === mainContext.selectedChannel)} />
-			<MessageView messages={messages} setMessages={setMessages} replyTo={replyTo} setReplyTo={setReplyTo} />
-			<MessageBox messages={messages} setReplyTo={setReplyTo} replyTo={replyTo} />
+			<MessageView messages={messages} setEditing={setEditing} editing={editing} setMessages={setMessages} replyTo={replyTo} setReplyTo={setReplyTo} />
+			<MessageBox messages={messages} setEditing={setEditing} editing={editing} setReplyTo={setReplyTo} replyTo={replyTo} />
 		</div>
 	);
 }

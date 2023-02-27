@@ -1,4 +1,4 @@
-import {useContext, useEffect, useState} from "react";
+import {useContext, useEffect, useLayoutEffect, useState} from "react";
 import {MainContext} from "../../contexts/MainContext";
 import {lq} from "../../classes/Lightquark";
 import {Message} from "./Message";
@@ -6,6 +6,8 @@ import {Message} from "./Message";
 export function MessageView(props) {
 	let mainContext = useContext(MainContext);
 	let [messageElements, setMessageElements] = useState([]);
+	let [storedScroll, setStoredScroll] = useState(null);
+	let [loadingMessages, setLoadingMessages] = useState(false);
 	
 	// eslint-disable-next-line no-unused-vars
 	let [scrollDetached, setScrollDetached] = useState(false);
@@ -20,7 +22,6 @@ export function MessageView(props) {
 	 */
 	useEffect(() => {
 		(async () => {
-			if (!mainContext.selectedChannel) return;
 			let messages = await lq.getMessages(mainContext.selectedChannel);
 			props.setMessages(messages);
 			lq.subscribeToChannel(mainContext.selectedChannel);
@@ -32,15 +33,26 @@ export function MessageView(props) {
 	 * Create message elements from messages
 	 * Sort messages by timestamp
 	 */
-	useEffect(() => {
+	useLayoutEffect(() => {
 		props.messages.sort((a, b) => {
 			return a.message.timestamp - b.message.timestamp;
 		});
 		setMessageElements(props.messages.map(message => {
 			return (
-				<Message setReplyTo={props.setReplyTo} key={message.message._id} messages={props.messages} message={message} scrollDetached={scrollDetached} />
+				<Message setEditing={props.setEditing} setReplyTo={props.setReplyTo} key={message.message._id} messages={props.messages} message={message} scrollDetached={scrollDetached} />
 			);
 		}));
+
+		setTimeout(() => {
+			// Restore stored scroll position
+			let messageView = document.querySelector(".messageView");
+			messageView.style.scrollBehavior = "auto";
+			if (storedScroll) messageView.scrollTop = messageView.scrollHeight - storedScroll?.scrollHeight;
+			messageView.style.scrollBehavior = "smooth";
+			setStoredScroll(null)
+			console.log("Scroll restored")
+		}, 0)
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.messages]);
 
@@ -59,7 +71,7 @@ export function MessageView(props) {
 	 * Set scrollDetached to false if user scrolls to bottom
 	 * @param e
 	 */
-	function handleMessageViewScroll(e) {
+	async function handleMessageViewScroll(e) {
 		// I don't know how this works, copilot wrote it.
 		let messageView = document.querySelector(".messageView");
 		if (messageView.scrollTop + messageView.clientHeight >= messageView.scrollHeight) {
@@ -67,11 +79,20 @@ export function MessageView(props) {
 		} else {
 			setScrollDetached(true);
 		}
+		if (messageView.scrollTop === 0 && props.messages.length > 0) {
+			console.log("top");
+			setLoadingMessages(true);
+			let olderMessages = await lq.getMessages(mainContext.selectedChannel, props.messages[0].message.timestamp)
+			props.setMessages(olderMessages.concat(props.messages));
+			setStoredScroll({scrollHeight: messageView.scrollHeight, scrollTop: messageView.scrollTop})
+			setLoadingMessages(false);
+		}
 	}
 
 	return (
 		<div className="messageView" onScroll={handleMessageViewScroll} style={
 			{backgroundColor: scrollDetached && false ? "#333333" : "inherit"}}>
+			{loadingMessages && <div className="loadingMessages">Loading messages...</div>}
 			{messageElements}
 		</div>
 	);

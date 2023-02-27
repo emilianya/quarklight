@@ -2,7 +2,7 @@ import {useContext, useEffect, useState} from "react";
 import {lq} from "../../classes/Lightquark";
 import {MainContext} from "../../contexts/MainContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faFile, faPaperclip, faPaperPlane, faReply, faX} from '@fortawesome/free-solid-svg-icons'
+import {faFile, faPaperclip, faPaperPlane, faPencil, faReply, faX} from '@fortawesome/free-solid-svg-icons'
 
 // TODO: Upload progress indicator
 // TODO: Upload cancel button
@@ -18,15 +18,15 @@ export function MessageBox(props) {
 	const evaluateSendDisabled = () => {
 		// If there is no message content and no attachments, disable the send button
 		// While uploading, disable the send button
+		if (props.editing) return setSendDisabled(message.trim().length === 0);
 		if ((message.trim().length === 0 && attachments.length === 0) || uploading) setSendDisabled(true);
 		else setSendDisabled(false);
-
 	}
 
 	useEffect(() => {
 		evaluateSendDisabled();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [message, uploading, attachments])
+	}, [message, uploading, attachments, props.editing])
 
 	function arrayBufferToBase64( buffer ) {
 		let binary = '';
@@ -42,12 +42,17 @@ export function MessageBox(props) {
 		if (sendDisabled) return;
 		setUploading(true);
 		setMessage("");
-		let fileInput = document.getElementById("fileInput");
-		await lq.sendMessage(message, [...attachments], mainContext.selectedChannel, props.replyTo);
-		fileInput.value = "";
-		setAttachments([]);
+		if (!props.editing) {
+			let fileInput = document.getElementById("fileInput");
+			await lq.sendMessage(message, [...attachments], mainContext.selectedChannel, props.replyTo);
+			fileInput.value = "";
+			setAttachments([]);
+			props.setReplyTo(null);
+		} else {
+			await lq.editMessage(props.editing, mainContext.selectedChannel, message);
+			props.setEditing(null);
+		}
 		setUploading(false);
-		props.setReplyTo(null);
 	}
 
 	function handleMessageboxKey(e) {
@@ -138,15 +143,23 @@ export function MessageBox(props) {
 		document.getElementById("messageTextInput").focus();
 	}, [uploading])
 
+	useEffect(() => {
+		if (props.editing) {
+			setMessage(props.messages.find(m => m.message._id === props.editing)?.message?.content || "");
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [props.editing])
+
+	// TODO: Display bot username in reply preview
 	return (
 		<div className="messageBox" onDrop={handleDrop}>
-			{props.replyTo && <div className="messageBoxReply">
+			{(props.replyTo && !props.editing) && <div className="messageBoxReply">
 				<FontAwesomeIcon className="messageReplyIcon" icon={faReply} />
 				<small className="messageReplyUsername">{props.messages.find(m => m.message._id === props.replyTo)?.author?.username || "Unknown User"}</small>
 				<small className="messageReplyBody">{props.messages.find(m => m.message._id === props.replyTo)?.message?.content || "Unknown Message"}</small>
 				<FontAwesomeIcon className="messageReplyCancel" onClick={() => {props.setReplyTo(undefined)}} icon={faX}></FontAwesomeIcon>
 			</div>}
-			{attachments.map(a => {
+			{!props.editing && attachments.map(a => {
 				return (
 					<div className="messageBoxAttachment" key={a.id}>
 						<FontAwesomeIcon className="messageAttachmentIcon" icon={faFile} />
@@ -155,6 +168,13 @@ export function MessageBox(props) {
 					</div>
 				)
 				})
+			}
+			{props.editing &&
+				<div className="messageBoxEditing">
+					<FontAwesomeIcon className="messageEditingIcon" icon={faPencil} />
+					<small className="messageEditingText">Editing a message</small>
+					<FontAwesomeIcon className="messageEditingCancel" onClick={() => { props.setEditing(null) }} icon={faX}></FontAwesomeIcon>
+				</div>
 			}
 			<input type="file" className="messageFile" hidden={true} multiple onChange={handleFileChange} name="file" id="fileInput"/>
 			<textarea id="messageTextInput" onPaste={handlePaste} onKeyDown={handleMessageboxKey} disabled={uploading} className="messageInput" value={message} onInput={(e) => setMessage(e.target.value)} placeholder={uploading ? "Sending message..." : "Type your message here..."} />

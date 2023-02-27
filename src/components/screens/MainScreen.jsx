@@ -16,9 +16,9 @@ export function MainScreen() {
 	let [selectedQuark, setSelectedQuark] = useState(null);
 	let [selectedChannel, setSelectedChannel] = useState(null);
 	let [unreadChannels, setUnreadChannels] = useState([]);
-	let [showJoinModal, setShowJoinModal] = useState(false);
-	let [showCreateModal, setShowCreateModal] = useState(false);
-
+	let [showModal, setShowModal] = useState(null);
+	let [nickname, setNickname] = useState(null);
+	let [quarkNickname, setQuarkNickname] = useState(null);
 
 	let [konamiState, setKonamiState] = useState(0);
 	let konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
@@ -34,7 +34,7 @@ export function MainScreen() {
 	}, [appContext.loading, selectedQuark, selectedChannel, appContext.quarks, appContext.channels])
 
 	return (
-		<div data-testid="screenRoot" className="screenRoot" onKeyDown={a=>{a.key===konamiCode[konamiState]?setKonamiState(konamiState+1):setKonamiState(0);if (!a.shiftKey && !a.ctrlKey && !a.altKey);if(!showJoinModal && !showCreateModal) document.querySelector(".messageInput").focus();}} tabIndex="0">
+		<div data-testid="screenRoot" className="screenRoot" onKeyDown={a=>{a.key===konamiCode[konamiState]?setKonamiState(konamiState+1):setKonamiState(0);if (!a.shiftKey && !a.ctrlKey && !a.altKey && !a.metaKey && !showModal) document.querySelector(".messageInput").focus();}} tabIndex="0">
 			{ // Debug menu 
 			konamiState === konamiCode.length ? <div style={{overflowY: "scroll", height: "100vh"}} >
 				<img width={"128px"} src={appContext?.userData?.avatar || "https://quarky.vukky.net/assets/img/loading.png"} alt=""/>
@@ -49,7 +49,7 @@ export function MainScreen() {
 				<button onClick={() => lq.ws.close()}>killws</button>
 				<button onClick={async () => appContext.setQuarks(await lq.getQuarks())}>Get quarks</button>
 				<button onClick={async () => appContext.setQuarks([await lq.getUser(appContext.quarks[0].owners[0])])}>Get quark owner :O</button>
-				<button onClick={async () => console.log(await lq.apiCall("/user/me"))}>Crashery :3</button>
+				<button onClick={async () => console.log(await lq.apiCall("/user/me"))}>Log user info</button>
 				<button onClick={async () => {
 					appContext.setLoading(true)
 					await delay(5000);
@@ -64,8 +64,9 @@ export function MainScreen() {
 						quarkBoxes, setQuarkBoxes,
 						channelBoxes, setChannelBoxes,
 						unreadChannels, setUnreadChannels,
-						showJoinModal, setShowJoinModal,
-						showCreateModal, setShowCreateModal
+						showModal, setShowModal,
+						nickname, setNickname,
+						quarkNickname, setQuarkNickname
 					}}>
 					<ContentContainer />
 					<NavContainer />

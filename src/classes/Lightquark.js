@@ -54,16 +54,44 @@ export default class Lightquark {
                 case "quarkDelete":
                     break;
                 case "channelCreate":
+                    this.appContext.setChannelCache(prev => [...prev, {cachedAt: new Date(), channel: event.channel}]);
+                    if (event.channel.quark === this.mainContext.selectedQuark) {
+                        this.appContext.setChannels(prev => [...prev, event.channel]);
+                    }
                     break;
                 case "channelUpdate":
+                    let channelCache = this.appContext.channelCache;
+                    channelCache = channelCache.filter(channel => channel.channel._id !== event.channel._id);
+                    channelCache.push({cachedAt: new Date(), channel: event.channel});
+                    this.appContext.setChannelCache(channelCache);
+                    if (event.channel.quark === this.mainContext.selectedQuark) {
+                        this.appContext.setChannels(prev => {
+                            let channels = prev.filter(channel => channel._id !== event.channel._id);
+                            channels.push(event.channel);
+                            return channels;
+                        })
+                    }
                     break;
                 case "channelDelete":
+                    this.appContext.setChannelCache(prev => prev.filter(channel => channel.channel._id !== event.channel._id));
+                    this.appContext.setChannels(prev => prev.filter(channel => channel._id !== event.channel._id));
                     break;
                 case "memberUpdate":
                     break;
                 case "memberLeave":
                     break;
                 case "memberJoin":
+                    break;
+                case "quarkOrderUpdate":
+                    break;
+                case "nicknameUpdate":
+                    if (event.scope === "global") {
+                        this.mainContext.setNickname(event.nickname);
+                    } else {
+                        if (event.scope === this.mainContext.selectedQuark) {
+                            this.mainContext.setQuarkNickname(event.nickname);
+                        }
+                    }
                     break;
                 case "subscribe":
                     break;
@@ -92,6 +120,10 @@ export default class Lightquark {
             newAttachment.type = res.headers.get("content-type");
             return newAttachment;
         }))
+        const reply = data.message.specialAttributes.find(a => a.type === "reply");
+        if (reply) {
+            data.message.reply = await this.fetchMessage(data.message.channelId, reply.replyTo);
+        }
         return data;
     }
 
@@ -105,6 +137,19 @@ export default class Lightquark {
         }
     }
 
+    /**
+     * Get a message by ID
+     * @param channelId
+     * @param messageId
+     * @returns {Promise<Message|undefined>}
+     */
+    async fetchMessage (channelId, messageId) {
+        let existingMessage = this.messageState.messages.find(message => message.message._id === messageId);
+        if (existingMessage) return existingMessage;
+        let res = await this.apiCall(`/channel/${channelId}/messages/${messageId}`, "GET", undefined, "v2");
+        if (res.request.success) return res.response.data;
+        return undefined;
+    }
 
     async messageCreate (data) {
         if(data.eventId === "messageCreate") { // Redundant check due to old setup, too scared to remove it
@@ -122,7 +167,13 @@ export default class Lightquark {
                 let notificationAudio = new Audio(notificationWav);
                 try {
                     notificationAudio.play();
-                    new Notification(`${data.author.username} in #${(await this.getChannel(data.message.channelId)).name}`, {body: data.message.content || "Attachment", tag: "quarklight", icon: data.author.avatarUri})
+                    let username = data.author.username;
+                    let avatar = data.author.avatarUri;
+                    if (data.message.specialAttributes.some(attr => attr.type === "botMessage")) {
+                        username = data.message.specialAttributes.find(attr => attr.type === "botMessage").username
+                        avatar = data.message.specialAttributes.find(attr => attr.type === "botMessage").avatarUri
+                    }
+                    new Notification(`${username} in #${(await this.getChannel(data.message.channelId)).name}`, {body: data.message.content || "Attachment", tag: "quarklight", icon: avatar})
                 } catch (e) {
                     console.log("Failed to play notification sound", e);
                 }
@@ -183,6 +234,8 @@ export default class Lightquark {
                 this.wygIndex += 1;
                 if(this.wygIndex === wantYouGone.length - 1) this.wygIndex = 0;
             }, 15000);
+            // subscribe to user updates
+            this.ws.send(JSON.stringify({event: "subscribe", message: "me"}))
         }
         this.ws.onmessage = (message) => {
             let data = JSON.parse(message.data);
@@ -233,8 +286,30 @@ export default class Lightquark {
         await lq.apiCall(`/channel/${channelId}/messages`, "POST", {content: message, attachments, specialAttributes}, "v2");
     }
 
+    /**
+     * Edits a message
+     * @param messageId
+     * @param channelId
+     * @param message New content
+     * @returns {Promise<void>}
+     */
+    async editMessage(messageId, channelId, message) {
+        await lq.apiCall(`/channel/${channelId}/messages/${messageId}`, "PATCH", {content: message});
+    }
+
     async deleteMessage(messageId, channelId) {
         await lq.apiCall(`/channel/${channelId}/messages/${messageId}`, "DELETE");
+    }
+
+    async getNickname(quarkId = null) {
+        let res = await lq.apiCall(`/user/me/nick/${quarkId || "global"}`, "GET", null, "v2");
+        if (res.request.success) return res.response.nickname;
+        else return null;
+    }
+
+    async setNickname(nickname, scope) {
+        let res = await lq.apiCall(`/user/me/nick`, "PUT", {nickname, scope}, "v2");
+        return res.request.success ? false : res.response.message;
     }
 
     /**
@@ -414,6 +489,76 @@ export default class Lightquark {
     }
 
     /**
+     * Create a channel in a quark
+     * @param name
+     * @param quarkId
+     * @returns {Promise<{error}|{channel: Channel, error: boolean}>}
+     */
+    async createChannel (name, quarkId) {
+        let res = await this.apiCall("/channel/create", "POST", {name, quark: quarkId});
+        if (res.request.success) {
+            let newChannel = await this.getChannel(res.response.channel._id);
+            let quarks = this.appContext.quarks;
+            let quark = quarks.find(q => q._id === quarkId);
+            quark.channels.push(newChannel);
+            this.appContext.setQuarks(quarks);
+            this.appContext.setChannels(prevState => [...prevState, newChannel])
+            return {error: false, channel: newChannel};
+        } else {
+            console.error("Failed to create channel", res);
+            return {error: res.response.error};
+        }
+    }
+
+    /**
+     * Update a channel
+     * @param name
+     * @param description
+     * @param channelId
+     * @returns {Promise<{error}|{channel: Channel, error: boolean}>}
+     */
+    async updateChannel (name, description, channelId) {
+        let res = await this.apiCall(`/channel/${channelId}`, "PATCH", {name, description});
+        if (res.request.success) {
+            let newChannel = res.response.channel;
+            let channels = this.appContext.channels;
+            let channel = channels.find(c => c._id === channelId);
+            channel.name = newChannel.name;
+            channel.description = newChannel.description;
+            this.appContext.setChannels(channels);
+            return {error: false, channel: newChannel};
+        } else {
+            console.error("Failed to update channel", res);
+            return {error: res.response.error};
+        }
+    }
+
+    /**
+     * Delete a channel
+     * @param channelId
+     * @returns {Promise<void>}
+     */
+    async deleteChannel (channelId) {
+        let channel = await this.getChannel(channelId);
+        let res = await this.apiCall(`/channel/${channelId}`, "DELETE");
+        if (res.request.success) {
+            await this.updateQuark(channel.quark);
+            if (this.mainContext.selectedChannel === channel._id) this.mainContext.setSelectedChannel(null);
+        } else {
+            console.error("Failed to delete channel", res);
+        }
+    }
+
+    async updateQuark (quarkId) {
+        console.log("Updating quark", quarkId)
+        let quark = await this.getQuark(quarkId);
+        let quarks = this.appContext.quarks.filter(q => q._id !== quarkId);
+        this.appContext.setQuarks([...quarks, quark]);
+        this.appContext.setChannels(quark.channels);
+        console.log("Updated quark", quark)
+    }
+
+    /**
      * Get user information by ID
      */
     async getUser (id) {
@@ -493,6 +638,7 @@ export default class Lightquark {
      * @returns {Promise<Message[]>}
      */
     async getMessages (channelId, startTimestamp = undefined) {
+        if (!channelId) return [];
         let res = await this.apiCall(`/channel/${channelId}/messages${startTimestamp ? `?startTimestamp=${startTimestamp}` : ""}`)
         return await Promise.all(res.response.messages.map(async m => await this.messageParser(m)));
     }
@@ -503,7 +649,9 @@ export default class Lightquark {
      * @returns {Promise<boolean>} Was the link opened?
      */
     async openLqLink (link) {
-        console.log("uwu hai", link)
+        // TODO: scroll to message
+            // May require the API endpoint for getting a message by ID
+
         // lightquark://{quarkId}/{channelId?}/{messageId?}
         // lightquark://638b815b4d55b470d9d6fa1a/63eb7cc7ecc96ed5edc267f
         let linkParts = link.split("://")[1].split("/");
