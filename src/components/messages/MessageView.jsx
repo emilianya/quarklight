@@ -73,7 +73,6 @@ export function MessageView(props) {
 	 */
 	async function handleMessageViewScroll(e) {
 		// I don't know how this works, copilot wrote it.
-		console.log(props.messages)
 		let messageView = document.querySelector(".messageView");
 		if (messageView.scrollTop + messageView.clientHeight >= messageView.scrollHeight) {
 			setScrollDetached(false);

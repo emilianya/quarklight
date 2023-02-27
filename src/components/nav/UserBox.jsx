@@ -15,6 +15,7 @@ export function UserBox() {
 			let nick = await lq.getNickname();
 			if (nick) mainContext.setNickname(nick);
 		})();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	useEffect(() => {
@@ -22,6 +23,7 @@ export function UserBox() {
 			let nick = await lq.getNickname(mainContext.selectedQuark);
 			if (nick) mainContext.setQuarkNickname(nick);
 		})();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [mainContext.selectedQuark]);
 
 
