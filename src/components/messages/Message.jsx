@@ -61,8 +61,8 @@ export function Message(props) {
 						document.getElementById(`${replyMessage.replyTo}_message`).scrollIntoView();
 					}}>
 						<FontAwesomeIcon className="messageReplyIcon" icon={faReply} />
-						<small className="messageReplyUsername">{props.messages.find(m => m.message._id === replyMessage.replyTo)?.author.username || "Unknown User"}</small>
-						<small className="messageReplyBody">{props.messages.find(m => m.message._id === replyMessage.replyTo)?.message.content || "Unknown Message"}</small>
+						<small className="messageReplyUsername">{message.reply.author.username || "Unknown User"}</small>
+						<small className="messageReplyBody">{message.reply.message.content || "Unknown Message"}</small>
 					</div>
 					: null}
 					<div className="messageUsernameRow">

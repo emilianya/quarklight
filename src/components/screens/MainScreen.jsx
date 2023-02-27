@@ -17,7 +17,8 @@ export function MainScreen() {
 	let [selectedChannel, setSelectedChannel] = useState(null);
 	let [unreadChannels, setUnreadChannels] = useState([]);
 	let [showModal, setShowModal] = useState(null);
-
+	let [nickname, setNickname] = useState(null);
+	let [quarkNickname, setQuarkNickname] = useState(null);
 
 	let [konamiState, setKonamiState] = useState(0);
 	let konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
@@ -63,7 +64,9 @@ export function MainScreen() {
 						quarkBoxes, setQuarkBoxes,
 						channelBoxes, setChannelBoxes,
 						unreadChannels, setUnreadChannels,
-						showModal, setShowModal
+						showModal, setShowModal,
+						nickname, setNickname,
+						quarkNickname, setQuarkNickname
 					}}>
 					<ContentContainer />
 					<NavContainer />

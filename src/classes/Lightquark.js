@@ -82,6 +82,17 @@ export default class Lightquark {
                     break;
                 case "memberJoin":
                     break;
+                case "quarkOrderUpdate":
+                    break;
+                case "nicknameUpdate":
+                    if (event.scope === "global") {
+                        this.mainContext.setNickname(event.nickname);
+                    } else {
+                        if (event.scope === this.mainContext.selectedQuark) {
+                            this.mainContext.setQuarkNickname(event.nickname);
+                        }
+                    }
+                    break;
                 case "subscribe":
                     break;
                 case "heartbeat":
@@ -109,6 +120,10 @@ export default class Lightquark {
             newAttachment.type = res.headers.get("content-type");
             return newAttachment;
         }))
+        const reply = data.message.specialAttributes.find(a => a.type === "reply");
+        if (reply) {
+            data.message.reply = await this.fetchMessage(data.message.channelId, reply.replyTo);
+        }
         return data;
     }
 
@@ -122,6 +137,19 @@ export default class Lightquark {
         }
     }
 
+    /**
+     * Get a message by ID
+     * @param channelId
+     * @param messageId
+     * @returns {Promise<Message|undefined>}
+     */
+    async fetchMessage (channelId, messageId) {
+        let existingMessage = this.messageState.messages.find(message => message.message._id === messageId);
+        if (existingMessage) return existingMessage;
+        let res = await this.apiCall(`/channel/${channelId}/messages/${messageId}`, "GET", undefined, "v2");
+        if (res.request.success) return res.response.data;
+        return undefined;
+    }
 
     async messageCreate (data) {
         if(data.eventId === "messageCreate") { // Redundant check due to old setup, too scared to remove it
@@ -206,6 +234,8 @@ export default class Lightquark {
                 this.wygIndex += 1;
                 if(this.wygIndex === wantYouGone.length - 1) this.wygIndex = 0;
             }, 15000);
+            // subscribe to user updates
+            this.ws.send(JSON.stringify({event: "subscribe", message: "me"}))
         }
         this.ws.onmessage = (message) => {
             let data = JSON.parse(message.data);
@@ -269,6 +299,17 @@ export default class Lightquark {
 
     async deleteMessage(messageId, channelId) {
         await lq.apiCall(`/channel/${channelId}/messages/${messageId}`, "DELETE");
+    }
+
+    async getNickname(quarkId = null) {
+        let res = await lq.apiCall(`/user/me/nick/${quarkId || "global"}`, "GET", null, "v2");
+        if (res.request.success) return res.response.nickname;
+        else return null;
+    }
+
+    async setNickname(nickname, scope) {
+        let res = await lq.apiCall(`/user/me/nick`, "PUT", {nickname, scope}, "v2");
+        return res.request.success ? false : res.response.message;
     }
 
     /**
