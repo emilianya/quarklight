@@ -16,13 +16,17 @@ export function NavContainer() {
 	let [showNav, setShowNav] = useState(true);
 
 	useEffect(() => {
-		let quarks = appContext.quarks.sort((a, b) => { return a.name.localeCompare(b.name) });
+		let quarks = appContext.quarks.sort((a, b) => {
+			let indexOfA = mainContext.quarkOrder?.indexOf(a._id) || 1;
+			let indexOfB = mainContext.quarkOrder?.indexOf(b._id) || 0;
+			return indexOfA - indexOfB;
+		});
 		mainContext.setQuarkBoxes(quarks.map(quark => {
 			return (<Quark quark={quark} setSelectedQuark={mainContext.setSelectedQuark} key={quark._id} />)
 		}));
 		
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [appContext.quarks])
+	}, [appContext.quarks, mainContext.quarkOrder])
 
 
 	useEffect(() => {

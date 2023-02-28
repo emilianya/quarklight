@@ -5,6 +5,7 @@ import {MainContext} from "../../contexts/MainContext";
 import {lq} from "../../classes/Lightquark";
 import {AppContext} from "../../contexts/AppContext";
 import {ChannelInfo} from "../channels/ChannelInfo";
+import {WarningBanner} from "../WarningBanner";
 
 export function ContentContainer() {
 	let mainContext = useContext(MainContext);
@@ -33,9 +34,14 @@ export function ContentContainer() {
 		lq.setAppContext(appContext)
 	}, [appContext]);
 
+	useEffect(() => {
+		lq.updateQuarkOrder();
+	}, []);
+
 	return (
 		<div className="contentContainer">
 			<ChannelInfo channel={appContext.channels.find(c => c._id === mainContext.selectedChannel)} />
+			<WarningBanner />
 			<MessageView messages={messages} setEditing={setEditing} editing={editing} setMessages={setMessages} replyTo={replyTo} setReplyTo={setReplyTo} />
 			<MessageBox messages={messages} setEditing={setEditing} editing={editing} setReplyTo={setReplyTo} replyTo={replyTo} />
 		</div>

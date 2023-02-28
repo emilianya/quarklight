@@ -19,6 +19,8 @@ export function MainScreen() {
 	let [showModal, setShowModal] = useState(null);
 	let [nickname, setNickname] = useState(null);
 	let [quarkNickname, setQuarkNickname] = useState(null);
+	let [quarkOrder, setQuarkOrder] = useState(null);
+	let [warning, setWarning] = useState(null);//{severityColor: "#ff4a4a", message: "Something is very wrong :<", severity: "NUCLEAR"});
 
 	let [konamiState, setKonamiState] = useState(0);
 	let konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
@@ -66,7 +68,9 @@ export function MainScreen() {
 						unreadChannels, setUnreadChannels,
 						showModal, setShowModal,
 						nickname, setNickname,
-						quarkNickname, setQuarkNickname
+						quarkNickname, setQuarkNickname,
+						quarkOrder, setQuarkOrder,
+						warning, setWarning
 					}}>
 					<ContentContainer />
 					<NavContainer />
