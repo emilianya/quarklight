@@ -83,6 +83,7 @@ export default class Lightquark {
                 case "memberJoin":
                     break;
                 case "quarkOrderUpdate":
+                    this.mainContext.setQuarkOrder(event.order);
                     break;
                 case "nicknameUpdate":
                     if (event.scope === "global") {
@@ -438,7 +439,19 @@ export default class Lightquark {
             })
             this.subscribeToQuark(quarks[quark]._id);
         }
-        return res.response.quarks
+        let order = await this.apiCall("/quark/order", "GET", undefined, "v2");
+        let orderedQuarks = [];
+        order.response.order.forEach(quarkId => {
+            orderedQuarks.push(quarks.find(q => q._id === quarkId));
+        })
+        if (this.mainContext) this.mainContext.setQuarkOrder(order.response.order);
+        return orderedQuarks;
+    }
+
+    async updateQuarkOrder () {
+        let order = await this.apiCall("/quark/order", "GET", undefined, "v2");
+        if (this.mainContext) this.mainContext.setQuarkOrder(order.response.order);
+        return order.response.order
     }
 
     async getQuark (quarkId) {
@@ -615,10 +628,12 @@ export default class Lightquark {
             return response;
         } catch (e) {
             // TODO: Figure out something better than this
-            console.log(e)
-            alert(e)
-            alert("Fatal error occurred. Exiting...")
-            window.close();
+            console.error(e)
+            if (this.mainContext) this.mainContext.setWarning({
+                message: "An error occurred while trying to connect to Lightquark",
+                severityColor: "#F79824",
+                severity: "WARNING"
+            })
         }
     }
 

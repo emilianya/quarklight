@@ -188,8 +188,8 @@
     font-weight: 300;
     user-select: text;
     white-space: pre-wrap;
-    line-height: 1.1rem;
-    word-break: break-all;
+    line-height: 1.15rem;
+    word-break: break-word;
 }
 
 .botBadge {
@@ -433,6 +433,27 @@ TODO: Make the positioning better
     width: 30rem;
     height: 25rem;
     z-index: 999;
+}
+
+.warningBanner {
+    padding: 0.2rem;
+    color: white;
+    font-size: 0.9rem;
+}
+
+.warningBannerClose {
+    float: right;
+    margin-right: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.warningBannerClose:hover {
+    cursor: pointer;
+}
+
+.warningBannerIcon {
+    font-size: 1rem;
+    margin-right: 0.25rem;
 }
 
 .nickModal {
