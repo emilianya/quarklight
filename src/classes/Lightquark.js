@@ -174,7 +174,13 @@ export default class Lightquark {
                         username = data.message.specialAttributes.find(attr => attr.type === "botMessage").username
                         avatar = data.message.specialAttributes.find(attr => attr.type === "botMessage").avatarUri
                     }
-                    new Notification(`${username} in #${(await this.getChannel(data.message.channelId)).name}`, {body: data.message.content || "Attachment", tag: "quarklight", icon: avatar})
+                    let n = new Notification(`${username} in #${(await this.getChannel(data.message.channelId)).name}`, {body: data.message.content || "Attachment", tag: "quarklight", icon: avatar})
+                    n.onclick = () => {
+                        let quarkId = this.appContext.quarks.find(quark => quark.channels.some(channel => channel._id === data.message.channelId))._id
+                        let channelId = data.message.channelId
+                        let messageId = data.message._id
+                        this.openLqLink(`lightquark://${quarkId}/${channelId}/${messageId}`)
+                    }
                 } catch (e) {
                     console.log("Failed to play notification sound", e);
                 }
@@ -658,6 +664,29 @@ export default class Lightquark {
         return await Promise.all(res.response.messages.map(async m => await this.messageParser(m)));
     }
 
+    async setAvatar(avatarBin, mime) {
+        try {
+            let res = await fetch(`${this.baseUrl}/v1/user/me/avatar`, {
+                method: "PUT",
+                headers: {
+                    Authorization: `Bearer ${this.token}`,
+                    "Content-Type": mime
+                },
+                body: avatarBin
+            })
+            let json = await res.json();
+            return !json.request.success;
+        } catch (e) {
+            console.error(e);
+            this.mainContext.setWarning({
+                message: "An error occurred while trying to upload your avatar",
+                severityColor: "#F79824",
+                severity: "NORMAL"
+            })
+            return "Error uploading";
+        }
+    }
+
     /**
      * Open a lightquark:// protocol link
      * @param {string} link 
@@ -665,7 +694,6 @@ export default class Lightquark {
      */
     async openLqLink (link) {
         // TODO: scroll to message
-            // May require the API endpoint for getting a message by ID
 
         // lightquark://{quarkId}/{channelId?}/{messageId?}
         // lightquark://638b815b4d55b470d9d6fa1a/63eb7cc7ecc96ed5edc267f

@@ -177,7 +177,7 @@ export function MessageBox(props) {
 				</div>
 			}
 			<input type="file" className="messageFile" hidden={true} multiple onChange={handleFileChange} name="file" id="fileInput"/>
-			<textarea id="messageTextInput" onPaste={handlePaste} onKeyDown={handleMessageboxKey} disabled={uploading} className="messageInput" value={message} onInput={(e) => setMessage(e.target.value)} placeholder={uploading ? "Sending message..." : "Type your message here..."} />
+			<textarea spellCheck={false} id="messageTextInput" onPaste={handlePaste} onKeyDown={handleMessageboxKey} disabled={uploading} className="messageInput" value={message} onInput={(e) => setMessage(e.target.value)} placeholder={uploading ? "Sending message..." : "Type your message here..."} />
 			<div className={"messageAttachButton"} onClick={() => {document.querySelector("#fileInput").click();}}>
 				<FontAwesomeIcon icon={faPaperclip}>Attach</FontAwesomeIcon>
 			</div>
