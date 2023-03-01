@@ -15,14 +15,18 @@ export function UserBox() {
 		(async () => {
 			let nick = await lq.getNickname();
 			if (nick) mainContext.setNickname(nick);
+			console.log("Set nickname to " + nick)
 		})();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	useEffect(() => {
 		(async () => {
-			let nick = await lq.getNickname(mainContext.selectedQuark);
+			let nick;
+			if (mainContext.selectedQuark) nick = await lq.getNickname(mainContext.selectedQuark)
+			else return;
 			if (nick) mainContext.setQuarkNickname(nick);
+			console.log("Set Qnickname to " + nick, mainContext.selectedQuark)
 		})();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [mainContext.selectedQuark]);
@@ -35,7 +39,7 @@ export function UserBox() {
 			<span className="username">{mainContext?.nickname || appContext?.userData?.username}</span>
 			<FontAwesomeIcon icon={faPencil} className="editNickButton" onClick={() => {mainContext.setShowModal(p => p === "editNick" ? "" : "editNick")}} />
 			<br />
-			<span>{mainContext?.quarkNickname || mainContext?.nickname}</span>
+			<span>{mainContext?.quarkNickname}</span>
 			<FontAwesomeIcon icon={faPencil} className="editNickButton" onClick={() => {mainContext.setShowModal(p => p === "editQuarkNick" ? "" : "editQuarkNick")}} />
 			<NickModal />
 			<AvatarModal />
