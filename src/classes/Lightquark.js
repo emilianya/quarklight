@@ -88,6 +88,9 @@ export default class Lightquark {
                 case "nicknameUpdate":
                     if (event.scope === "global") {
                         this.mainContext.setNickname(event.nickname);
+                        (async () => {
+                            this.mainContext.setQuarkNickname(await this.getNickname(this.mainContext.selectedQuark));
+                        })()
                     } else {
                         if (event.scope === this.mainContext.selectedQuark) {
                             this.mainContext.setQuarkNickname(event.nickname);

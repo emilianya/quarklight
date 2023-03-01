@@ -7,10 +7,16 @@ import {useContextMenu, Menu, Item} from "react-contexify";
 import {useContext} from "react";
 import {AppContext} from "../../contexts/AppContext";
 import { lq } from "../../classes/Lightquark";
+import {MessageContext} from "../../contexts/MessageContext";
 
 export function Message(props) {
 
 	let appContext = useContext(AppContext);
+	let messageContext = useContext(MessageContext);
+
+	let setEditing = messageContext.editing[1];
+	let scrollDetached = messageContext.scrollDetached[0];
+	let setReplyTo = messageContext.replyTo[1];
 
 	let message = props.message.message;
 
@@ -86,7 +92,7 @@ export function Message(props) {
 							<span className={message.specialAttributes?.some(a => a.type === "/me") ? "messageItalic" : ""}>{message.content}</span><small style={{color: "lightgray", userSelect: "none"}} hidden={!message?.edited}> (edited)</small>
 						</Linkify>
 						{message.attachments?.length > 0 ? <div className="messageAttachments">{message.attachments.map(attachment => {
-							return <Attachment attachment={attachment} key={attachment.url} scrollDetached={props.scrollDetached} />
+							return <Attachment attachment={attachment} key={attachment.url} scrollDetached={scrollDetached} />
 						})}</div>: null}
 					</div>
 				</div>
@@ -95,9 +101,9 @@ export function Message(props) {
 				{message?.authorId === appContext.userData._id ? 
 					<>
 						<Item onClick={() => lq.deleteMessage(message._id, message.channelId)}>Delete message</Item>
-						<Item onClick={() => props.setEditing(message._id)}>Edit</Item>
+						<Item onClick={() => setEditing(message._id)}>Edit</Item>
 					</> : null}
-				<Item onClick={() => props.setReplyTo(message._id)}>Reply</Item>
+				<Item onClick={() => setReplyTo(message._id)}>Reply</Item>
 				<Item onClick={async () => navigator.clipboard.writeText(`lightquark://${(await lq.getChannel(message.channelId)).quark}/${message.channelId}/${message._id}`)}>Copy Lightquark link</Item>
 				<Item onClick={async () => navigator.clipboard.writeText(`https://lq.litdevs.org/d/${(await lq.getChannel(message.channelId)).quark}/${message.channelId}/${message._id}`)}>Copy web link</Item>
 				<Item onClick={async () => navigator.clipboard.writeText(message.content)}>Copy message contents</Item>
