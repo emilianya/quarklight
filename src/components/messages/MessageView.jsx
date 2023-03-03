@@ -92,7 +92,7 @@ export function MessageView() {
 
 	return (
 		<div className="messageView" onScroll={handleMessageViewScroll} style={
-			{backgroundColor: scrollDetached && true ? "#333333" : "inherit"}}>
+			{backgroundColor: scrollDetached && false ? "#333333" : "inherit"}}>
 			{loadingMessages && <div className="loadingMessages">Loading messages...</div>}
 			{messageElements}
 		</div>
