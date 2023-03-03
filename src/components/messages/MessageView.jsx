@@ -2,20 +2,21 @@ import {useContext, useEffect, useLayoutEffect, useState} from "react";
 import {MainContext} from "../../contexts/MainContext";
 import {lq} from "../../classes/Lightquark";
 import {Message} from "./Message";
+import {MessageContext} from "../../contexts/MessageContext";
 
-export function MessageView(props) {
+export function MessageView() {
 	let mainContext = useContext(MainContext);
+	let messageContext = useContext(MessageContext);
 	let [messageElements, setMessageElements] = useState([]);
 	let [storedScroll, setStoredScroll] = useState(null);
 	let [loadingMessages, setLoadingMessages] = useState(false);
-	
-	// eslint-disable-next-line no-unused-vars
-	let [scrollDetached, setScrollDetached] = useState(false);
+	let [messages, setMessages] = messageContext.messages;
+	let [scrollDetached, setScrollDetached] = messageContext.scrollDetached;
 
 	useEffect(() => {
-		lq.setMessageState({messages: props.messages, setMessages: props.setMessages});
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [props.messages])
+		lq.setMessageState({messages: messages, setMessages: setMessages});
+	}, [messages, setMessages]);
+
 
 	/**
 	 * Get messages from selected channel when selected channel changes
@@ -23,7 +24,7 @@ export function MessageView(props) {
 	useEffect(() => {
 		(async () => {
 			let messages = await lq.getMessages(mainContext.selectedChannel);
-			props.setMessages(messages);
+			setMessages(messages);
 			lq.subscribeToChannel(mainContext.selectedChannel);
 		})();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -34,12 +35,12 @@ export function MessageView(props) {
 	 * Sort messages by timestamp
 	 */
 	useLayoutEffect(() => {
-		props.messages.sort((a, b) => {
+		messages.sort((a, b) => {
 			return a.message.timestamp - b.message.timestamp;
 		});
-		setMessageElements(props.messages.map(message => {
+		setMessageElements(messages.map(message => {
 			return (
-				<Message setEditing={props.setEditing} setReplyTo={props.setReplyTo} key={message.message._id} messages={props.messages} message={message} scrollDetached={scrollDetached} />
+				<Message key={message.message._id} message={message} scrollDetached={scrollDetached} />
 			);
 		}));
 
@@ -54,7 +55,7 @@ export function MessageView(props) {
 		}, 0)
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [props.messages]);
+	}, [messages]);
 
 	/**
 	 * Scroll to bottom of message view when new messages are added
@@ -79,11 +80,11 @@ export function MessageView(props) {
 		} else {
 			setScrollDetached(true);
 		}
-		if (messageView.scrollTop === 0 && props.messages.length > 0) {
+		if (messageView.scrollTop === 0 && messages.length > 0) {
 			console.log("top");
 			setLoadingMessages(true);
-			let olderMessages = await lq.getMessages(mainContext.selectedChannel, props.messages[0].message.timestamp)
-			props.setMessages(olderMessages.concat(props.messages));
+			let olderMessages = await lq.getMessages(mainContext.selectedChannel, messages[0].message.timestamp)
+			setMessages(olderMessages.concat(messages));
 			setStoredScroll({scrollHeight: messageView.scrollHeight, scrollTop: messageView.scrollTop})
 			setLoadingMessages(false);
 		}
@@ -91,7 +92,7 @@ export function MessageView(props) {
 
 	return (
 		<div className="messageView" onScroll={handleMessageViewScroll} style={
-			{backgroundColor: scrollDetached && false ? "#333333" : "inherit"}}>
+			{backgroundColor: scrollDetached && true ? "#333333" : "inherit"}}>
 			{loadingMessages && <div className="loadingMessages">Loading messages...</div>}
 			{messageElements}
 		</div>

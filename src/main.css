@@ -34,6 +34,12 @@
     float: left;
     border-radius: 15px;
     margin: 0.25rem;
+    transition: filter 0.1s;
+}
+
+.avatar:hover {
+    cursor: pointer;
+    filter: brightness(0.5);
 }
 
 .username {
@@ -471,6 +477,32 @@ TODO: Make the positioning better
     z-index: 999;
 }
 
+.avatarModal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--bg-medium);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    width: 30rem;
+    height: 22.5rem;
+    z-index: 999;
+}
+
+.avatarUploadBox {
+    width: 10rem;
+    height: 10rem;
+    border: 0.25rem solid var(--tooltip);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+}
+
 .createModal {
     position: absolute;
     top: 50%;
@@ -607,4 +639,22 @@ a:hover {
 ::-webkit-scrollbar-thumb {
     background: var(--tooltip);
     border-radius: 5rem;
+}
+
+/*/
+/* Animations
+/*/
+
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
 }

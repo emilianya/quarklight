@@ -3,22 +3,35 @@ import {lq} from "../../classes/Lightquark";
 import {MainContext} from "../../contexts/MainContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {faFile, faPaperclip, faPaperPlane, faPencil, faReply, faX} from '@fortawesome/free-solid-svg-icons'
+import {MessageContext} from "../../contexts/MessageContext";
 
 // TODO: Upload progress indicator
 // TODO: Upload cancel button
 // TODO: Allow sending other messages while uploading in background
 
-export function MessageBox(props) {
+export function MessageBox() {
 	let mainContext = useContext(MainContext);
 	let [message, setMessage] = useState("");
 	let [attachments, setAttachments] = useState([]);
 	let [sendDisabled, setSendDisabled] = useState(false);
 	let [uploading, setUploading] = useState(false);
 
+	let messageContext = useContext(MessageContext);
+	let [editing, setEditing] = messageContext.editing;
+	let [replyTo, setReplyTo] = messageContext.replyTo;
+	let messages = messageContext.messages[0];
+	let scrollDetached = messageContext.scrollDetached[0];
+
+	useEffect(() => {
+		if (scrollDetached) return;
+		let messageView = document.querySelector(".messageView");
+		messageView.scrollTop = messageView.scrollHeight;
+	}, [replyTo, attachments, scrollDetached])
+
 	const evaluateSendDisabled = () => {
 		// If there is no message content and no attachments, disable the send button
 		// While uploading, disable the send button
-		if (props.editing) return setSendDisabled(message.trim().length === 0);
+		if (editing) return setSendDisabled(message.trim().length === 0);
 		if ((message.trim().length === 0 && attachments.length === 0) || uploading) setSendDisabled(true);
 		else setSendDisabled(false);
 	}
@@ -26,7 +39,7 @@ export function MessageBox(props) {
 	useEffect(() => {
 		evaluateSendDisabled();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [message, uploading, attachments, props.editing])
+	}, [message, uploading, attachments, editing])
 
 	function arrayBufferToBase64( buffer ) {
 		let binary = '';
@@ -42,15 +55,15 @@ export function MessageBox(props) {
 		if (sendDisabled) return;
 		setUploading(true);
 		setMessage("");
-		if (!props.editing) {
+		if (!editing) {
 			let fileInput = document.getElementById("fileInput");
-			await lq.sendMessage(message, [...attachments], mainContext.selectedChannel, props.replyTo);
+			await lq.sendMessage(message, [...attachments], mainContext.selectedChannel, replyTo);
 			fileInput.value = "";
 			setAttachments([]);
-			props.setReplyTo(null);
+			setReplyTo(null);
 		} else {
-			await lq.editMessage(props.editing, mainContext.selectedChannel, message);
-			props.setEditing(null);
+			await lq.editMessage(editing, mainContext.selectedChannel, message);
+			setEditing(null);
 		}
 		setUploading(false);
 	}
@@ -144,22 +157,22 @@ export function MessageBox(props) {
 	}, [uploading])
 
 	useEffect(() => {
-		if (props.editing) {
-			setMessage(props.messages.find(m => m.message._id === props.editing)?.message?.content || "");
+		if (editing) {
+			setMessage(messages.find(m => m.message._id === editing)?.message?.content || "");
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [props.editing])
+	}, [editing])
 
 	// TODO: Display bot username in reply preview
 	return (
 		<div className="messageBox" onDrop={handleDrop}>
-			{(props.replyTo && !props.editing) && <div className="messageBoxReply">
+			{(replyTo && !editing) && <div className="messageBoxReply">
 				<FontAwesomeIcon className="messageReplyIcon" icon={faReply} />
-				<small className="messageReplyUsername">{props.messages.find(m => m.message._id === props.replyTo)?.author?.username || "Unknown User"}</small>
-				<small className="messageReplyBody">{props.messages.find(m => m.message._id === props.replyTo)?.message?.content || "Unknown Message"}</small>
-				<FontAwesomeIcon className="messageReplyCancel" onClick={() => {props.setReplyTo(undefined)}} icon={faX}></FontAwesomeIcon>
+				<small className="messageReplyUsername">{messages.find(m => m.message._id === replyTo)?.author?.username || "Unknown User"}</small>
+				<small className="messageReplyBody">{messages.find(m => m.message._id === replyTo)?.message?.content || "Unknown Message"}</small>
+				<FontAwesomeIcon className="messageReplyCancel" onClick={() => {setReplyTo(undefined)}} icon={faX}></FontAwesomeIcon>
 			</div>}
-			{!props.editing && attachments.map(a => {
+			{!editing && attachments.map(a => {
 				return (
 					<div className="messageBoxAttachment" key={a.id}>
 						<FontAwesomeIcon className="messageAttachmentIcon" icon={faFile} />
@@ -169,15 +182,15 @@ export function MessageBox(props) {
 				)
 				})
 			}
-			{props.editing &&
+			{editing &&
 				<div className="messageBoxEditing">
 					<FontAwesomeIcon className="messageEditingIcon" icon={faPencil} />
 					<small className="messageEditingText">Editing a message</small>
-					<FontAwesomeIcon className="messageEditingCancel" onClick={() => { props.setEditing(null) }} icon={faX}></FontAwesomeIcon>
+					<FontAwesomeIcon className="messageEditingCancel" onClick={() => { setEditing(null) }} icon={faX}></FontAwesomeIcon>
 				</div>
 			}
 			<input type="file" className="messageFile" hidden={true} multiple onChange={handleFileChange} name="file" id="fileInput"/>
-			<textarea id="messageTextInput" onPaste={handlePaste} onKeyDown={handleMessageboxKey} disabled={uploading} className="messageInput" value={message} onInput={(e) => setMessage(e.target.value)} placeholder={uploading ? "Sending message..." : "Type your message here..."} />
+			<textarea spellCheck={false} id="messageTextInput" onPaste={handlePaste} onKeyDown={handleMessageboxKey} disabled={uploading} className="messageInput" value={message} onInput={(e) => setMessage(e.target.value)} placeholder={uploading ? "Sending message..." : "Type your message here..."} />
 			<div className={"messageAttachButton"} onClick={() => {document.querySelector("#fileInput").click();}}>
 				<FontAwesomeIcon icon={faPaperclip}>Attach</FontAwesomeIcon>
 			</div>

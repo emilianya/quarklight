@@ -6,6 +6,7 @@ import {lq} from "../../classes/Lightquark";
 import {AppContext} from "../../contexts/AppContext";
 import {ChannelInfo} from "../channels/ChannelInfo";
 import {WarningBanner} from "../WarningBanner";
+import {MessageContext} from "../../contexts/MessageContext";
 
 export function ContentContainer() {
 	let mainContext = useContext(MainContext);
@@ -13,6 +14,7 @@ export function ContentContainer() {
 	let [messages, setMessages] = useState([]);
 	let [replyTo, setReplyTo] = useState(null);
 	let [editing, setEditing] = useState(null);
+	let [scrollDetached, setScrollDetached] = useState(false);
 
 	// This could cause problems, but I have no idea if it will
 	useEffect(() => {
@@ -39,11 +41,18 @@ export function ContentContainer() {
 	}, []);
 
 	return (
-		<div className="contentContainer">
-			<ChannelInfo channel={appContext.channels.find(c => c._id === mainContext.selectedChannel)} />
-			<WarningBanner />
-			<MessageView messages={messages} setEditing={setEditing} editing={editing} setMessages={setMessages} replyTo={replyTo} setReplyTo={setReplyTo} />
-			<MessageBox messages={messages} setEditing={setEditing} editing={editing} setReplyTo={setReplyTo} replyTo={replyTo} />
-		</div>
+		<MessageContext.Provider value={{
+			messages: [messages, setMessages],
+			replyTo: [replyTo, setReplyTo],
+			editing: [editing, setEditing],
+			scrollDetached: [scrollDetached, setScrollDetached]
+		}}>
+			<div className="contentContainer">
+				<ChannelInfo channel={appContext.channels.find(c => c._id === mainContext.selectedChannel)} />
+				<WarningBanner />
+				<MessageView />
+				<MessageBox />
+			</div>
+		</MessageContext.Provider>
 	);
 }
