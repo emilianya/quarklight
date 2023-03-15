@@ -49,12 +49,17 @@ export function Quark(props) {
 				}} disabled={quark.owners.includes(appContext.userData._id)} className="leaveButton">Leave</Item>
 
 				{quark.owners.includes(appContext.userData._id) &&
-					<Item onClick={() => {
-						if (!window.confirm("Are you sure you want to delete this quark?")) return;
-						if (!window.confirm("Are you REALLY sure?")) return;
-						if (mainContext.selectedQuark === quark._id) mainContext.setSelectedQuark(null);
-						lq.deleteQuark(quark._id)
-					}} className="deleteButton">Delete</Item>
+					<>
+						<Item onClick={() => {
+							
+						}} className="editQuarkButton">Edit</Item>
+						<Item onClick={() => {
+							if (!window.confirm("Are you sure you want to delete this quark?")) return;
+							if (!window.confirm("Are you REALLY sure?")) return;
+							if (mainContext.selectedQuark === quark._id) mainContext.setSelectedQuark(null);
+							lq.deleteQuark(quark._id)
+						}} className="deleteButton">Delete</Item>
+					</>
 				}
 				<Item onClick={() => navigator.clipboard.writeText(quark._id)}>Copy ID</Item>
 			</Menu>
