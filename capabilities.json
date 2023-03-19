@@ -4,7 +4,8 @@
 		"name": "Quarklight",
 		"author": "Amy",
 		"version": "0.1.5",
-		"repository": "https://github.com/vtheskeleton/quarklight"
+		"repository": "https://github.com/vtheskeleton/quarklight",
+		"url": "https://quarklight.tech"
 	},
 	"features": {
 		"full": [
