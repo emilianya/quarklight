@@ -133,11 +133,11 @@ export default class Lightquark {
 
     async messageUpdate (data) {
         if(data.message.channelId === this.mainContext.selectedChannel) { // render the message if it's in the current channel
-            data.author = await this.getUser(data.message.authorId)
-            let parsedMessage = await this.messageParser(data)
-            let filteredMessages = this.messageState.messages.filter(message => message.message._id !== data.message._id)
-            filteredMessages.push(parsedMessage)
-            this.messageState.setMessages(filteredMessages)
+            if (!data.author) data.author = await this.getUser(data.message.authorId);
+            let parsedMessage = await this.messageParser(data);
+            let filteredMessages = this.messageState.messages.filter(message => message.message._id !== data.message._id);
+            filteredMessages.push(parsedMessage);
+            this.messageState.setMessages(filteredMessages);
         }
     }
 
@@ -159,6 +159,7 @@ export default class Lightquark {
         if(data.eventId === "messageCreate") { // Redundant check due to old setup, too scared to remove it
             if(data.message.channelId === this.mainContext.selectedChannel) { // render the message if it's in the current channel
                 let parsedMessage = await this.messageParser(data)
+                console.log(parsedMessage)
                 this.messageState.setMessages(prev => [...prev, parsedMessage])
             }
             if((document.hidden || data.message.channelId !== this.mainContext.selectedChannel) && data.author._id !== this.appContext.userData._id) { // channel isn't focused
@@ -304,7 +305,7 @@ export default class Lightquark {
      * @returns {Promise<void>}
      */
     async editMessage(messageId, channelId, message) {
-        await lq.apiCall(`/channel/${channelId}/messages/${messageId}`, "PATCH", {content: message});
+        await lq.apiCall(`/channel/${channelId}/messages/${messageId}`, "PATCH", {content: message}, "v2");
     }
 
     async deleteMessage(messageId, channelId) {
