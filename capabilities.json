@@ -1,0 +1,62 @@
+{
+    "$schema": "https://lq.litdevs.org/capability.schema.json",
+    "client": {
+        "name": "Quarklight",
+        "author": "Amy",
+        "version": "0.1.10",
+        "repository": "https://github.com/vtheskeleton/quarklight",
+        "url": "https://quarklight.tech"
+    },
+    "features": {
+        "full": [
+            "general.opensource",
+            "general.authentication",
+            "general.gateway",
+            "general.deeplink",
+            "quarks.create",
+            "quarks.list",
+            "quarks.view",
+            "quarks.invite",
+            "quarks.join",
+            "quarks.leave",
+            "channels.list",
+            "channels.create",
+            "channels.delete",
+            "channels.edit",
+            "channels.view",
+            "channels.history",
+            "messages.read",
+            "messages.send",
+            "messages.edit",
+            "messages.delete",
+            "messages.botMessage",
+            "messages.attachments",
+            "users.me",
+            "users.avatars",
+            "users.avatar",
+            "users.nickname"
+        ],
+        "partial": [
+            {
+                "feature": "general.notifications",
+                "reason": "Notifications cannot be disabled"
+            },
+            {
+                "feature": "quarks.delete",
+                "reason": "User can delete, but events are not handled"
+            },
+            {
+                "feature": "quarks.order",
+                "reason": "Order is respected, updates or editing are not supported"
+            },
+            {
+                "feature": "messages.me",
+                "reason": "/me messages are displayed, but cannot be sent"
+            }
+        ],
+        "unsupported": [
+            "quarks.icon",
+            "quarks.edit"
+        ]
+    }
+}

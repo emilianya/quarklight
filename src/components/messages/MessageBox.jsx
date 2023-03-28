@@ -32,7 +32,7 @@ export function MessageBox() {
 		// If there is no message content and no attachments, disable the send button
 		// While uploading, disable the send button
 		if (editing) return setSendDisabled(message.trim().length === 0);
-		if ((message.trim().length === 0 && attachments.length === 0) || uploading) setSendDisabled(true);
+		if ((message.trim().length === 0 && attachments.length === 0) || uploading || message.trim().length > 2000 || attachments.length > 10) setSendDisabled(true);
 		else setSendDisabled(false);
 	}
 
