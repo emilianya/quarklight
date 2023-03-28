@@ -1,8 +1,7 @@
 // The purpose of this script is to update the version number in the capabilites.json file after npm version is run.
 // And then commit the changes to git.
 
-const pjson = require('./package.json');
-const newVersion = pjson.version; // Get the version number from package.json, which was updated by npm version
+const newVersion = process.env.npm_new_version;
 
 console.log("New version: " + newVersion)
 

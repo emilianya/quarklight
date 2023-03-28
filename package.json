@@ -10,7 +10,7 @@
 	"main": "public/electron.js",
 	"homepage": "./",
 	"scripts": {
-		"postversion": "node releaseVersion.js",
+		"preversion": "node releaseVersion.js",
 		"start": "react-scripts start",
 		"build": "react-scripts build",
 		"test": "react-scripts test",
