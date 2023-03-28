@@ -9,6 +9,7 @@
     },
     "features": {
         "full": [
+            "general.opensource",
             "general.authentication",
             "general.gateway",
             "general.deeplink",
