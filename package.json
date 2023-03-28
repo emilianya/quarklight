@@ -2,7 +2,7 @@
 	"name": "quarklight",
 	"version": "0.1.5",
 	"author": "LIT Devs",
-	"description": "A simple lightquark client",
+	"description": "A simple Lightquark client",
 	"dependencies": {
 		"electron-is-dev": "^2.0.0",
 		"electron-squirrel-startup": "^1.0.0"
@@ -10,6 +10,7 @@
 	"main": "public/electron.js",
 	"homepage": "./",
 	"scripts": {
+		"preversion": "node updateCapabilityVersion.js $npm_package_version",
 		"start": "react-scripts start",
 		"build": "react-scripts build",
 		"test": "react-scripts test",
