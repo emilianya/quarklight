@@ -7,6 +7,10 @@ There are 2 release channels. Stable and Quantum, quantum receives updates for e
 
 Electron releases are distrubuted at [releases.quarklight.tech](https://releases.quarklight.tech) using Electron Release Server.
 
+## Issues
+
+Issues are tracked on [YouTrack](https://litdevs.youtrack.cloud/agiles/141-5/current)
+
 ## Downloads
 
 If you want to use the client you can either
