@@ -11,11 +11,16 @@ export default function SettingsScreen() {
 	let mainContext = useContext(MainContext);
 	let appContext= useContext(AppContext);
 	let [dummy, setDummy] = useState(appContext.preferences.ql_dummy);
+	let [notificationsEnabled, setNotificationsEnabled] = useState(appContext.preferences.notificationsEnabled);
 	let [tab, setTab] = useState(0);
 
 	useEffect(() => {
 		settings.settings.ql_dummy = dummy;
 	}, [dummy]);
+
+	useEffect(() => {
+		settings.settings.notificationsEnabled = notificationsEnabled;
+	}, [notificationsEnabled]);
 
 	return (
 		<div className="settingsContainer">
@@ -34,7 +39,7 @@ export default function SettingsScreen() {
 					</div>
 					<div className={tab === 1 ? "settingTab settingTabActive" : "settingTab"}
 					     onClick={() => {setTab(1)}}>
-						Notification
+						Notifications
 					</div>
 					<div className={tab === 2 ? "settingTab settingTabActive" : "settingTab"}
 						 onClick={() => {setTab(2)}}>
@@ -81,6 +86,15 @@ export default function SettingsScreen() {
 							<span style={{fontSize: "0.9rem"}}>This setting does nothing.</span>
 							<br />
 							<Toggle checked={dummy} setChecked={setDummy} />
+						</div>
+					</>)}
+					{ tab === 1 && (<>
+						<div className="setting">
+							<span style={{fontWeight: "600"}}>Notifications</span>
+							<br />
+							<span style={{fontSize: "0.9rem"}}>Send notifications for new messages in other channels, or while unfocused</span>
+							<br />
+							<Toggle checked={notificationsEnabled} setChecked={setNotificationsEnabled} />
 						</div>
 					</>)}
 				</div>

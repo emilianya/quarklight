@@ -170,24 +170,29 @@ export default class Lightquark {
                     }
                     return prev;
                 })
-                let notificationAudio = new Audio(notificationWav);
-                try {
-                    notificationAudio.play();
-                    let username = data.author.username;
-                    let avatar = data.author.avatarUri;
-                    if (data.message.specialAttributes.some(attr => attr.type === "botMessage")) {
-                        username = data.message.specialAttributes.find(attr => attr.type === "botMessage").username
-                        avatar = data.message.specialAttributes.find(attr => attr.type === "botMessage").avatarUri
+                if (this.appContext.preferences.notificationsEnabled) {
+                    let notificationAudio = new Audio(notificationWav);
+                    console.log(notificationAudio.volume)
+                    notificationAudio.volume = this.appContext.preferences.ql_notificationVolume
+                    console.log(notificationAudio.volume)
+                    try {
+                        notificationAudio.play();
+                        let username = data.author.username;
+                        let avatar = data.author.avatarUri;
+                        if (data.message.specialAttributes.some(attr => attr.type === "botMessage")) {
+                            username = data.message.specialAttributes.find(attr => attr.type === "botMessage").username
+                            avatar = data.message.specialAttributes.find(attr => attr.type === "botMessage").avatarUri
+                        }
+                        let n = new Notification(`${username} in #${(await this.getChannel(data.message.channelId)).name}`, {body: data.message.content || "Attachment", tag: "quarklight", icon: avatar, silent: true})
+                        n.onclick = () => {
+                            let quarkId = this.appContext.quarks.find(quark => quark.channels.some(channel => channel._id === data.message.channelId))._id
+                            let channelId = data.message.channelId
+                            let messageId = data.message._id
+                            this.openLqLink(`lightquark://${quarkId}/${channelId}/${messageId}`)
+                        }
+                    } catch (e) {
+                        console.log("Failed to play notification sound", e);
                     }
-                    let n = new Notification(`${username} in #${(await this.getChannel(data.message.channelId)).name}`, {body: data.message.content || "Attachment", tag: "quarklight", icon: avatar})
-                    n.onclick = () => {
-                        let quarkId = this.appContext.quarks.find(quark => quark.channels.some(channel => channel._id === data.message.channelId))._id
-                        let channelId = data.message.channelId
-                        let messageId = data.message._id
-                        this.openLqLink(`lightquark://${quarkId}/${channelId}/${messageId}`)
-                    }
-                } catch (e) {
-                    console.log("Failed to play notification sound", e);
                 }
             }
         }
