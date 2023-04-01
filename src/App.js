@@ -1,10 +1,16 @@
 //import logo from './logo.svg';
 import './App.css';
-import {useEffect, useState} from "react";
+import {useEffect, useState, lazy, Suspense} from "react";
 import {AppContext} from "./contexts/AppContext";
 import {Main} from "./components/Main";
 import {lq} from "./classes/Lightquark";
 import pjson from '../package.json';
+import settings from "./classes/Settings";
+
+const Themes = {
+    Dark: lazy(() => import('./components/themes/dark')),
+    Light: lazy(() => import('./components/themes/light'))
+}
 
 function App() {
     const savedLoginState = localStorage.getItem("loggedIn") === "true" || false;
@@ -21,13 +27,22 @@ function App() {
     let [channels, setChannels] = useState([]);
     let [userCache, setUserCache] = useState([]);
     let [channelCache, setChannelCache] = useState([]);
+    let [preferences, setPreferences] = useState(settings.settings);
 
+    useEffect(() => {
+        settings.settingsState = {
+            setState: setPreferences,
+            state: preferences
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[])
 
     useEffect(() => {
         localStorage.setItem("loggedIn", JSON.stringify(loggedIn));
         localStorage.setItem("token", token);
         if (token) lq.setToken(token);
     }, [loggedIn, token]);
+
 
     return (
         <AppContext.Provider value={{
@@ -41,8 +56,13 @@ function App() {
             channels, setChannels,
             userCache, setUserCache,
             channelCache, setChannelCache,
-            version: `${lq.isDev ? "dev" : pjson.version}`
+            version: `${lq.isDev ? "dev" : pjson.version}`,
+            preferences
         }}>
+            <Suspense fallback={<></>}>
+                { (preferences.ql_theme === "dark")  && <Themes.Dark />  }
+                { (preferences.ql_theme === "light") && <Themes.Light /> }
+            </Suspense>
             <Main/>
         </AppContext.Provider>
     );

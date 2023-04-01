@@ -9,7 +9,7 @@ Electron releases are distrubuted at [releases.quarklight.tech](https://releases
 
 ## Issues
 
-Issues are tracked on [YouTrack](https://litdevs.youtrack.cloud/agiles/141-5/current)
+Issues are tracked on [YouTrack](https://youtrack.litdevs.org/agiles/141-5/current)
 
 ## Downloads
 

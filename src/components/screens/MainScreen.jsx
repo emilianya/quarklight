@@ -6,6 +6,8 @@ import {NavContainer} from "../nav/NavContainer";
 import {ContentContainer} from "../messages/ContentContainer";
 import {MainContext} from "../../contexts/MainContext";
 import pjson from '../../../package.json';
+import settings from "../../classes/Settings";
+import SettingsScreen from "./SettingsScreen";
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -20,7 +22,8 @@ export function MainScreen() {
 	let [nickname, setNickname] = useState(null);
 	let [quarkNickname, setQuarkNickname] = useState(null);
 	let [quarkOrder, setQuarkOrder] = useState(null);
-	let [warning, setWarning] = useState(null);//{severityColor: "#ff4a4a", message: "Something is very wrong :<", severity: "NUCLEAR"});
+	let [screen, setScreen] = useState("primary");
+	let [warning, setWarning] = useState(lq.pendingWarning);//{severityColor: "#ff4a4a", message: "Something is very wrong :<", severity: "NUCLEAR"});
 
 	let [konamiState, setKonamiState] = useState(0);
 	let konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
@@ -44,6 +47,8 @@ export function MainScreen() {
 				<p>Your email address is {appContext?.userData?.email || "loading..."}</p>
 				<p>Selected channel: {JSON.stringify(selectedChannel)}</p>
 				<p>Selected quark: {JSON.stringify(selectedQuark)}</p>
+				<p>Selected theme: {JSON.stringify(appContext.preferences.ql_theme)}</p>
+				<p>Pending warning: {JSON.stringify(lq.pendingWarning)}</p>
 				<p>You are on {pjson.version.endsWith("-release") ? `${pjson.version} (Stable)` : `${pjson.version} (Quantum)`}</p>
 				<details><summary>Quarks</summary>{JSON.stringify(appContext.quarks)}</details>
 				<button onClick={() => lq.logout()}>Loggery Outtery</button>
@@ -51,7 +56,11 @@ export function MainScreen() {
 				<button onClick={() => lq.ws.close()}>killws</button>
 				<button onClick={async () => appContext.setQuarks(await lq.getQuarks())}>Get quarks</button>
 				<button onClick={async () => appContext.setQuarks([await lq.getUser(appContext.quarks[0].owners[0])])}>Get quark owner :O</button>
-				<button onClick={async () => console.log(await lq.apiCall("/user/me"))}>Log user info</button>
+					<button onClick={async () => console.log(await lq.apiCall("/user/me"))}>Log user info</button>
+					<button onClick={async () => settings.settings.ql_theme = "light"}>set theme to light</button>
+					<button onClick={async () => settings.settings.ql_theme = "dark"}>set theme to dark</button>
+					<button onClick={async () => setScreen("settings")}>set screen to settings</button>
+					<button onClick={async () => setScreen("primary")}>set screen to primary</button>
 				<button onClick={async () => {
 					appContext.setLoading(true)
 					await delay(5000);
@@ -70,10 +79,20 @@ export function MainScreen() {
 						nickname, setNickname,
 						quarkNickname, setQuarkNickname,
 						quarkOrder, setQuarkOrder,
-						warning, setWarning
+						warning, setWarning,
+						screen, setScreen
 					}}>
-					<ContentContainer />
-					<NavContainer />
+					{
+						screen === "primary" && (<>
+							<ContentContainer />
+							<NavContainer />
+						</>)
+					}
+					{
+						screen === "settings" && (<>
+							<SettingsScreen />
+						</>)
+					}
 				</MainContext.Provider>
 			</div>
 			}

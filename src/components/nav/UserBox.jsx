@@ -3,7 +3,7 @@ import {AppContext} from "../../contexts/AppContext";
 import {MainContext} from "../../contexts/MainContext";
 import {lq} from "../../classes/Lightquark";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faPencil} from "@fortawesome/free-solid-svg-icons";
+import {faCog, faPencil} from "@fortawesome/free-solid-svg-icons";
 import {NickModal} from "../modals/NickModal";
 import {AvatarModal} from "../modals/AvatarModal";
 
@@ -38,9 +38,18 @@ export function UserBox() {
 			<img width={"48px"} onClick={() => {mainContext.setShowModal(p => p === "avatarUpload" ? "" : "avatarUpload")}} className="avatar" src={appContext?.userData?.avatar || "https://quarky.vukky.net/assets/img/loading.png"} alt=""/>
 			<span className="username">{mainContext?.nickname || appContext?.userData?.username}</span>
 			<FontAwesomeIcon icon={faPencil} className="editNickButton" onClick={() => {mainContext.setShowModal(p => p === "editNick" ? "" : "editNick")}} />
-			<br />
-			<span>{mainContext?.quarkNickname}</span>
-			<FontAwesomeIcon icon={faPencil} className="editNickButton" onClick={() => {mainContext.setShowModal(p => p === "editQuarkNick" ? "" : "editQuarkNick")}} />
+			{mainContext.screen === "primary" ? <>
+				<br />
+				<span>{mainContext?.quarkNickname}</span>
+				<FontAwesomeIcon icon={faPencil} className="editNickButton" onClick={() => {
+					mainContext.setShowModal(p => p === "editQuarkNick" ? "" : "editQuarkNick")
+				}}/>
+				<br />
+				<FontAwesomeIcon icon={faCog} className="settingsButton" onClick={() => {mainContext.setScreen("settings")}} />
+			</> : <>
+				<br />
+				<span className="hoverBlur">{appContext?.userData?.email}</span>
+			</>}
 			<NickModal />
 			<AvatarModal />
 		</div>

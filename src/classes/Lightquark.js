@@ -2,7 +2,6 @@ import wantYouGone from "../misc/wantYouGone";
 import notificationWav from "../assets/notification.wav";
 import EventEmitter from "events";
 import humanFileSize from "../misc/humanFileSize";
-let instance = null;
 export default class Lightquark {
     
     token;
@@ -20,6 +19,7 @@ export default class Lightquark {
     messageState;
     eventBus = new EventEmitter();
     isDev = false;
+    pendingWarning = undefined;
 
     /**
      * @param appContext - React Context
@@ -27,11 +27,12 @@ export default class Lightquark {
      */
     constructor (appContext = undefined, token = undefined) {
         console.log("Lightquark constructor called");
-        if (instance) {
-            console.log("Older instance found... Kerplooey!");
-            instance.destroy();
+        if (Lightquark._instance) {
+            console.log("Existing instance of Lightquark found, returning that instance");
+            return Lightquark._instance;
         }
-        instance = this;
+        console.warn("Creating new instance of Lightquark")
+        Lightquark._instance = this;
         this.appContext = appContext;
         this.token = token;
 
@@ -102,7 +103,7 @@ export default class Lightquark {
                 case "heartbeat":
                     break;
                 default:
-                    console.log("Unknown event", event)
+                    console.warn("Unknown event", event)
                     break;
             }
         })
@@ -210,12 +211,6 @@ export default class Lightquark {
         if (this.token && !this.ws) this.openGateway();
     }
 
-    destroy () {
-        console.log("destroy called")
-        if (this.ws) this.ws.close();
-        this.dead = true;
-    }
-
     openGateway () {
         console.log("open gateway called")
         if (this.dead) return;
@@ -229,7 +224,7 @@ export default class Lightquark {
      * Registers all websocket listeners
      */
     registerWsListeners () {
-        console.log("register ws listeners called", this.identifier)
+        console.log("WS listeners registered for", this.identifier)
         this.ws.onopen = () => {
             this.retryCount = 0; // Connection open, reset retry counter
             if (this.reconnecting) {
@@ -240,7 +235,7 @@ export default class Lightquark {
             if(this.heartbeat) clearInterval(this.heartbeat); // Clear heartbeat if it's already running
             // Send heartbeat to server every 15 seconds
             this.heartbeat = setInterval(() => {
-                console.log("Sending heartbeat", wantYouGone[this.wygIndex], this.identifier )
+                console.debug("Sending heartbeat", wantYouGone[this.wygIndex], this.identifier )
                 this.ws.send(JSON.stringify({event: "heartbeat", message: wantYouGone[this.wygIndex]}))
                 this.wygIndex += 1;
                 if(this.wygIndex === wantYouGone.length - 1) this.wygIndex = 0;
@@ -251,11 +246,11 @@ export default class Lightquark {
         this.ws.onmessage = (message) => {
             let data = JSON.parse(message.data);
             this.eventBus.emit("gatewayEvent", data);
-            console.log(message);
+            console.debug(message);
         }
         this.ws.onclose = (message) => {
-            console.log(message.code, message.reason)
-            console.log(message.wasClean ? "Gateway connection closed" : "Gateway connection lost")
+            console.warn(message.code, message.reason)
+            console.warn(message.wasClean ? "Gateway connection closed" : "Gateway connection lost")
             if (this.heartbeat) clearInterval(this.heartbeat);
             if (this.dead) return;
             
@@ -279,7 +274,7 @@ export default class Lightquark {
         }
 
         this.ws.onerror = (message) => {
-            console.log(message)
+            console.error(message)
         }
     }
 
