@@ -13,6 +13,7 @@
             "general.authentication",
             "general.gateway",
             "general.deeplink",
+            "general.notifications",
             "quarks.create",
             "quarks.list",
             "quarks.view",
@@ -37,10 +38,6 @@
             "users.nickname"
         ],
         "partial": [
-            {
-                "feature": "general.notifications",
-                "reason": "Notifications cannot be disabled"
-            },
             {
                 "feature": "quarks.delete",
                 "reason": "User can delete, but events are not handled"
