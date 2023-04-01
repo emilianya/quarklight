@@ -11,3 +11,9 @@ const capabilities = require('./capabilities.json');
 capabilities.client.version = newVersion; // Update the version number in the capabilities.json file
 
 fs.writeFileSync('capabilities.json', JSON.stringify(capabilities, null, 4)); // Write the updated capabilities.json file
+
+// Commit the changes to git
+const { execSync } = require('child_process');
+execSync('git add capabilities.json');
+execSync(`git commit -m "Update version number in capabilities.json to ${newVersion}"`);
+
