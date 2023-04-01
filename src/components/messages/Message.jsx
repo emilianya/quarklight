@@ -72,9 +72,9 @@ export function Message(props) {
 					</div>
 					: null}
 					<div className="messageUsernameRow">
-						<span>{botMessage?.username || author.username}</span>{botMessage ? <><span id={`${message._id}_bot`} data-tooltip-content={`This message was sent by a bot called ${author.username}`} className="botBadge">{author.username}</span><Tooltip className="botTip" anchorId={`${message._id}_bot`} positionStrategy={"fixed"} place={"top"} style={{opacity: 1, backgroundColor: "var(--tooltip)"}} /></> : null}
+						<span>{botMessage?.username || author.username}</span>{botMessage ? <><span id={`${message._id}_bot`} data-tooltip-content={`This message was sent by a bot called ${author.username}`} className="botBadge">{author.username}</span><Tooltip className="botTip" anchorId={`${message._id}_bot`} positionStrategy={"fixed"} place={"top"} style={{opacity: 1, backgroundColor: "var(--tooltip)", color: "var(--white)"}} /></> : null}
 						<small id={`${message._id}_timestamp`} data-tooltip-content={new Date(message.timestamp).toLocaleString()} className="messageTimestamp">{formatDate(new Date(message.timestamp))} via {message.ua || "Unknown Client"}</small>
-						<Tooltip className="timestampTip" anchorId={`${message._id}_timestamp`} positionStrategy={"fixed"} place={"top"} style={{opacity: 1, backgroundColor: "var(--tooltip)"}} />
+						<Tooltip className="timestampTip" anchorId={`${message._id}_timestamp`} positionStrategy={"fixed"} place={"top"} style={{opacity: 1, backgroundColor: "var(--tooltip)", color: "var(--white)"}} />
 					</div>
 					<div className="messageBody">
 						<Linkify componentDecorator={(decoratedHref, decoratedText, key) => {

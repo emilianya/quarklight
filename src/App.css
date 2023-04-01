@@ -7,12 +7,14 @@
     --bg-light: #363e3f;
     --tooltip: #3C3F41;
     --bg-dark: #1E2223;
-    --blue-1: #2176FF;
-    --blue-2: #3381FF;
-    --blue-3: #33A1FD;
-    --yellow: #FDCA40;
-    --orange: #F79824;
+    --accent-1: #2176FF;
+    --accent-4: #3381FF;
+    --accent-5: #33A1FD;
+    --accent-2: #FDCA40;
+    --accent-3: #F79824;
     --disabled: #C0A9B0;
+    --white: #FFFFFF;
+    --lightgrey: lightgrey;
 }
 
 body {
@@ -51,7 +53,7 @@ body {
 }
 
 .input-box:focus {
-    outline: 2px solid var(--blue-2);
+    outline: 2px solid var(--accent-4);
 }
 
 .button {
@@ -60,18 +62,18 @@ body {
     border-radius: 2px;
     padding: 8px 10px;
     color: white;
-    background-color: var(--blue-1);
+    background-color: var(--accent-1);
     transition-property: background-color;
     transition-duration: 75ms;
 
 }
 
 .button:hover {
-    background-color: var(--blue-2);
+    background-color: var(--accent-4);
 }
 
 .button:active {
-    background-color: var(--blue-3);
+    background-color: var(--accent-5);
 }
 
 .button:disabled {
@@ -79,7 +81,7 @@ body {
 }
 
 .button:focus {
-    outline: 2px solid var(--blue-2);
+    outline: 2px solid var(--accent-4);
 }
 
 .loaderRoot {

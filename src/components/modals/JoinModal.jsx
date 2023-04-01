@@ -32,7 +32,7 @@ export function JoinModal() {
             <div className="joinModalQuark" hidden={!!!quark}>
                 <img src={quark?.iconUri} alt="" className="joinModalQuarkIcon" />
                 <span id="joinName" data-tooltip-content={quark?.name} className="joinModalQuarkName">{quark?.name}</span><br />
-                <Tooltip className="quarkTip" anchorId="joinName" place={"bottom"} style={{opacity: 1, backgroundColor: "var(--tooltip)"}} />
+                <Tooltip className="quarkTip" anchorId="joinName" place={"bottom"} style={{opacity: 1, backgroundColor: "var(--tooltip)", color: "var(--white)"}} />
                 <span className="joinModalQuarkDetail">{quark?.members?.length} Members {quark?.channels?.length} Channels</span>
                 <button className="button joinModalQuarkJoinButton" onClick={() => {
                     lq.joinQuark(inviteCode);

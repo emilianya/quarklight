@@ -4,10 +4,10 @@
     --bg-light: #363e3f;
     --tooltip: #3C3F41;
     --bg-dark: #1E2223;
-    --blue-1: #2176FF;
-    --blue-2: #3381FF;
-    --blue-3: #33A1FD;
-    --yellow: #FDCA40;
-    --orange: #F79824;
+    --accent-1: #2176FF;
+    --accent-4: #3381FF;
+    --accent-5: #33A1FD;
+    --accent-2: #FDCA40;
+    --accent-3: #F79824;
     --disabled: #C0A9B0;
 }

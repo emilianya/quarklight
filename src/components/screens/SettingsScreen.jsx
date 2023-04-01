@@ -97,6 +97,20 @@ export default function SettingsScreen() {
 							<Toggle checked={notificationsEnabled} setChecked={setNotificationsEnabled} />
 						</div>
 					</>)}
+					{ tab === 2 && (<>
+						<div className="setting">
+							<span style={{fontWeight: "600"}}>Theme</span>
+							<br />
+							<span style={{fontSize: "0.9rem"}}>Customize how Quarklight looks. Note: If the theme does not immediately change, try restarting Quarklight.</span>
+							<br />
+							<select className="themeSelector" value={appContext.preferences.ql_theme} onChange={(e) => {
+								settings.settings.ql_theme = e.target.value;
+							}}>
+								<option value="dark">Dark</option>
+								<option value="light">Light</option>
+							</select>
+						</div>
+					</>)}
 				</div>
 			</div>
 		</div>

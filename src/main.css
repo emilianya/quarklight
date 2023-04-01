@@ -60,7 +60,7 @@
 }
 
 .unreadIndicatorQuark {
-    background-color: var(--orange);
+    background-color: var(--accent-3);
     border-radius: 0.5rem;
     width: 0.8rem;
     height: 0.8rem;
@@ -134,8 +134,8 @@
 }
 
 .leaveButton {
-    --contexify-item-color: var(--orange);
-    --contexify-activeItem-color: var(--orange);
+    --contexify-item-color: var(--accent-3);
+    --contexify-activeItem-color: var(--accent-3);
 }
 
 .deleteButton {
@@ -179,7 +179,7 @@
 .messageTimestamp {
     font-size: 0.75rem;
     margin: 0.25rem;
-    color: lightgrey;
+    color: var(--lightgrey);
 }
 
 .messageUsernameRow {
@@ -200,13 +200,13 @@
 }
 
 .botBadge {
-    border: var(--orange) 0.1rem solid;
+    border: var(--accent-3) 0.1rem solid;
     border-radius: 0.25rem;
     margin-left: 0.25rem;
     margin-bottom: 0.25rem;
     font-size: 0.75rem;
     padding: 0.25rem;
-    color: white;
+    color: var(--white);
     font-weight: 500;
 }
 
@@ -243,7 +243,7 @@
 
 .messageAttachmentCancel:hover {
     cursor: pointer;
-    color: white;
+    color: var(--white);
 }
 
 .messageInput {
@@ -256,7 +256,7 @@
     width: calc(100% - 6.5rem);
     max-height: 10rem;
     line-height: 1rem;
-    color: white;
+    color: var(--white);
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif
 }
 
@@ -266,22 +266,22 @@
 
 .editNickButton {
     font-size: small;
-    color: lightgrey;
+    color: var(--lightgrey);
     margin-left: 0.5rem;
 }
 
 .editNickButton:hover {
     cursor: pointer;
-    color: white;
+    color: var(--white);
 }
 
 .settingsButton {
-    color: lightgrey;
+    color: var(--lightgrey);
 }
 
 .settingsButton:hover {
     cursor: pointer;
-    color: white;
+    color: var(--white);
 }
 
 .closeButton {
@@ -301,7 +301,7 @@ TODO: Make the positioning better
 .messageSendButton {
     font-size: 1.5rem;
     display: inline-block;
-    color: var(--orange);
+    color: var(--accent-3);
     transition: color 100ms;
     width: 1rem;
     height: 1rem;
@@ -313,7 +313,7 @@ TODO: Make the positioning better
 .messageAttachButton {
     font-size: 1.5rem;
     display: inline-block;
-    color: var(--orange);
+    color: var(--accent-3);
     transition: color 100ms;
     width: 1rem;
     height: 1rem;
@@ -349,7 +349,7 @@ TODO: Make the positioning better
 
 .messageSendButton:hover {
     cursor: pointer;
-    color: var(--yellow);
+    color: var(--accent-2);
 }
 
 .messageItalic {
@@ -357,16 +357,16 @@ TODO: Make the positioning better
 }
 
 .messageReply {
-    color: lightgrey;
+    color: var(--lightgrey);
 }
 
 .messageBoxReply {
-    color: lightgrey;
+    color: var(--lightgrey);
     margin-left: 0.25rem;
 }
 
 .messageBoxEditing {
-    color: lightgrey;
+    color: var(--lightgrey);
     margin-left: 0.25rem;
 }
 
@@ -382,11 +382,11 @@ TODO: Make the positioning better
 
 .messageEditingCancel:hover {
     cursor: pointer;
-    color: white;
+    color: var(--white);
 }
 
 .messageBoxAttachment {
-    color: lightgrey;
+    color: var(--lightgrey);
     margin-left: 0.25rem;
     display: inline-block;
 }
@@ -398,12 +398,12 @@ TODO: Make the positioning better
 
 .messageReplyCancel:hover {
     cursor: pointer;
-    color: white;
+    color: var(--white);
 }
 
 .messageReply:hover {
     cursor: pointer;
-    color: white;
+    color: var(--white);
 }
 
 .messageReplyUsername {
@@ -428,7 +428,7 @@ TODO: Make the positioning better
 }
 
 .unreadIndicator {
-    background-color: var(--orange);
+    background-color: var(--accent-3);
     border-radius: 0.5rem;
     width: 0.4rem;
     height: 0.4rem;
@@ -453,7 +453,7 @@ TODO: Make the positioning better
 
 .warningBanner {
     padding: 0.2rem;
-    color: white;
+    color: var(--white);
     font-size: 0.9rem;
 }
 
@@ -595,25 +595,25 @@ TODO: Make the positioning better
 }
 
 .link {
-    color: var(--blue-3);
+    color: var(--accent-5);
     text-decoration: underline;
 }
 
 .link:hover {
-    color: var(--blue-1);
+    color: var(--accent-1);
     cursor: pointer;
 }
 
 a {
-    color: var(--blue-3);
+    color: var(--accent-5);
 }
 
 a:visited {
-    color: var(--blue-2);
+    color: var(--accent-4);
 }
 
 a:hover {
-    color: var(--blue-1);
+    color: var(--accent-1);
 }
 
 .attachmentBox {
@@ -721,6 +721,13 @@ I probably already did it for message view but FORGOT
     height: calc(100vh - 12.3rem);
 }
 
+.themeSelector {
+    background-color: var(--bg-color);
+    border-radius: 0.25rem;
+    padding: 0.25rem;
+    color: var(--white);
+}
+
 /*/
 /* Toggle
 /*/
@@ -735,7 +742,7 @@ I probably already did it for message view but FORGOT
 }
 
 .toggle-checked {
-    background-color: var(--blue-3);
+    background-color: var(--accent-5);
 }
 
 .toggle-ball {

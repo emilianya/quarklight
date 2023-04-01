@@ -176,7 +176,7 @@ export default class Lightquark {
                     notificationAudio.volume = this.appContext.preferences.ql_notificationVolume
                     console.log(notificationAudio.volume)
                     try {
-                        notificationAudio.play();
+                        let sound = notificationAudio.play();
                         let username = data.author.username;
                         let avatar = data.author.avatarUri;
                         if (data.message.specialAttributes.some(attr => attr.type === "botMessage")) {
@@ -184,6 +184,7 @@ export default class Lightquark {
                             avatar = data.message.specialAttributes.find(attr => attr.type === "botMessage").avatarUri
                         }
                         let n = new Notification(`${username} in #${(await this.getChannel(data.message.channelId)).name}`, {body: data.message.content || "Attachment", tag: "quarklight", icon: avatar, silent: true})
+                        await sound;
                         n.onclick = () => {
                             let quarkId = this.appContext.quarks.find(quark => quark.channels.some(channel => channel._id === data.message.channelId))._id
                             let channelId = data.message.channelId
