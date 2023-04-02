@@ -163,7 +163,7 @@ export default class Lightquark {
                 console.log(parsedMessage)
                 this.messageState.setMessages(prev => [...prev, parsedMessage])
             }
-            if((document.hidden || data.message.channelId !== this.mainContext.selectedChannel) && data.author._id !== this.appContext.userData._id) { // channel isn't focused
+            if((document.hidden || data.message.channelId !== this.mainContext.selectedChannel) && data.author._id !== this.appContext.userData._id  && !this.appContext.preferences.mutedChannels.includes(data.message.channelId)) { // channel isn't focused
                 this.mainContext.setUnreadChannels(prev => {
                     if(!prev.includes(data.message.channelId)) {
                         return [...prev, data.message.channelId]

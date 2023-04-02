@@ -3,6 +3,7 @@ import {useContext} from "react";
 import {AppContext} from "../../contexts/AppContext";
 import {lq} from "../../classes/Lightquark";
 import {MainContext} from "../../contexts/MainContext";
+import settings from "../../classes/Settings";
 
 export function Channel(props) {
 	let channel = props.channel;
@@ -20,15 +21,26 @@ export function Channel(props) {
 			}
 		})
 	}
+
+	function toggleChannelMute(channelId) {
+		let mutedChannels = appContext.preferences.mutedChannels;
+		if (mutedChannels.includes(channelId)) {
+			settings.settings.mutedChannels = mutedChannels.filter(c => c !== channelId);
+		} else {
+			settings.settings.mutedChannels = [...mutedChannels, channelId];
+		}
+	}
+
 	return (
 		<>
 			<div onContextMenu={handleContextMenu} id={`${channel._id}`} className="channelBox" onClick={() => props.setSelectedChannel(channel._id)}>
-				<span># {channel.name}</span>
-				{props.showUnread ? <div className="unreadIndicator"></div> : null}
+				<span className={appContext.preferences.mutedChannels.includes(channel._id) ? "mutedChannelName" : ""}># {channel.name}</span>
+				{props.showUnread && !appContext.preferences.mutedChannels.includes(channel._id) ? <div className="unreadIndicator"></div> : null}
 
 			</div>
 			<Menu id={`${channel._id}_menu`} className="channelMenu" theme={"dark"}>
 				<Item disabled={true}><span>{channel.name}</span></Item>
+				<Item onClick={() => toggleChannelMute(channel._id)}>{appContext.preferences.mutedChannels.includes(channel._id) ? "Unmute" : "Mute"}</Item>
 				<Separator />
 				{appContext.quarks.find(q => q._id === channel.quark).owners.includes(appContext.userData._id) &&
 					<>

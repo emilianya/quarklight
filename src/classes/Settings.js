@@ -5,6 +5,7 @@ const defaultSettings = {
 	ql_usePlainText: false, // Parse plain text clientAttribute when present
 	ql_notificationVolume: 0.5, // Notification sound volume
 	notificationsEnabled: true, // Enable notifications
+	mutedChannels: [], // Array of channel IDs to mute
 	ql_dummy: false
 };
 

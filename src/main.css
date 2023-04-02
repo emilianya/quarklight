@@ -728,6 +728,10 @@ I probably already did it for message view but FORGOT
     color: var(--white);
 }
 
+.mutedChannelName {
+    color: var(--tooltip);
+}
+
 /*/
 /* Toggle
 /*/
