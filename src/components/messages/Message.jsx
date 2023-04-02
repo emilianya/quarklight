@@ -63,7 +63,7 @@ export function Message(props) {
 	return (
 		<>
 			<div className="message" id={`${message._id}_message`} onContextMenu={handleContextMenu}>
-				<img src={botMessage?.avatarUri || author.avatarUri} alt="" width={"32px"} className="messageAvatar" />
+				{!appContext.preferences.ql_compactMode && <img src={botMessage?.avatarUri || author.avatarUri} alt="" width={"32px"} className="messageAvatar"/>}
 				<div>
 					{replyMessage ?
 					<div className="messageReply" onClick={() => {

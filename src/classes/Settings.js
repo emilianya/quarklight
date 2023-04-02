@@ -6,7 +6,8 @@ const defaultSettings = {
 	ql_notificationVolume: 0.5, // Notification sound volume
 	notificationsEnabled: true, // Enable notifications
 	mutedChannels: [], // Array of channel IDs to mute
-	ql_showModifiedToggle: true
+	ql_showModifiedToggle: true,
+	ql_compactMode: false
 };
 
 class Settings {

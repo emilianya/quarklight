@@ -11,6 +11,7 @@ export default function SettingsScreen() {
 	let mainContext = useContext(MainContext);
 	let appContext= useContext(AppContext);
 	let [plainText, setPlainText] = useState(appContext.preferences.usePlainText);
+	let [compactMode, setCompactMode] = useState(appContext.preferences.ql_compactMode);
 	let [showModifiedToggle, setShowModifiedToggle] = useState(appContext.preferences.ql_showModifiedToggle);
 	let [notificationsEnabled, setNotificationsEnabled] = useState(appContext.preferences.notificationsEnabled);
 	let [tab, setTab] = useState(0);
@@ -18,6 +19,10 @@ export default function SettingsScreen() {
 	useEffect(() => {
 		settings.settings.usePlainText = plainText;
 	}, [plainText]);
+
+	useEffect(() => {
+		settings.settings.ql_compactMode = compactMode;
+	}, [compactMode]);
 
 	useEffect(() => {
 		settings.settings.ql_showModifiedToggle = showModifiedToggle;
@@ -89,6 +94,11 @@ export default function SettingsScreen() {
 								<option value="dark">Dark</option>
 								<option value="light">Light</option>
 							</select>
+						</div>
+						<div className="setting">
+							<span style={{fontWeight: "600"}}>Disable avatars</span>
+							<br />
+							<Toggle checked={compactMode} setChecked={setCompactMode} />
 						</div>
 					</>)}
 				</div>
