@@ -91,7 +91,13 @@ export function Message(props) {
 								<a target="_blank" rel="noopener noreferrer" href={decoratedHref} key={key}>{decoratedText}</a>
 							)
 						}}>
-							<span className={message.specialAttributes?.some(a => a.type === "/me") ? "messageItalic" : ""}>{(appContext.preferences.usePlainText && !showModified) ? message.original : message.content}</span><small hidden={message.original === message.content || !appContext.preferences.ql_showModifiedToggle} onClick={() => {setShowModified(p => !p)}} style={{color: "var(--lightgrey)", userSelect: "none", cursor: "pointer"}}> {showModified ? "Hide" : "Show"} modified</small><small style={{color: "var(--lightgrey)", userSelect: "none"}} hidden={!message?.edited}> (edited)</small>
+							<span className={message.specialAttributes?.some(a => a.type === "/me") ? "messageItalic" : ""}>
+								{(!appContext.preferences.usePlainText && showModified) || (appContext.preferences.usePlainText && !showModified) ? message.original : message.content}
+							</span>
+							<small hidden={message.original === message.content || !appContext.preferences.ql_showModifiedToggle} onClick={() => {setShowModified(p => !p)}} style={{color: "var(--lightgrey)", userSelect: "none", cursor: "pointer"}}>
+								{showModified ? " Hide" : " Show"} {appContext.preferences.usePlainText ? "modified" : "original"}
+							</small>
+							<small style={{color: "var(--lightgrey)", userSelect: "none"}} hidden={!message?.edited}> (edited)</small>
 						</Linkify>
 						{message.attachments?.length > 0 ? <div className="messageAttachments">{message.attachments.map(attachment => {
 							return <Attachment attachment={attachment} key={attachment.url} scrollDetached={scrollDetached} />

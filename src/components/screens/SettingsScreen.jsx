@@ -61,9 +61,9 @@ export default function SettingsScreen() {
 							<Toggle checked={plainText} setChecked={setPlainText} />
 						</div>
 						<div className="setting">
-							<span style={{fontWeight: "600"}}>Show modified toggle</span>
+							<span style={{fontWeight: "600"}}>Show {plainText ? "modified" : "original"} toggle</span>
 							<br />
-							<span style={{fontSize: "0.9rem"}}>Show a button to show the modified version of a message (requires Show plain text message)</span>
+							<span style={{fontSize: "0.9rem"}}>Show a button to show the {plainText ? "modified" : "original"} version of a message</span>
 							<br />
 							<Toggle checked={showModifiedToggle} setChecked={setShowModifiedToggle} />
 						</div>
