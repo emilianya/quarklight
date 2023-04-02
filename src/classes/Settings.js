@@ -2,11 +2,11 @@ import { lq } from "./Lightquark";
 
 const defaultSettings = {
 	ql_theme: 'dark', // Quarklight theme
-	ql_usePlainText: false, // Parse plain text clientAttribute when present
+	usePlainText: false, // Parse plain text clientAttribute when present
 	ql_notificationVolume: 0.5, // Notification sound volume
 	notificationsEnabled: true, // Enable notifications
 	mutedChannels: [], // Array of channel IDs to mute
-	ql_dummy: false
+	ql_showModifiedToggle: true
 };
 
 class Settings {

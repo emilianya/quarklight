@@ -10,13 +10,18 @@ import settings from "../../classes/Settings";
 export default function SettingsScreen() {
 	let mainContext = useContext(MainContext);
 	let appContext= useContext(AppContext);
-	let [dummy, setDummy] = useState(appContext.preferences.ql_dummy);
+	let [plainText, setPlainText] = useState(appContext.preferences.usePlainText);
+	let [showModifiedToggle, setShowModifiedToggle] = useState(appContext.preferences.ql_showModifiedToggle);
 	let [notificationsEnabled, setNotificationsEnabled] = useState(appContext.preferences.notificationsEnabled);
 	let [tab, setTab] = useState(0);
 
 	useEffect(() => {
-		settings.settings.ql_dummy = dummy;
-	}, [dummy]);
+		settings.settings.usePlainText = plainText;
+	}, [plainText]);
+
+	useEffect(() => {
+		settings.settings.ql_showModifiedToggle = showModifiedToggle;
+	}, [showModifiedToggle]);
 
 	useEffect(() => {
 		settings.settings.notificationsEnabled = notificationsEnabled;
@@ -49,43 +54,18 @@ export default function SettingsScreen() {
 				<div className="settingTabContent">
 					{ tab === 0 && (<>
 						<div className="setting">
-							<span style={{fontWeight: "600"}}>Dummy setting</span>
+							<span style={{fontWeight: "600"}}>Show plain text message</span>
 							<br />
-							<span style={{fontSize: "0.9rem"}}>This setting does nothing.</span>
+							<span style={{fontSize: "0.9rem"}}>Show unmodified version of messages when available. If this is enabled you are not able to see any text modifiers.</span>
 							<br />
-							<Toggle checked={dummy} setChecked={setDummy} />
+							<Toggle checked={plainText} setChecked={setPlainText} />
 						</div>
-						<hr style={{width: "97%", border: "1px solid var(--tooltip)"}} />
 						<div className="setting">
-							<span style={{fontWeight: "600"}}>Dummy setting</span>
+							<span style={{fontWeight: "600"}}>Show modified toggle</span>
 							<br />
-							<span style={{fontSize: "0.9rem"}}>This setting does nothing.</span>
+							<span style={{fontSize: "0.9rem"}}>Show a button to show the modified version of a message (requires Show plain text message)</span>
 							<br />
-							<Toggle checked={dummy} setChecked={setDummy} />
-						</div>
-						<hr style={{width: "97%", border: "1px solid var(--tooltip)"}} />
-						<div className="setting">
-							<span style={{fontWeight: "600"}}>Dummy setting</span>
-							<br />
-							<span style={{fontSize: "0.9rem"}}>This setting does nothing.</span>
-							<br />
-							<Toggle checked={dummy} setChecked={setDummy} />
-						</div>
-						<hr style={{width: "97%", border: "1px solid var(--tooltip)"}} />
-						<div className="setting">
-							<span style={{fontWeight: "600"}}>Dummy setting</span>
-							<br />
-							<span style={{fontSize: "0.9rem"}}>This setting does nothing.</span>
-							<br />
-							<Toggle checked={dummy} setChecked={setDummy} />
-						</div>
-						<hr style={{width: "97%", border: "1px solid var(--tooltip)"}} />
-						<div className="setting">
-							<span style={{fontWeight: "600"}}>Dummy setting</span>
-							<br />
-							<span style={{fontSize: "0.9rem"}}>This setting does nothing.</span>
-							<br />
-							<Toggle checked={dummy} setChecked={setDummy} />
+							<Toggle checked={showModifiedToggle} setChecked={setShowModifiedToggle} />
 						</div>
 					</>)}
 					{ tab === 1 && (<>

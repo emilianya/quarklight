@@ -4,7 +4,7 @@ import {Attachment} from "./Attachment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faReply } from "@fortawesome/free-solid-svg-icons";
 import {useContextMenu, Menu, Item} from "react-contexify";
-import {useContext} from "react";
+import {useContext, useState} from "react";
 import {AppContext} from "../../contexts/AppContext";
 import { lq } from "../../classes/Lightquark";
 import {MessageContext} from "../../contexts/MessageContext";
@@ -17,6 +17,8 @@ export function Message(props) {
 	let setEditing = messageContext.editing[1];
 	let scrollDetached = messageContext.scrollDetached[0];
 	let setReplyTo = messageContext.replyTo[1];
+
+	let [showModified, setShowModified] = useState(false);
 
 	let message = props.message.message;
 
@@ -68,7 +70,7 @@ export function Message(props) {
 					}}>
 						<FontAwesomeIcon className="messageReplyIcon" icon={faReply} />
 						<small className="messageReplyUsername">{message.reply.author.username || "Unknown User"}</small>
-						<small className="messageReplyBody">{message.reply.message.content || "Unknown Message"}</small>
+						<small className="messageReplyBody">{(appContext.preferences.usePlainText && !showModified) ? message.reply.message.original : message.reply.message.content || "Unknown Message"}</small>
 					</div>
 					: null}
 					<div className="messageUsernameRow">
@@ -89,7 +91,7 @@ export function Message(props) {
 								<a target="_blank" rel="noopener noreferrer" href={decoratedHref} key={key}>{decoratedText}</a>
 							)
 						}}>
-							<span className={message.specialAttributes?.some(a => a.type === "/me") ? "messageItalic" : ""}>{message.content}</span><small style={{color: "lightgray", userSelect: "none"}} hidden={!message?.edited}> (edited)</small>
+							<span className={message.specialAttributes?.some(a => a.type === "/me") ? "messageItalic" : ""}>{(appContext.preferences.usePlainText && !showModified) ? message.original : message.content}</span><small hidden={message.original === message.content || !appContext.preferences.ql_showModifiedToggle} onClick={() => {setShowModified(p => !p)}} style={{color: "var(--lightgrey)", userSelect: "none", cursor: "pointer"}}> {showModified ? "Hide" : "Show"} modified</small><small style={{color: "var(--lightgrey)", userSelect: "none"}} hidden={!message?.edited}> (edited)</small>
 						</Linkify>
 						{message.attachments?.length > 0 ? <div className="messageAttachments">{message.attachments.map(attachment => {
 							return <Attachment attachment={attachment} key={attachment.url} scrollDetached={scrollDetached} />

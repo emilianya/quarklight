@@ -2,6 +2,7 @@ import wantYouGone from "../misc/wantYouGone";
 import notificationWav from "../assets/notification.wav";
 import EventEmitter from "events";
 import humanFileSize from "../misc/humanFileSize";
+
 export default class Lightquark {
     
     token;
@@ -119,8 +120,7 @@ export default class Lightquark {
                 }
             })
             let newAttachment = { url: attachment }
-            let fileSize = humanFileSize(res.headers.get("content-range").split("/")[1].replace(/"/g, ""));
-            newAttachment.size = fileSize;
+            newAttachment.size = humanFileSize(res.headers.get("content-range").split("/")[1].replace(/"/g, ""));
             newAttachment.name = res.headers.get("content-disposition").split("filename=")[1].replace(/"/g, "");
             newAttachment.type = res.headers.get("content-type");
             return newAttachment;
@@ -128,6 +128,13 @@ export default class Lightquark {
         const reply = data.message.specialAttributes.find(a => a.type === "reply");
         if (reply) {
             data.message.reply = await this.fetchMessage(data.message.channelId, reply.replyTo);
+        }
+
+        data.message.original = data.message.content;
+        let clientAttributes = data.message.specialAttributes.find(a => a.type === "clientAttributes");
+        if (clientAttributes && clientAttributes?.plaintext) {
+            data.message.modified = data.message.content === clientAttributes.plaintext;
+            data.message.original = clientAttributes.plaintext;
         }
         return data;
     }
@@ -163,7 +170,9 @@ export default class Lightquark {
                 console.log(parsedMessage)
                 this.messageState.setMessages(prev => [...prev, parsedMessage])
             }
-            if((document.hidden || data.message.channelId !== this.mainContext.selectedChannel) && data.author._id !== this.appContext.userData._id  && !this.appContext.preferences.mutedChannels.includes(data.message.channelId)) { // channel isn't focused
+            if((document.hidden || data.message.channelId !== this.mainContext.selectedChannel)
+                && data.author._id !== this.appContext.userData._id
+                && !this.appContext.preferences.mutedChannels.includes(data.message.channelId)) { // channel isn't focused
                 this.mainContext.setUnreadChannels(prev => {
                     if(!prev.includes(data.message.channelId)) {
                         return [...prev, data.message.channelId]
