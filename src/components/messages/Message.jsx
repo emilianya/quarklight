@@ -36,6 +36,7 @@ export function Message(props) {
 
 	let botMessage = message?.specialAttributes?.find(a => a.type === "botMessage")
 	let replyMessage = message?.specialAttributes?.find(a => a.type === "reply")
+	let replyBotMessage = message?.reply?.message?.specialAttributes?.find(a => a.type === "botMessage")
 
 	function formatDate(date) {
 		// If today
@@ -69,7 +70,7 @@ export function Message(props) {
 						document.getElementById(`${replyMessage.replyTo}_message`).scrollIntoView();
 					}}>
 						<FontAwesomeIcon className="messageReplyIcon" icon={faReply} />
-						<small className="messageReplyUsername">{message.reply.author.username || "Unknown User"}</small>
+						<small className="messageReplyUsername">{(replyBotMessage?.username || message.reply.author.username) || "Unknown User"}</small>
 						<small className="messageReplyBody">{(appContext.preferences.usePlainText && !showModified) ? message.reply.message.original : message.reply.message.content || "Unknown Message"}</small>
 					</div>
 					: null}
