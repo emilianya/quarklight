@@ -1,4 +1,4 @@
-import {useContext, useEffect, useState} from "react";
+import {lazy, Suspense, useContext, useEffect, useState} from "react";
 import {AppContext} from "../../contexts/AppContext";
 import { lq } from "../../classes/Lightquark";
 import "../../main.css";
@@ -8,6 +8,8 @@ import {MainContext} from "../../contexts/MainContext";
 import pjson from '../../../package.json';
 import settings from "../../classes/Settings";
 import SettingsScreen from "./SettingsScreen";
+
+const EasterEggCat = lazy(() => import("../random/EasterEggCat"));
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -66,6 +68,11 @@ export function MainScreen() {
 					await delay(5000);
 					appContext.setLoading(false)
 					}}>Load for 5s</button>
+
+					<Suspense fallback={<>Loading cat...</>}>
+						<br />
+						<EasterEggCat />
+					</Suspense>
 			</div> : 
 			// Actual application starts here
 			<div className="appContainer">
