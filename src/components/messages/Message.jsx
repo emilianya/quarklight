@@ -85,7 +85,7 @@ export function Message(props) {
 					</div>
 					<div className="messageBody">
 						<Linkify options={{render: ({attributes, content}) => {
-							const {href, ...props} = attributes;
+							const {href} = attributes;
 							if (href.startsWith("https://lq.litdevs.org/d/")) {
 								let lqPart = href.split("https://lq.litdevs.org/d/")[1];
 								let lqProtocol = `lightquark://${lqPart}`;
