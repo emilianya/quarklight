@@ -2,6 +2,7 @@ import wantYouGone from "../misc/wantYouGone";
 import notificationWav from "../assets/notification.wav";
 import EventEmitter from "events";
 import humanFileSize from "../misc/humanFileSize";
+import * as linkify from 'linkifyjs';
 
 export default class Lightquark {
     
@@ -136,6 +137,7 @@ export default class Lightquark {
             data.message.modified = data.message.content === clientAttributes.plaintext;
             data.message.original = clientAttributes.plaintext;
         }
+        data.message.cat = !!clientAttributes?.isCat;
         return data;
     }
 
@@ -304,6 +306,28 @@ export default class Lightquark {
     async sendMessage(message, attachments, channelId, replyTo = null) {
         let specialAttributes = [];
         if(replyTo) specialAttributes.push({type: "reply", replyTo: replyTo});
+        let clientAttributes = { type: "clientAttributes" };
+        clientAttributes.plaintext = message;
+
+        // Perform text modifiers/other client attributes
+        if (this.appContext.preferences.ql_cat) {
+            clientAttributes.isCat = true;
+            // Replace no with nyo, na with nya. Do not affect links
+            let words = message.split(" ");
+            words.forEach((word, index) => {
+                let isLink = linkify.test(word);
+                if (!isLink) {
+                    word = word.replace(/no/g, "nyo");
+                    word = word.replace(/na/g, "nya");
+                    word = word.replace(/ma/g, "mya");
+                }
+                console.log(isLink)
+                words[index] = word;
+            })
+            message = words.join(" ");
+        }
+
+        specialAttributes.push(clientAttributes);
         await lq.apiCall(`/channel/${channelId}/messages`, "POST", {content: message, attachments, specialAttributes}, "v2");
     }
 

@@ -1,5 +1,5 @@
 import {Tooltip} from "react-tooltip";
-import Linkify from "react-linkify";
+import Linkify from "linkify-react";
 import {Attachment} from "./Attachment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faReply } from "@fortawesome/free-solid-svg-icons";
@@ -8,6 +8,7 @@ import {useContext, useState} from "react";
 import {AppContext} from "../../contexts/AppContext";
 import { lq } from "../../classes/Lightquark";
 import {MessageContext} from "../../contexts/MessageContext";
+import catEars from "../../assets/catears.png";
 
 export function Message(props) {
 
@@ -63,7 +64,10 @@ export function Message(props) {
 	return (
 		<>
 			<div className="message" id={`${message._id}_message`} onContextMenu={handleContextMenu}>
-				{!appContext.preferences.ql_compactMode && <img src={botMessage?.avatarUri || author.avatarUri} alt="" width={"32px"} className="messageAvatar"/>}
+				{!appContext.preferences.ql_compactMode && <>
+					{message.cat && <img className="messageAvatarCatEars" src={catEars} width={"32px"} alt="Cat ears" />}
+					<img src={botMessage?.avatarUri || author.avatarUri} alt="" width={"32px"} className="messageAvatar"/>
+				</>}
 				<div>
 					{replyMessage ?
 					<div className="messageReply" onClick={() => {
@@ -80,18 +84,19 @@ export function Message(props) {
 						<Tooltip className="timestampTip" anchorId={`${message._id}_timestamp`} positionStrategy={"fixed"} place={"top"} style={{opacity: 1, backgroundColor: "var(--tooltip)", color: "var(--white)"}} />
 					</div>
 					<div className="messageBody">
-						<Linkify componentDecorator={(decoratedHref, decoratedText, key) => {
-							if (decoratedHref.startsWith("https://lq.litdevs.org/d/")) {
-								let lqPart = decoratedHref.split("https://lq.litdevs.org/d/")[1];
+						<Linkify options={{render: ({attributes, content}) => {
+							const {href, ...props} = attributes;
+							if (href.startsWith("https://lq.litdevs.org/d/")) {
+								let lqPart = href.split("https://lq.litdevs.org/d/")[1];
 								let lqProtocol = `lightquark://${lqPart}`;
 								return (
-									<span className="link" onClick={() => lq.openLqLink(lqProtocol)} key={key}>{lqProtocol}</span>
+								<span className="link" onClick={() => lq.openLqLink(lqProtocol)}>{lqProtocol}</span>
 								)
 							}
 							return (
-								<a target="_blank" rel="noopener noreferrer" href={decoratedHref} key={key}>{decoratedText}</a>
+								<a target="_blank" rel="noopener noreferrer" href={href}>{content}</a>
 							)
-						}}>
+						}}}>
 							<span className={message.specialAttributes?.some(a => a.type === "/me") ? "messageItalic" : ""}>
 								{(!appContext.preferences.usePlainText && showModified) || (appContext.preferences.usePlainText && !showModified) ? message.original : message.content}
 							</span>

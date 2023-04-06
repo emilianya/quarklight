@@ -11,10 +11,15 @@ export default function SettingsScreen() {
 	let mainContext = useContext(MainContext);
 	let appContext= useContext(AppContext);
 	let [plainText, setPlainText] = useState(appContext.preferences.usePlainText);
+	let [catMode, setCatMode] = useState(appContext.preferences.ql_cat);
 	let [compactMode, setCompactMode] = useState(appContext.preferences.ql_compactMode);
 	let [showModifiedToggle, setShowModifiedToggle] = useState(appContext.preferences.ql_showModifiedToggle);
 	let [notificationsEnabled, setNotificationsEnabled] = useState(appContext.preferences.notificationsEnabled);
 	let [tab, setTab] = useState(0);
+
+	useEffect(() => {
+		settings.settings.ql_cat = catMode;
+	}, [catMode]);
 
 	useEffect(() => {
 		settings.settings.usePlainText = plainText;
@@ -71,6 +76,13 @@ export default function SettingsScreen() {
 							<span style={{fontSize: "0.9rem"}}>Show a button to show the {plainText ? "modified" : "original"} version of a message</span>
 							<br />
 							<Toggle checked={showModifiedToggle} setChecked={setShowModifiedToggle} />
+						</div>
+						<div className="setting">
+							<span style={{fontWeight: "600"}}>I am a cat</span>
+							<br />
+							<span style={{fontSize: "0.9rem"}}>meow purr meow nya meow meow</span>
+							<br />
+							<Toggle checked={catMode} setChecked={setCatMode} />
 						</div>
 					</>)}
 					{ tab === 1 && (<>

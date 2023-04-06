@@ -1,11 +1,14 @@
-import Linkify from "react-linkify";
+import Linkify from "linkify-react";
 
 export function ChannelInfo(props) {
 	let channel = props.channel || {name: "", description: ""};
 	return (
 		<div className="channelInfo">
 			<span style={{fontWeight: "500", marginRight: "1rem"}}>#{channel.name}</span>
-			<Linkify componentDecorator={(decoratedHref, decoratedText, key) => ( <a target="_blank" rel="noopener noreferrer" href={decoratedHref} key={key}>{decoratedText}</a> )}>
+			<Linkify options={{render: ({
+				attributes,
+				content
+			}) => ( <a target="_blank" rel="noopener noreferrer" href={attributes.href}>{content}</a> )}}>
 				<span style={{
 					fontWeight: "300",
 					maxWidth: "calc(100vw - 25rem)",
