@@ -35,7 +35,13 @@
             "users.me",
             "users.avatars",
             "users.avatar",
-            "users.nickname"
+            "users.nickname",
+            [
+                {
+                    "name": "Cat Mode",
+                    "description": "Turn into a cat. nya :3"
+                }
+            ]
         ],
         "partial": [
             {
