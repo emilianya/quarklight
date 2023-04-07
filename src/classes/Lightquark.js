@@ -114,6 +114,12 @@ export default class Lightquark {
 
     async messageParser(data) {
         data.message.attachments = await Promise.all(data.message.attachments.map(async attachment => {
+            let cachedAttachment = this.appContext.attachmentCache.find(a => a.url === attachment);
+            if (cachedAttachment && (Date.now() - cachedAttachment.cachedAt < 60 * 60 * 1000) ) {
+                console.log("Using cached attachment")
+                return cachedAttachment.attachment;
+            }
+            console.warn("Fetching attachment");
             let res = await fetch(attachment, {
                 method: "HEAD",
                 headers: {
@@ -124,6 +130,8 @@ export default class Lightquark {
             newAttachment.size = humanFileSize(res.headers.get("content-range").split("/")[1].replace(/"/g, ""));
             newAttachment.name = res.headers.get("content-disposition").split("filename=")[1].replace(/"/g, "");
             newAttachment.type = res.headers.get("content-type");
+
+            this.appContext.setAttachmentCache(prev => [...prev, {url: attachment, cachedAt: Date.now(), attachment: newAttachment}]);
             return newAttachment;
         }))
         const reply = data.message.specialAttributes.find(a => a.type === "reply");

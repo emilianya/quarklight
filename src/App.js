@@ -27,6 +27,8 @@ function App() {
     let [channels, setChannels] = useState([]);
     let [userCache, setUserCache] = useState([]);
     let [channelCache, setChannelCache] = useState([]);
+    let [attachmentCache, setAttachmentCache] = useState([]); // Caches attachment metadata
+    let [fileCache, setFileCache] = useState([]); // Caches attachment content
     let [preferences, setPreferences] = useState(settings.settings);
 
     useEffect(() => {
@@ -56,6 +58,8 @@ function App() {
             channels, setChannels,
             userCache, setUserCache,
             channelCache, setChannelCache,
+            attachmentCache, setAttachmentCache,
+            fileCache, setFileCache,
             version: `${lq.isDev ? "dev" : pjson.version}`,
             preferences
         }}>

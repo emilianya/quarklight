@@ -1,15 +1,46 @@
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faDownload} from "@fortawesome/free-solid-svg-icons";
+import {AppContext} from "../../contexts/AppContext";
+import {useContext, useEffect, useState} from "react";
 
 export function Attachment(props) {
+	const appContext = useContext(AppContext);
+	let [source, setSource] = useState(null);
+
+	// Load image
+	useEffect(() => {
+		if (!props.attachment.type.startsWith("image")
+		 && !props.attachment.type.startsWith("audio")
+		 && !props.attachment.type.startsWith("video")) return;
+		if (props.attachment.type === "audio/wave") return;
+		const cachedFile = appContext.fileCache.find(f => f.url === props.attachment.url);
+		if (cachedFile) {
+			console.log("Using cached file")
+			setSource(cachedFile.data);
+			return;
+		}
+		(async () => {
+			console.warn("Fetching new file");
+			const data = await fetch(props.attachment.url);
+			const blob = await data.blob();
+			const reader = new FileReader();
+			reader.readAsDataURL(blob);
+			reader.onloadend = () => {
+				const base64data = reader.result;
+				setSource(base64data);
+				appContext.fileCache.push({url: props.attachment.url, data: base64data});
+			}
+		})();
+	}, [])
+
 	if (!props.attachment) return null;
 	if (props.attachment.type.startsWith("image")) {
 		return (
 			<div>
-				<img className="attachmentImage" onLoad={() => {
+				<img className="attachmentImage" onLoad={(e) => {
 					let messageView = document.querySelector(".messageView");
 					if (!props.scrollDetached) messageView.scrollTo(0, messageView.scrollHeight);
-				}} src={props.attachment.url} alt="" />
+				}} src={source} alt="" />
 				<a target="_blank" rel="noopener noreferrer" href={`${props.attachment.url}`}><FontAwesomeIcon icon={faDownload}/></a>
 			</div>
 		);
