@@ -706,7 +706,7 @@ export default class Lightquark {
      */
     async getMessages (channelId, startTimestamp = undefined) {
         if (!channelId) return [];
-        let res = await this.apiCall(`/channel/${channelId}/messages${startTimestamp ? `?startTimestamp=${startTimestamp}` : ""}`)
+        let res = await this.apiCall(`/channel/${channelId}/messages${startTimestamp ? `?startTimestamp=${startTimestamp}` : ""}`, "GET", undefined, "v2")
         return await Promise.all(res.response.messages.map(async m => await this.messageParser(m)));
     }
 

@@ -31,6 +31,7 @@ export function Attachment(props) {
 				appContext.fileCache.push({url: props.attachment.url, data: base64data});
 			}
 		})();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	if (!props.attachment) return null;
