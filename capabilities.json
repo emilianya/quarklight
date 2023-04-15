@@ -3,7 +3,7 @@
     "client": {
         "name": "Quarklight",
         "author": "Amy",
-        "version": "0.1.26",
+        "version": "0.1.27",
         "repository": "https://github.com/vtheskeleton/quarklight",
         "url": "https://quarklight.tech"
     },
