@@ -3,11 +3,13 @@ import notificationWav from "../assets/notification.wav";
 import EventEmitter from "events";
 import humanFileSize from "../misc/humanFileSize";
 import * as linkify from 'linkifyjs';
+import settings from "./Settings";
 
 export default class Lightquark {
     
     token;
     baseUrl = "https://lq.litdevs.org";
+    gatewayUrl = "wss://lq-gateway.litdevs.org";
     defaultVersion = "v1"
     appContext;
     mainContext;
@@ -22,12 +24,14 @@ export default class Lightquark {
     eventBus = new EventEmitter();
     isDev = false;
     pendingWarning = undefined;
+    initalized = false;
 
     /**
+     * @param networkRoot - Root URL of the network, e.g. https://lq.litdevs.org
      * @param appContext - React Context
      * @param {string} token - JWT Token 
      */
-    constructor (appContext = undefined, token = undefined) {
+    constructor(networkRoot, appContext = undefined, token = undefined) {
         console.log("Lightquark constructor called");
         if (Lightquark._instance) {
             console.log("Existing instance of Lightquark found, returning that instance");
@@ -38,8 +42,26 @@ export default class Lightquark {
         this.appContext = appContext;
         this.token = token;
 
-        // If authenticated, setup websocket gateway
-        if (this.token && !this.ws) this.openGateway();
+        try {
+            let parsedNetworkRoot;
+            if (networkRoot.startsWith("http://") || networkRoot.startsWith("https://")) {
+                parsedNetworkRoot = networkRoot;
+            } else {
+                parsedNetworkRoot = `https://${networkRoot}`;
+            }
+            fetch(`${parsedNetworkRoot}/v1/network`).then(res => res.json()).then(networkData => {
+                console.log("Network data:", networkData);
+                this.baseUrl = networkData.baseUrl;
+                this.gatewayUrl = networkData.gateway;
+
+                // If authenticated, setup websocket gateway
+                if (this.token && !this.ws) this.openGateway();
+                this.initalized = true;
+            })
+        } catch {
+            console.error("Failed to fetch network data");
+            this.appContext.setSpinnerText("Failed to fetch network data");
+        }
 
         this.eventBus.on("gatewayEvent", (event) => {
             switch (event.eventId) {
@@ -233,15 +255,16 @@ export default class Lightquark {
     setToken (token) {
         console.log("token updated", this.identifier)
         this.token = token;
-        if (this.token && !this.ws) this.openGateway();
+        if (this.token && !this.ws && this.initalized) this.openGateway();
     }
 
     openGateway () {
-        console.log("open gateway called")
+        console.warn("open gateway called", this.gatewayUrl);
+        console.trace();
         if (this.dead) return;
         if (!this.token) return;
         console.log("Opening gateway connection");
-        this.ws = new WebSocket("wss://lq-gateway.litdevs.org", this.token);
+        this.ws = new WebSocket(this.gatewayUrl, this.token);
         this.registerWsListeners();
     }
 
@@ -474,6 +497,7 @@ export default class Lightquark {
         this.appContext.setToken(undefined);
         this.appContext.setLoggedIn(false);
         this.appContext.setUserData(undefined);
+        window.location.reload();
     }
 
     /**
@@ -760,6 +784,7 @@ export default class Lightquark {
     }
 }
 
-const lq = new Lightquark()
+
+const lq = new Lightquark(settings.settings.ql_network);
 
 export {lq}

@@ -8,7 +8,8 @@ const defaultSettings = {
 	mutedChannels: [], // Array of channel IDs to mute
 	ql_showModifiedToggle: true, // Show originak/modified button on messages
 	ql_compactMode: false, // Hide avatars
-	ql_cat: false // Cat mode
+	ql_cat: false, // Cat mode
+	ql_network: 'lq.litdevs.org'
 };
 
 class Settings {
