@@ -14,6 +14,7 @@
             "general.gateway",
             "general.deeplink",
             "general.notifications",
+            "general.networks",
             "quarks.create",
             "quarks.list",
             "quarks.view",
