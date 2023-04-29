@@ -81,6 +81,14 @@ export default class Lightquark {
                 case "quarkUpdate":
                     break;
                 case "quarkDelete":
+                    this.appContext.setQuarks(p => p.filter(quark => quark._id !== event.quark._id));
+                    if (this.mainContext.selectedQuark === event.quark._id) {
+                        if (this.appContext.quarks[0]._id === event.quark._id) {
+                            this.mainContext.setSelectedQuark(undefined);
+                        } else {
+                            this.mainContext.setSelectedQuark(this.appContext.quarks[0]._id);
+                        }
+                    }
                     break;
                 case "channelCreate":
                     this.appContext.setChannelCache(prev => [...prev, {cachedAt: new Date(), channel: event.channel}]);
@@ -483,7 +491,10 @@ export default class Lightquark {
         let res = await this.apiCall("/quark/create", "POST", {name});
         if (res.request.success) {
             let newQuark = await this.getQuark(res.response.quark._id);
+            // TODO: Remove this with QUARKLIGHT-47
             this.appContext.setQuarks(o => [...o, newQuark]);
+            this.subscribeToQuark(newQuark._id)
+            newQuark.channels.forEach(c => this.subscribeToChannel(c._id));
             return {error: false, quark: newQuark};
         } else {
             console.error("Failed to create quark", res);
@@ -492,13 +503,13 @@ export default class Lightquark {
     }
 
     async deleteQuark (quarkId) {
-        let res = await this.apiCall(`/quark/${quarkId}`, "DELETE");
-        if (res.request.success) {
+        return await this.apiCall(`/quark/${quarkId}`, "DELETE");
+        /*if (res.request.success) {
             let newQuarks = this.appContext.quarks.filter(q => q._id !== quarkId);
             this.appContext.setQuarks(newQuarks);
         } else {
             console.error("Failed to delete quark", res);
-        }
+        }*/
     }
 
     /**

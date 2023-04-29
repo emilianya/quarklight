@@ -32,7 +32,7 @@ export function Channel(props) {
 	}
 
 	return (
-		<>
+		appContext.quarks.find(q => q._id === channel.quark) && <>
 			<div onContextMenu={handleContextMenu} id={`${channel._id}`} className="channelBox" onClick={() => props.setSelectedChannel(channel._id)}>
 				<span className={appContext.preferences.mutedChannels.includes(channel._id) ? "mutedChannelName" : ""}># {channel.name}</span>
 				{props.showUnread && !appContext.preferences.mutedChannels.includes(channel._id) ? <div className="unreadIndicator"></div> : null}
