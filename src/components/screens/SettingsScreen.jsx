@@ -6,6 +6,7 @@ import {useContext, useEffect, useState} from "react";
 import Toggle from "../settings/Toggle";
 import {UserBox} from "../nav/UserBox";
 import settings from "../../classes/Settings";
+import {lq} from "../../classes/Lightquark";
 
 export default function SettingsScreen() {
 	let mainContext = useContext(MainContext);
@@ -15,7 +16,43 @@ export default function SettingsScreen() {
 	let [compactMode, setCompactMode] = useState(appContext.preferences.ql_compactMode);
 	let [showModifiedToggle, setShowModifiedToggle] = useState(appContext.preferences.ql_showModifiedToggle);
 	let [notificationsEnabled, setNotificationsEnabled] = useState(appContext.preferences.notificationsEnabled);
+	let [network, setNetwork] = useState(appContext.preferences.ql_network);
+	let [networkError, setNetworkError] = useState("");
 	let [tab, setTab] = useState(0);
+
+	function saveNetwork() {
+
+		const er = (e) => {
+			console.log(e);
+			setNetworkError("Failed to fetch network data.")
+			document.getElementById("networkSaveButton").innerText = "Save";
+		}
+
+		try {
+			document.getElementById("networkSaveButton").innerText = "...";
+			let parsedNetwork
+			if (network.startsWith("http://") || network.startsWith("https://")) {
+				parsedNetwork = network;
+			} else {
+				parsedNetwork = `https://${network}`;
+			}
+			fetch(`${parsedNetwork}/v1/network`).then(res => res.json()).then(networkData => {
+				if (networkData.baseUrl) {
+					settings.settings.ql_network = network;
+					lq.logout()
+				} else {
+					throw new Error("Invalid network");
+				}
+			}).catch(e => {
+				er(e);
+			})
+
+		} catch (e) {
+			er(e)
+		}
+
+
+	}
 
 	useEffect(() => {
 		settings.settings.ql_cat = catMode;
@@ -43,7 +80,7 @@ export default function SettingsScreen() {
 				<FontAwesomeIcon icon={faX} className="closeButton" onClick={() => { mainContext.setScreen("primary") }} />
 				<h3>Settings</h3>
 				<div className="settingsUserBox">
-					<UserBox />
+					{appContext.loggedIn ? <UserBox/> : <div style={{height: "3.3rem"}}></div>}
 				</div>
 			</div>
 			<div className="settingTabContainer">
@@ -57,8 +94,12 @@ export default function SettingsScreen() {
 						Notifications
 					</div>
 					<div className={tab === 2 ? "settingTab settingTabActive" : "settingTab"}
-						 onClick={() => {setTab(2)}}>
+					     onClick={() => {setTab(2)}}>
 						Appearance
+					</div>
+					<div className={tab === 3 ? "settingTab settingTabActive" : "settingTab"}
+					     onClick={() => {setTab(3)}}>
+						Lightquark
 					</div>
 				</div>
 				<div className="settingTabContent">
@@ -111,6 +152,18 @@ export default function SettingsScreen() {
 							<span style={{fontWeight: "600"}}>Disable avatars</span>
 							<br />
 							<Toggle checked={compactMode} setChecked={setCompactMode} />
+						</div>
+					</>)}
+					{ tab === 3 && (<>
+						<div className="setting">
+							<span style={{fontWeight: "600"}}>Network <span className="experimentalSetting">EXPERIMENTAL</span></span>
+							<br />
+							<span style={{fontSize: "0.9rem"}}>Switch to another Lightquark network.</span>
+							<br />
+							<input type="text" placeholder={"lq.litdevs.org"} value={network} onInput={(e) => setNetwork(e.target.value)} className="input-box" />
+							<br />
+							{networkError && (<><span style={{color: "red"}}>{networkError}</span><br /></>)}
+							<button className="button" id={"networkSaveButton"} onClick={saveNetwork}>Save</button>
 						</div>
 					</>)}
 				</div>

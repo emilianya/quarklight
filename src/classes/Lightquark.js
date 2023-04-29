@@ -3,11 +3,13 @@ import notificationWav from "../assets/notification.wav";
 import EventEmitter from "events";
 import humanFileSize from "../misc/humanFileSize";
 import * as linkify from 'linkifyjs';
+import settings from "./Settings";
 
 export default class Lightquark {
     
     token;
     baseUrl = "https://lq.litdevs.org";
+    gatewayUrl = "wss://lq-gateway.litdevs.org";
     defaultVersion = "v1"
     appContext;
     mainContext;
@@ -22,12 +24,14 @@ export default class Lightquark {
     eventBus = new EventEmitter();
     isDev = false;
     pendingWarning = undefined;
+    initalized = false;
 
     /**
+     * @param networkRoot - Root URL of the network, e.g. https://lq.litdevs.org
      * @param appContext - React Context
      * @param {string} token - JWT Token 
      */
-    constructor (appContext = undefined, token = undefined) {
+    constructor(networkRoot, appContext = undefined, token = undefined) {
         console.log("Lightquark constructor called");
         if (Lightquark._instance) {
             console.log("Existing instance of Lightquark found, returning that instance");
@@ -38,8 +42,30 @@ export default class Lightquark {
         this.appContext = appContext;
         this.token = token;
 
-        // If authenticated, setup websocket gateway
-        if (this.token && !this.ws) this.openGateway();
+        try {
+            let parsedNetworkRoot;
+            if (networkRoot.startsWith("http://") || networkRoot.startsWith("https://")) {
+                parsedNetworkRoot = networkRoot;
+            } else {
+                parsedNetworkRoot = `https://${networkRoot}`;
+            }
+            fetch(`${parsedNetworkRoot}/v1/network`).then(res => res.json()).then(networkData => {
+                console.log("Network data:", networkData);
+                this.baseUrl = networkData.baseUrl;
+                this.gatewayUrl = networkData.gateway;
+
+                // If authenticated, setup websocket gateway
+                if (this.token && !this.ws) this.openGateway();
+                this.initalized = true;
+            }).catch(err => {
+                alert("Failed to connect to network. Defaulting to lq.litdevs.org");
+                settings.settings.ql_network = "lq.litdevs.org";
+                window.location.reload();
+            })
+        } catch {
+            console.error("Failed to fetch network data");
+            this.appContext.setSpinnerText("Failed to fetch network data");
+        }
 
         this.eventBus.on("gatewayEvent", (event) => {
             switch (event.eventId) {
@@ -55,6 +81,14 @@ export default class Lightquark {
                 case "quarkUpdate":
                     break;
                 case "quarkDelete":
+                    this.appContext.setQuarks(p => p.filter(quark => quark._id !== event.quark._id));
+                    if (this.mainContext.selectedQuark === event.quark._id) {
+                        if (this.appContext.quarks[0]._id === event.quark._id) {
+                            this.mainContext.setSelectedQuark(undefined);
+                        } else {
+                            this.mainContext.setSelectedQuark(this.appContext.quarks[0]._id);
+                        }
+                    }
                     break;
                 case "channelCreate":
                     this.appContext.setChannelCache(prev => [...prev, {cachedAt: new Date(), channel: event.channel}]);
@@ -137,6 +171,25 @@ export default class Lightquark {
         const reply = data.message.specialAttributes.find(a => a.type === "reply");
         if (reply) {
             data.message.reply = await this.fetchMessage(data.message.channelId, reply.replyTo);
+            if (!data.message.reply) {
+                data.message.reply = {
+                    message: {
+                        content: "This message is deleted",
+                        authorId: "0",
+                        channelId: data.message.channelId,
+                        _id: reply.replyTo,
+                        attachments: [],
+                        specialAttributes: [],
+                        createdAt: new Date(),
+                        updatedAt: new Date(),
+                    },
+                    author: {
+                        username: "Deleted message",
+                        _id: "0",
+                        avatar: null,
+                    }
+                }
+            }
         }
 
         data.message.original = data.message.content;
@@ -233,15 +286,15 @@ export default class Lightquark {
     setToken (token) {
         console.log("token updated", this.identifier)
         this.token = token;
-        if (this.token && !this.ws) this.openGateway();
+        if (this.token && !this.ws && this.initalized) this.openGateway();
     }
 
     openGateway () {
-        console.log("open gateway called")
+        console.warn("open gateway called", this.gatewayUrl);
         if (this.dead) return;
         if (!this.token) return;
         console.log("Opening gateway connection");
-        this.ws = new WebSocket("wss://lq-gateway.litdevs.org", this.token);
+        this.ws = new WebSocket(this.gatewayUrl, this.token);
         this.registerWsListeners();
     }
 
@@ -438,7 +491,10 @@ export default class Lightquark {
         let res = await this.apiCall("/quark/create", "POST", {name});
         if (res.request.success) {
             let newQuark = await this.getQuark(res.response.quark._id);
+            // TODO: Remove this with QUARKLIGHT-47
             this.appContext.setQuarks(o => [...o, newQuark]);
+            this.subscribeToQuark(newQuark._id)
+            newQuark.channels.forEach(c => this.subscribeToChannel(c._id));
             return {error: false, quark: newQuark};
         } else {
             console.error("Failed to create quark", res);
@@ -447,13 +503,13 @@ export default class Lightquark {
     }
 
     async deleteQuark (quarkId) {
-        let res = await this.apiCall(`/quark/${quarkId}`, "DELETE");
-        if (res.request.success) {
+        return await this.apiCall(`/quark/${quarkId}`, "DELETE");
+        /*if (res.request.success) {
             let newQuarks = this.appContext.quarks.filter(q => q._id !== quarkId);
             this.appContext.setQuarks(newQuarks);
         } else {
             console.error("Failed to delete quark", res);
-        }
+        }*/
     }
 
     /**
@@ -474,6 +530,7 @@ export default class Lightquark {
         this.appContext.setToken(undefined);
         this.appContext.setLoggedIn(false);
         this.appContext.setUserData(undefined);
+        window.location.reload();
     }
 
     /**
@@ -563,11 +620,11 @@ export default class Lightquark {
         let res = await this.apiCall("/channel/create", "POST", {name, quark: quarkId});
         if (res.request.success) {
             let newChannel = await this.getChannel(res.response.channel._id);
-            let quarks = this.appContext.quarks;
-            let quark = quarks.find(q => q._id === quarkId);
-            quark.channels.push(newChannel);
-            this.appContext.setQuarks(quarks);
-            this.appContext.setChannels(prevState => [...prevState, newChannel])
+            //let quarks = this.appContext.quarks;
+            //let quark = quarks.find(q => q._id === quarkId);
+            //quark.channels.push(newChannel);
+            //this.appContext.setQuarks(quarks);
+            //this.appContext.setChannels(prevState => [...prevState, newChannel])
             return {error: false, channel: newChannel};
         } else {
             console.error("Failed to create channel", res);
@@ -760,6 +817,7 @@ export default class Lightquark {
     }
 }
 
-const lq = new Lightquark()
+
+const lq = new Lightquark(settings.settings.ql_network);
 
 export {lq}

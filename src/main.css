@@ -738,6 +738,14 @@ I probably already did it for message view but FORGOT
     height: calc(100vh - 12.3rem);
 }
 
+.experimentalSetting {
+    background-color: var(--accent-3);
+    padding: 0.1rem;
+    margin: 0.2rem;
+    font-size: smaller;
+    border-radius: 0.25rem;
+}
+
 .themeSelector {
     background-color: var(--bg-color);
     border-radius: 0.25rem;

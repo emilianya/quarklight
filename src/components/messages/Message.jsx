@@ -71,6 +71,7 @@ export function Message(props) {
 				<div>
 					{replyMessage ?
 					<div className="messageReply" onClick={() => {
+						if (message.reply.author._id === "0") return;
 						document.getElementById(`${replyMessage.replyTo}_message`).scrollIntoView();
 					}}>
 						<FontAwesomeIcon className="messageReplyIcon" icon={faReply} />
