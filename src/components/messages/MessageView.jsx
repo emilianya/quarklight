@@ -25,7 +25,7 @@ export function MessageView() {
 		(async () => {
 			let messages = await lq.getMessages(mainContext.selectedChannel);
 			setMessages(messages);
-			lq.subscribeToChannel(mainContext.selectedChannel);
+			if (mainContext.selectedChannel) lq.subscribeToChannel(mainContext.selectedChannel);
 		})();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [mainContext.selectedChannel]);
