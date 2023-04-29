@@ -3,7 +3,7 @@ import {AppContext} from "../../contexts/AppContext";
 import {MainContext} from "../../contexts/MainContext";
 import {lq} from "../../classes/Lightquark";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCog, faPencil} from "@fortawesome/free-solid-svg-icons";
+import {faCog, faFeather, faPencil} from "@fortawesome/free-solid-svg-icons";
 import {NickModal} from "../modals/NickModal";
 import {AvatarModal} from "../modals/AvatarModal";
 
