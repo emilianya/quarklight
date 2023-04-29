@@ -609,11 +609,11 @@ export default class Lightquark {
         let res = await this.apiCall("/channel/create", "POST", {name, quark: quarkId});
         if (res.request.success) {
             let newChannel = await this.getChannel(res.response.channel._id);
-            let quarks = this.appContext.quarks;
-            let quark = quarks.find(q => q._id === quarkId);
-            quark.channels.push(newChannel);
-            this.appContext.setQuarks(quarks);
-            this.appContext.setChannels(prevState => [...prevState, newChannel])
+            //let quarks = this.appContext.quarks;
+            //let quark = quarks.find(q => q._id === quarkId);
+            //quark.channels.push(newChannel);
+            //this.appContext.setQuarks(quarks);
+            //this.appContext.setChannels(prevState => [...prevState, newChannel])
             return {error: false, channel: newChannel};
         } else {
             console.error("Failed to create channel", res);
