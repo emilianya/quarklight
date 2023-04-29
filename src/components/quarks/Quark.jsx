@@ -9,7 +9,7 @@ export function Quark(props) {
 	let mainContext = useContext(MainContext);
 	let appContext = useContext(AppContext);
 	let [showUnread, setShowUnread] = useState(false);
-	let [over, setOver] = useState(false);
+	//let [over, setOver] = useState(false);
 	let quark = props.quark;
 	const { show } = useContextMenu({
 		id: `${quark._id}_menu`,
@@ -122,7 +122,7 @@ export function Quark(props) {
 
 	return (
 		<div className="quarkBox" /*onDragEnter={() => {setOver(true)}} onDragLeave={() => {setOver(false)}} onDragOver={onDragOverHandler} onDrop={onDropHandler} onDragStart={onDragStartHandler}*/>
-			{showUnread || over ? <div className="unreadIndicatorQuark"></div> : null}
+			{showUnread/* || over*/ ? <div className="unreadIndicatorQuark"></div> : null}
 			<img onContextMenu={handleContextMenu} id={quark._id} data-tooltip-content={`${quark.name}`} onClick={() => props.setSelectedQuark(quark._id)} width={"48px"} height={"48px"} src={quark.iconUri} alt={quark.name} className="quarkImage" ></img>
 			<Tooltip className="quarkTip" anchorId={quark._id} positionStrategy={"fixed"} place={"left"} style={{opacity: 1, backgroundColor: "var(--tooltip)", color: "var(--white)"}} />
 			<Menu id={`${quark._id}_menu`} className="quarkMenu" theme={"dark"}>

@@ -57,6 +57,10 @@ export default class Lightquark {
                 // If authenticated, setup websocket gateway
                 if (this.token && !this.ws) this.openGateway();
                 this.initalized = true;
+            }).catch(err => {
+                alert("Failed to connect to network. Defaulting to lq.litdevs.org");
+                settings.settings.ql_network = "lq.litdevs.org";
+                window.location.reload();
             })
         } catch {
             console.error("Failed to fetch network data");
@@ -159,6 +163,25 @@ export default class Lightquark {
         const reply = data.message.specialAttributes.find(a => a.type === "reply");
         if (reply) {
             data.message.reply = await this.fetchMessage(data.message.channelId, reply.replyTo);
+            if (!data.message.reply) {
+                data.message.reply = {
+                    message: {
+                        content: "This message is deleted",
+                        authorId: "0",
+                        channelId: data.message.channelId,
+                        _id: reply.replyTo,
+                        attachments: [],
+                        specialAttributes: [],
+                        createdAt: new Date(),
+                        updatedAt: new Date(),
+                    },
+                    author: {
+                        username: "Deleted message",
+                        _id: "0",
+                        avatar: null,
+                    }
+                }
+            }
         }
 
         data.message.original = data.message.content;
@@ -260,7 +283,6 @@ export default class Lightquark {
 
     openGateway () {
         console.warn("open gateway called", this.gatewayUrl);
-        console.trace();
         if (this.dead) return;
         if (!this.token) return;
         console.log("Opening gateway connection");

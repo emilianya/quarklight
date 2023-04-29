@@ -17,14 +17,15 @@ export function Loader() {
 
 	useEffect(() => {
 		let startTime = Date.now();
-		setInterval(() => {
+		let spinnerInterval = setInterval(() => {
 			setSeconds(Math.floor((Date.now() - startTime) / 1000));
 		}, 1000)
+		return () => clearInterval(spinnerInterval);
 	}, [])
 	return (
 		<div className="loaderRoot" data-testid="loaderRoot">
 			<img alt="3 circles spinning" src={spinner} className="spinner" data-testid="spinner"></img>
-			<p className="spinnerSubtitle" data-testid="spinnerSubtitle">{appContext.spinnerText}{".".repeat(3 + seconds)}</p>
+			<p className="spinnerSubtitle" data-testid="spinnerSubtitle">{appContext.spinnerText}{".".repeat(Math.min(3 + seconds, 12))}</p>
 		</div>
 	);
 }
