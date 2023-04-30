@@ -79,17 +79,19 @@ export default class Lightquark {
                     this.messageState.setMessages(this.messageState.messages.filter(message => message.message._id !== event.message._id));
                     break;
                 case "quarkUpdate":
-                    this.appContext.setQuarks(prev => {
-                        let quarks = prev.filter(quark => quark._id !== event.quark._id);
-                        quarks.push(event.quark);
-                        quarks.sort((a, b) => {
-                            // Sort based on quark order
-                            let aOrder = this.mainContext.quarkOrder.indexOf(a._id);
-                            let bOrder = this.mainContext.quarkOrder.indexOf(b._id);
-                            return aOrder - bOrder;
-                        })
-                        return quarks;
-                    });
+                    this.getQuark(event.quark._id).then(updatedQuark => {
+                        this.appContext.setQuarks(prev => {
+                            let quarks = prev.filter(quark => quark._id !== event.quark._id);
+                            quarks.push(updatedQuark);
+                            quarks.sort((a, b) => {
+                                // Sort based on quark order
+                                let aOrder = this.mainContext.quarkOrder.indexOf(a._id);
+                                let bOrder = this.mainContext.quarkOrder.indexOf(b._id);
+                                return aOrder - bOrder;
+                            })
+                            return quarks;
+                        });
+                    })
                     break;
                 case "quarkDelete":
                     this.appContext.setQuarks(p => p.filter(quark => quark._id !== event.quark._id));
