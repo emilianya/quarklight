@@ -143,7 +143,8 @@ export function Quark(props) {
 				{quark.owners.includes(appContext.userData._id) &&
 					<>
 						<Item onClick={() => {
-							
+							mainContext.setShowModal("editQuark");
+							props.setEditingQuark(quark);
 						}} className="editQuarkButton">Edit</Item>
 						<Item onClick={() => {
 							if (!window.confirm("Are you sure you want to delete this quark?")) return;

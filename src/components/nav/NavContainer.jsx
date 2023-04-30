@@ -7,6 +7,8 @@ import {Quark} from "../quarks/Quark";
 import {lq} from "../../classes/Lightquark";
 import {AppContext} from "../../contexts/AppContext";
 import {MainContext} from "../../contexts/MainContext";
+import {CreateModal} from "../modals/CreateModal";
+import {EditQuarkModal} from "../modals/EditQuarkModal";
 
 export function NavContainer() {
 
@@ -14,6 +16,7 @@ export function NavContainer() {
 	let appContext = useContext(AppContext);
 
 	let [showNav, setShowNav] = useState(true);
+	let [editingQuark, setEditingQuark] = useState(undefined);
 
 	useEffect(() => {
 		let quarks = appContext.quarks.sort((a, b) => {
@@ -22,7 +25,7 @@ export function NavContainer() {
 			return indexOfA - indexOfB;
 		});
 		mainContext.setQuarkBoxes(quarks.map(quark => {
-			return (<Quark quark={quark} setSelectedQuark={mainContext.setSelectedQuark} key={quark._id} />)
+			return (<Quark setEditingQuark={setEditingQuark} quark={quark} setSelectedQuark={mainContext.setSelectedQuark} key={quark._id} />)
 		}));
 		
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -53,6 +56,7 @@ export function NavContainer() {
 						<ChannelContainer />
 						<QuarkList />
 					</div>
+					<EditQuarkModal editingQuark={editingQuark} />
 				</>)
 			: null}
 		</div>
