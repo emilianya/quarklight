@@ -79,6 +79,11 @@ export default class Lightquark {
                     this.messageState.setMessages(this.messageState.messages.filter(message => message.message._id !== event.message._id));
                     break;
                 case "quarkUpdate":
+                    this.appContext.setQuarks(prev => {
+                        let quarks = prev.filter(quark => quark._id !== event.quark._id);
+                        quarks.push(event.quark);
+                        return quarks;
+                    });
                     break;
                 case "quarkDelete":
                     this.appContext.setQuarks(p => p.filter(quark => quark._id !== event.quark._id));
