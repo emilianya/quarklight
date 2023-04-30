@@ -158,7 +158,9 @@ export default function SettingsScreen() {
 						<div className="setting">
 							<span style={{fontWeight: "600"}}>Network <span className="experimentalSetting">EXPERIMENTAL</span></span>
 							<br />
-							<span style={{fontSize: "0.9rem"}}>Switch to another Lightquark network.</span>
+							<span style={{fontSize: "0.9rem"}}>Switch to another Lightquark network. Select from the official presets, or type in the network domain</span>
+							<br />
+							<span className="networkPreset networkPreset-lightquark" onClick={() => setNetwork("lq.litdevs.org")}>Lightquark (Official)</span> <span className="networkPreset networkPreset-equinox" onClick={() => setNetwork("equinox.litdevs.org")}>Equinox (Official)</span>
 							<br />
 							<input type="text" placeholder={"lq.litdevs.org"} value={network} onInput={(e) => setNetwork(e.target.value)} className="input-box" />
 							<br />
