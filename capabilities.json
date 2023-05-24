@@ -37,6 +37,7 @@
             "users.avatars",
             "users.avatar",
             "users.nickname",
+            "quarks.delete",
             [
                 {
                     "name": "Cat Mode",
@@ -46,21 +47,20 @@
         ],
         "partial": [
             {
-                "feature": "quarks.delete",
-                "reason": "User can delete, but events are not handled"
-            },
-            {
                 "feature": "quarks.order",
                 "reason": "Order is respected, updates or editing are not supported"
             },
             {
                 "feature": "messages.me",
                 "reason": "/me messages are displayed, but cannot be sent"
+            },
+            {
+                "feature": "quarks.edit",
+                "reason": "Event handled, editing not supported."
             }
         ],
         "unsupported": [
-            "quarks.icon",
-            "quarks.edit"
+            "quarks.icon"
         ]
     }
 }
