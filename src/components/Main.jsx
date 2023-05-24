@@ -4,8 +4,10 @@ import {MainScreen} from "./screens/MainScreen";
 import {useContext, useEffect} from "react";
 import {AppContext} from "../contexts/AppContext";
 import {lq} from "../classes/Lightquark";
+import { useFlagsStatus } from '@unleash/proxy-client-react';
 
 export const Main = () => {
+	const { flagsReady, flagsError } = useFlagsStatus();
 	let appContext = useContext(AppContext);
 	/**
 	 * Keep the Lightquark instance up to date with the token
@@ -17,6 +19,14 @@ export const Main = () => {
 		lq.setAppContext(appContext);
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [appContext.token]);
+
+	useEffect(() => {
+		if (appContext.loading === flagsReady) return;
+		appContext.setLoading(flagsReady);
+		// TODO: Handle flagsError
+		// TODO: lol this is so hacky please fix it
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [flagsReady, appContext.loading])
 
 	/**
 	 * Update user data when the Lightquark instance is ready
