@@ -221,6 +221,10 @@
     font-weight: 500;
 }
 
+#oneko {
+    z-index: 99999;
+}
+
 .networkPreset {
     border: 0.1rem solid;
     border-radius: 0.25rem;

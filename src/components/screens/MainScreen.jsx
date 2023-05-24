@@ -8,6 +8,8 @@ import {MainContext} from "../../contexts/MainContext";
 import pjson from '../../../package.json';
 import settings from "../../classes/Settings";
 import SettingsScreen from "./SettingsScreen";
+import {useFlag} from "@unleash/proxy-client-react";
+import CuteKitty from "../random/CuteKitty";
 
 const EasterEggCat = lazy(() => import("../random/EasterEggCat"));
 
@@ -26,6 +28,7 @@ export function MainScreen() {
 	let [quarkOrder, setQuarkOrder] = useState(null);
 	let [screen, setScreen] = useState("primary");
 	let [warning, setWarning] = useState(lq.pendingWarning);//{severityColor: "#ff4a4a", message: "Something is very wrong :<", severity: "NUCLEAR"});
+	let cutekittycat = useFlag("QL_cutekittycat");
 
 	let [konamiState, setKonamiState] = useState(0);
 	let konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
@@ -90,6 +93,8 @@ export function MainScreen() {
 						warning, setWarning,
 						screen, setScreen
 					}}>
+					{ (cutekittycat && appContext.preferences.cuteKitty) && <CuteKitty />
+					}
 					{
 						screen === "primary" && (<>
 							<ContentContainer />

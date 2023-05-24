@@ -7,7 +7,6 @@ import {Quark} from "../quarks/Quark";
 import {lq} from "../../classes/Lightquark";
 import {AppContext} from "../../contexts/AppContext";
 import {MainContext} from "../../contexts/MainContext";
-import {CreateModal} from "../modals/CreateModal";
 import {EditQuarkModal} from "../modals/EditQuarkModal";
 
 export function NavContainer() {
