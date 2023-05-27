@@ -1,5 +1,5 @@
 import wantYouGone from "../misc/wantYouGone";
-import notificationWav from "../assets/notification.wav";
+import notificationMP3 from "../assets/notification.mp3";
 import EventEmitter from "events";
 import humanFileSize from "../misc/humanFileSize";
 import * as linkify from 'linkifyjs';
@@ -256,7 +256,7 @@ export default class Lightquark {
                     return prev;
                 })
                 if (this.appContext.preferences.notificationsEnabled) {
-                    let notificationAudio = new Audio(notificationWav);
+                    let notificationAudio = new Audio(notificationMP3);
                     console.log(notificationAudio.volume)
                     notificationAudio.volume = this.appContext.preferences.ql_notificationVolume
                     console.log(notificationAudio.volume)
