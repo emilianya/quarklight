@@ -22,7 +22,8 @@ export const WarningBanner = () => {
 	let mainContext = useContext(MainContext)
 
 	return mainContext.warning ? (
-		<div className="warningBanner" style={{backgroundColor: mainContext.warning.severityColor}} onClick={() => {
+		<div className={mainContext.warning.onClick ? "warningBanner clickable" : "warningBanner"} style={{backgroundColor: mainContext.warning.severityColor}} onClick={() => {
+
 			if (mainContext.warning.onClick) mainContext.warning.onClick();
 			if (!mainContext.warning.dontDismissOnClick) mainContext.setWarning(null);
 		}}>
@@ -30,7 +31,9 @@ export const WarningBanner = () => {
 				<FontAwesomeIcon className="warningBannerIcon" icon={WarningSeverity[mainContext.warning.severity]} />
 			)}
 			<span>{mainContext.warning.message}</span>
-			<FontAwesomeIcon icon={faX} className="warningBannerClose" onClick={() => {mainContext.setWarning(null)}} />
+			{!mainContext.warning.onClick && <FontAwesomeIcon icon={faX} className="warningBannerClose" onClick={() => {
+				mainContext.setWarning(null)
+			}}/>}
 		</div>
 	) : null;
 }

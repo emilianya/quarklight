@@ -814,9 +814,10 @@ export default class Lightquark {
     }
 
     updateAvailable(releaseName, callback) {
+        console.log("Update", releaseName)
         this.mainContext.setWarning({
             message: `Update available (${releaseName}) Click here to install.`,
-            severityColor: "#24f760",
+            severityColor: "#1abb45",
             severity: "INFO",
             onClick: callback,
             dontDismissOnClick: false
@@ -829,6 +830,7 @@ export default class Lightquark {
      * @returns {Promise<boolean>} Was the link opened?
      */
     async openLqLink (link) {
+        console.log("Opening link", link)
         // TODO: scroll to message
 
         // lightquark://{quarkId}/{channelId?}/{messageId?}

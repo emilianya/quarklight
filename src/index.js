@@ -27,7 +27,13 @@ let unleashConfig = {
 try {
     const { ipcRenderer } = window.require("electron");
 
-    ipcRenderer.on("open-url", (event, url) => {
+    ipcRenderer.on("open-url", (event, url, p2) => {
+        if (!url.includes("/")) {
+            // I have no idea why updates also come to this one, and in the wrong format, but handle it
+            return lq.updateAvailable(url, () => {
+                ipcRenderer.invoke("restart");
+            });
+        }
         lq.openLqLink(url);
     })
 
@@ -36,8 +42,9 @@ try {
         lq.isDev = dev;
     })
 
-    ipcRenderer.on("update-available", (event, releaseName, callback) => {
-        lq.updateAvailable(releaseName, callback);
+    ipcRenderer.on("update-available", (event, eventData) => {
+        console.log("ipcRenderer received update-available event with url: " + eventData.releaseName)
+        lq.updateAvailable(eventData.releaseName, eventData.callback);
     })
 
 } catch (e) {
