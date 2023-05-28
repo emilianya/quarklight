@@ -10,9 +10,9 @@ const channel = refToChannel[process.argv[2]]
 console.log("Publishing to channel: " + channel)
 console.log("Version: " + pjson.version)
 
-let version = `${pjson.version}-quantum`
-if (channel === "stable") {
-    version = `${pjson.version}`;
+let version = pjson.version
+if (channel === "quantum") {
+    version = `${pjson.version}-quantum`;
     pjson.version = version
     fs.writeFileSync('package.json', JSON.stringify(pjson, null, 4))
 }
