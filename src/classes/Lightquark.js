@@ -765,7 +765,7 @@ export default class Lightquark {
                 message: "An error occurred while trying to connect to Lightquark",
                 severityColor: "#F79824",
                 severity: "WARNING"
-            })
+            });
         }
     }
 
