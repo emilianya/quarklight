@@ -20,7 +20,7 @@ if (channel === "quantum") {
 const releaseJson = {
     "channel": channel,
     "version": version,
-    "updateServer": "https://hazel-vtheskeleton.vercel.app"
+    "updateServer": channel === "quantum" ? "https://quantum-releases.quarklight.tech" : "https://releases.quarklight.tech"
 }
 
 fs.writeFileSync('public/release.json', JSON.stringify(releaseJson, null, 2))
