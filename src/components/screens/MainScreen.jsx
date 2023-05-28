@@ -10,6 +10,7 @@ import settings from "../../classes/Settings";
 import SettingsScreen from "./SettingsScreen";
 import {useFlag} from "@unleash/proxy-client-react";
 import CuteKitty from "../random/CuteKitty";
+import {environment} from "../../index";
 
 const EasterEggCat = lazy(() => import("../random/EasterEggCat"));
 
@@ -55,7 +56,7 @@ export function MainScreen() {
 				<p>Selected quark: {JSON.stringify(selectedQuark)}</p>
 				<p>Selected theme: {JSON.stringify(appContext.preferences.ql_theme)}</p>
 				<p>Pending warning: {JSON.stringify(lq.pendingWarning)}</p>
-				<p>You are on {pjson.version.endsWith("-release") ? `${pjson.version} (Stable)` : `${pjson.version} (Quantum)`}</p>
+				<p>You are on {environment === "development" ? `${pjson.version} (Quantum)` : `${pjson.version} (Stable)`}</p>
 				<details><summary>Quarks</summary>{JSON.stringify(appContext.quarks)}</details>
 				<button onClick={() => lq.logout()}>Loggery Outtery</button>
 				<button onClick={() => appContext.setToken("newTokenValue")}>killtoken</button>

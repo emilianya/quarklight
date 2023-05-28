@@ -41,13 +41,24 @@ module.exports = {
         }
     ],
     "publishers": [
-        {
+        /*{
             name: "@electron-forge/publisher-electron-release-server",
             config: {
                 baseUrl: "https://releases.quarklight.tech",
                 username: "admin",
                 password: process.env.RELEASE_PASSWORD,
                 channel: releaseJson.channel
+            }
+        }*/
+        {
+            name: '@electron-forge/publisher-github',
+            config: {
+                repository: {
+                    owner: 'vtheskeleton',
+                    name: 'quarklight'
+                },
+                draft: false,
+                prerelease: releaseJson.channel === "quantum"
             }
         }
     ]

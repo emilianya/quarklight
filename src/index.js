@@ -8,7 +8,7 @@ import { lq } from './classes/Lightquark';
 import { FlagProvider } from '@unleash/proxy-client-react';
 import pjson from '../package.json';
 
-let environment = pjson.version.endsWith("-release") ? "production" : "development";
+export let environment = pjson.version.endsWith("-quantum") ? "development" : "production";
 
 let unleashKey
 if (environment === "production") {
