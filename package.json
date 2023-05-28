@@ -1,6 +1,6 @@
 {
     "name": "quarklight",
-    "version": "0.2.5",
+    "version": "0.3.0",
     "author": "LIT Devs",
     "description": "A simple Lightquark client",
     "dependencies": {
@@ -51,7 +51,6 @@
         "@electron-forge/maker-rpm": "^6.0.5",
         "@electron-forge/maker-squirrel": "^6.0.5",
         "@electron-forge/maker-zip": "^6.0.5",
-        "@electron-forge/publisher-electron-release-server": "^6.0.5",
         "@electron-forge/publisher-github": "^6.1.1",
         "@fortawesome/fontawesome-svg-core": "^6.3.0",
         "@fortawesome/free-solid-svg-icons": "^6.3.0",

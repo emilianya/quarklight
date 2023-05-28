@@ -765,7 +765,7 @@ export default class Lightquark {
                 message: "An error occurred while trying to connect to Lightquark",
                 severityColor: "#F79824",
                 severity: "WARNING"
-            })
+            });
         }
     }
 
@@ -813,12 +813,24 @@ export default class Lightquark {
         }
     }
 
+    updateAvailable(releaseName, callback) {
+        console.log("Update", releaseName)
+        this.mainContext.setWarning({
+            message: `Update available (${releaseName}) Click here to install.`,
+            severityColor: "#1abb45",
+            severity: "INFO",
+            onClick: callback,
+            dontDismissOnClick: false
+        })
+    }
+
     /**
      * Open a lightquark:// protocol link
      * @param {string} link 
      * @returns {Promise<boolean>} Was the link opened?
      */
     async openLqLink (link) {
+        console.log("Opening link", link)
         // TODO: scroll to message
 
         // lightquark://{quarkId}/{channelId?}/{messageId?}

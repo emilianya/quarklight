@@ -6,6 +6,8 @@ const isDev = require('electron-is-dev');
 
 const fs = require('fs');
 
+let applyUpdate
+
 if (process.defaultApp) {
 	if (process.argv.length >= 2) {
 	  app.setAsDefaultProtocolClient('lightquark', process.execPath, [path.resolve(process.argv[1])])
@@ -14,11 +16,8 @@ if (process.defaultApp) {
 	  app.setAsDefaultProtocolClient('lightquark')
 }
 
-
-
-
 // Do not check for updates in dev mode
-if (!isDev) {
+//if (!isDev) {
 	let releaseJson = JSON.parse(fs.readFileSync(path.join(__dirname, '../build/release.json')).toString())
 
 	const releaseChannel = releaseJson.channel
@@ -30,15 +29,24 @@ if (!isDev) {
 		console.log("Update downloaded.")
 		const dialogOpts = {
 		  	type: 'info',
-		  	buttons: ['Restart', 'Later'],
+		  	buttons: ['Restart'],
 		  	title: 'Application Update',
 		  	message: process.platform === 'win32' ? releaseNotes : releaseName,
 		  	detail: 'A new version has been downloaded. Restart the application to apply the updates.'
 		}
-	  
-		dialog.showMessageBox(dialogOpts).then((returnValue) => {
-		    if (returnValue.response === 0) autoUpdater.quitAndInstall()
+
+		ipcMain.handle("restart", () => {
+			autoUpdater.quitAndInstall()
 		})
+		// Start spamming the renderer process with update-available messages
+		setInterval(() => {
+			win.webContents.send('update-available', {type: "update", releaseName, callback: () =>
+			{
+				dialog.showMessageBox(dialogOpts).then(() => {
+					autoUpdater.quitAndInstall()
+				})
+			}})
+		}, 5000)
 	})
 	
 	autoUpdater.on('error', (message) => {
@@ -54,7 +62,7 @@ if (!isDev) {
 		console.log("Checking for updates...")
 		autoUpdater.checkForUpdates()
 	  }, 60000)
-}
+//}
 
 
 
@@ -126,7 +134,7 @@ if (!gotTheLock) {
 
 	app.whenReady().then(() => {
 		createWindow();
-	
+
 		if (isDev) {
 			installExtension(REACT_DEVELOPER_TOOLS)
 				.then(name => console.log(`Added Extension:  ${name}`))
@@ -135,6 +143,7 @@ if (!gotTheLock) {
 	});
 
 	app.on('open-url', (event, url) => {
+		alert(url)
 		win.webContents.send('open-url', url)
 	})
 }
