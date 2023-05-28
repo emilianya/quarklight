@@ -813,6 +813,16 @@ export default class Lightquark {
         }
     }
 
+    updateAvailable(releaseName, callback) {
+        this.mainContext.setWarning({
+            message: `Update available (${releaseName}) Click here to install.`,
+            severityColor: "#24f760",
+            severity: "INFO",
+            onClick: callback,
+            dontDismissOnClick: false
+        })
+    }
+
     /**
      * Open a lightquark:// protocol link
      * @param {string} link 

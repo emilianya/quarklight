@@ -36,6 +36,10 @@ try {
         lq.isDev = dev;
     })
 
+    ipcRenderer.on("update-available", (event, releaseName, callback) => {
+        lq.updateAvailable(releaseName, callback);
+    })
+
 } catch (e) {
   console.log("Not running in electron, ignoring links.")
 }

@@ -14,9 +14,6 @@ if (process.defaultApp) {
 	  app.setAsDefaultProtocolClient('lightquark')
 }
 
-
-
-
 // Do not check for updates in dev mode
 if (!isDev) {
 	let releaseJson = JSON.parse(fs.readFileSync(path.join(__dirname, '../build/release.json')).toString())
@@ -30,14 +27,16 @@ if (!isDev) {
 		console.log("Update downloaded.")
 		const dialogOpts = {
 		  	type: 'info',
-		  	buttons: ['Restart', 'Later'],
+		  	buttons: ['Restart'],
 		  	title: 'Application Update',
 		  	message: process.platform === 'win32' ? releaseNotes : releaseName,
 		  	detail: 'A new version has been downloaded. Restart the application to apply the updates.'
 		}
-	  
-		dialog.showMessageBox(dialogOpts).then((returnValue) => {
-		    if (returnValue.response === 0) autoUpdater.quitAndInstall()
+
+		win.webContents.send('update-available', releaseName, () => {
+			dialog.showMessageBox(dialogOpts).then(() => {
+				autoUpdater.quitAndInstall()
+			})
 		})
 	})
 	

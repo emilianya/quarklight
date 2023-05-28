@@ -22,7 +22,10 @@ export const WarningBanner = () => {
 	let mainContext = useContext(MainContext)
 
 	return mainContext.warning ? (
-		<div className="warningBanner" style={{backgroundColor: mainContext.warning.severityColor}}>
+		<div className="warningBanner" style={{backgroundColor: mainContext.warning.severityColor}} onClick={() => {
+			if (mainContext.warning.onClick) mainContext.warning.onClick();
+			if (!mainContext.warning.dontDismissOnClick) mainContext.setWarning(null);
+		}}>
 			{SeverityKeys.includes(mainContext.warning.severity) && (
 				<FontAwesomeIcon className="warningBannerIcon" icon={WarningSeverity[mainContext.warning.severity]} />
 			)}
