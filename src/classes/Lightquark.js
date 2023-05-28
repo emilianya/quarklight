@@ -1,5 +1,5 @@
 import wantYouGone from "../misc/wantYouGone";
-import notificationWav from "../assets/notification.wav";
+import notificationMP3 from "../assets/notification.mp3";
 import EventEmitter from "events";
 import humanFileSize from "../misc/humanFileSize";
 import * as linkify from 'linkifyjs';
@@ -79,6 +79,19 @@ export default class Lightquark {
                     this.messageState.setMessages(this.messageState.messages.filter(message => message.message._id !== event.message._id));
                     break;
                 case "quarkUpdate":
+                    this.getQuark(event.quark._id).then(updatedQuark => {
+                        this.appContext.setQuarks(prev => {
+                            let quarks = prev.filter(quark => quark._id !== event.quark._id);
+                            quarks.push(updatedQuark);
+                            quarks.sort((a, b) => {
+                                // Sort based on quark order
+                                let aOrder = this.mainContext.quarkOrder.indexOf(a._id);
+                                let bOrder = this.mainContext.quarkOrder.indexOf(b._id);
+                                return aOrder - bOrder;
+                            })
+                            return quarks;
+                        });
+                    })
                     break;
                 case "quarkDelete":
                     this.appContext.setQuarks(p => p.filter(quark => quark._id !== event.quark._id));
@@ -243,7 +256,7 @@ export default class Lightquark {
                     return prev;
                 })
                 if (this.appContext.preferences.notificationsEnabled) {
-                    let notificationAudio = new Audio(notificationWav);
+                    let notificationAudio = new Audio(notificationMP3);
                     console.log(notificationAudio.volume)
                     notificationAudio.volume = this.appContext.preferences.ql_notificationVolume
                     console.log(notificationAudio.volume)
@@ -678,6 +691,16 @@ export default class Lightquark {
         this.appContext.setQuarks([...quarks, quark]);
         this.appContext.setChannels(quark.channels);
         console.log("Updated quark", quark)
+    }
+
+    async editQuark (quarkId, name, invite) {
+        let isInviteChanged = this.appContext.quarks.find(q => q._id === quarkId).invite !== invite;
+        let isNameChanged = this.appContext.quarks.find(q => q._id === quarkId).name !== name;
+        let requestBody = {};
+        if (isInviteChanged) requestBody.invite = invite;
+        if (isNameChanged) requestBody.name = name;
+        if (!isInviteChanged && !isNameChanged) return false;
+        return await this.apiCall(`/quark/${quarkId}`, "PATCH", requestBody);
     }
 
     /**

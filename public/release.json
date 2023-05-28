@@ -1,5 +1,5 @@
 {
-  "channel": "quantum",
-  "version": "0.0.37",
-  "updateServer": "https://releases.quarklight.tech"
+  "channel": "stable",
+  "version": "0.2.3-release",
+  "updateServer": "https://hazel-vtheskeleton.vercel.app"
 }

@@ -7,6 +7,7 @@ import Toggle from "../settings/Toggle";
 import {UserBox} from "../nav/UserBox";
 import settings from "../../classes/Settings";
 import {lq} from "../../classes/Lightquark";
+import {useFlag} from "@unleash/proxy-client-react";
 
 export default function SettingsScreen() {
 	let mainContext = useContext(MainContext);
@@ -17,8 +18,13 @@ export default function SettingsScreen() {
 	let [showModifiedToggle, setShowModifiedToggle] = useState(appContext.preferences.ql_showModifiedToggle);
 	let [notificationsEnabled, setNotificationsEnabled] = useState(appContext.preferences.notificationsEnabled);
 	let [network, setNetwork] = useState(appContext.preferences.ql_network);
+	let [cuteKitty, setCuteKitty] = useState(appContext.preferences.cuteKitty);
 	let [networkError, setNetworkError] = useState("");
 	let [tab, setTab] = useState(0);
+
+	let showFunSettings = useFlag("QL_SettingsFunTab");
+	let cutekittycat = useFlag("QL_cutekittycat");
+	let showFunAsCat = useFlag("QL_FunIsCat");
 
 	function saveNetwork() {
 
@@ -53,6 +59,10 @@ export default function SettingsScreen() {
 
 
 	}
+
+	useEffect(() => {
+		settings.settings.cuteKitty = cuteKitty;
+	}, [cuteKitty]);
 
 	useEffect(() => {
 		settings.settings.ql_cat = catMode;
@@ -101,6 +111,10 @@ export default function SettingsScreen() {
 					     onClick={() => {setTab(3)}}>
 						Lightquark
 					</div>
+					{ showFunSettings && <div className={tab === 4 ? "settingTab settingTabActive" : "settingTab"}
+					     onClick={() => {setTab(4)}}>
+						{showFunAsCat ? "😺🐈🐈‍⬛ Cat settings :3" : "Fun"}
+					</div>}
 				</div>
 				<div className="settingTabContent">
 					{ tab === 0 && (<>
@@ -117,13 +131,6 @@ export default function SettingsScreen() {
 							<span style={{fontSize: "0.9rem"}}>Show a button to show the {plainText ? "modified" : "original"} version of a message</span>
 							<br />
 							<Toggle checked={showModifiedToggle} setChecked={setShowModifiedToggle} />
-						</div>
-						<div className="setting">
-							<span style={{fontWeight: "600"}}>I am a cat</span>
-							<br />
-							<span style={{fontSize: "0.9rem"}}>meow purr meow nya meow meow</span>
-							<br />
-							<Toggle checked={catMode} setChecked={setCatMode} />
 						</div>
 					</>)}
 					{ tab === 1 && (<>
@@ -158,7 +165,9 @@ export default function SettingsScreen() {
 						<div className="setting">
 							<span style={{fontWeight: "600"}}>Network <span className="experimentalSetting">EXPERIMENTAL</span></span>
 							<br />
-							<span style={{fontSize: "0.9rem"}}>Switch to another Lightquark network.</span>
+							<span style={{fontSize: "0.9rem"}}>Switch to another Lightquark network. Select from the official presets, or type in the network domain</span>
+							<br />
+							<span className="networkPreset networkPreset-lightquark" onClick={() => setNetwork("lq.litdevs.org")}>Lightquark (Official)</span> <span className="networkPreset networkPreset-equinox" onClick={() => setNetwork("equinox.litdevs.org")}>Equinox (Official)</span>
 							<br />
 							<input type="text" placeholder={"lq.litdevs.org"} value={network} onInput={(e) => setNetwork(e.target.value)} className="input-box" />
 							<br />
@@ -166,6 +175,25 @@ export default function SettingsScreen() {
 							<button className="button" id={"networkSaveButton"} onClick={saveNetwork}>Save</button>
 						</div>
 					</>)}
+					{ (tab === 4 && showFunSettings) && (<>
+						{cutekittycat && <div className="setting">
+							<div className="setting">
+								<span style={{fontWeight: "600"}}>Cute kitty cat</span>
+								<br/>
+								<span>Holy <span style={{filter: "blur(2px)"}}>fucking</span> bingle its a cute little kitty cat that follows you around</span>
+								<br/>
+								<Toggle checked={cuteKitty} setChecked={setCuteKitty}/>
+							</div>
+						</div>}
+						<div className="setting">
+							<span style={{fontWeight: "600"}}>I am a cat</span>
+							<br />
+							<span style={{fontSize: "0.9rem"}}>meow purr meow nya meow meow</span>
+							<br />
+							<Toggle checked={catMode} setChecked={setCatMode} />
+						</div>
+					</>)}
+
 				</div>
 			</div>
 		</div>

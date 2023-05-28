@@ -2,16 +2,18 @@ import {useState, useContext, useEffect} from "react";
 import {AppContext} from "../../contexts/AppContext";
 import spinner from "../../assets/spinner_test_gif.gif";
 import {lq} from "../../classes/Lightquark";
+import {useFlagsStatus} from "@unleash/proxy-client-react";
 
 export function Loader() {
 	let appContext = useContext(AppContext);
+	const { flagsReady/*, flagsError*/ } = useFlagsStatus();
 	let [seconds, setSeconds] = useState(0);
 
 	useEffect(() => {
 		if (!appContext.userData) return appContext.setSpinnerText("Loading user data")
+		if (!flagsReady) return appContext.setSpinnerText("Rolling feature gacha")
 		if (!appContext.quarks) return appContext.setSpinnerText("Loading quarks")
 		if (!appContext.gatewayConnected && !lq.reconnecting) return appContext.setSpinnerText("Connecting to gateway")
-	
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [appContext.userData, appContext.gatewayConnected]);
 

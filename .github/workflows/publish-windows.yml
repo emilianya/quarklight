@@ -26,4 +26,4 @@ jobs:
     - run: npm run updateReleaseJson ${{ github.ref_name }}
     - run: npm run publish
       env:
-        RELEASE_PASSWORD: ${{ secrets.RELEASE_PASSWORD }}
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}

@@ -94,10 +94,10 @@ function createWindow() {
 	// Open the DevTools.
 	if (isDev) {
 		win.webContents.openDevTools({ mode: 'detach' });
-		setInterval(() => {
-			win.webContents.send('is-dev', true)
-		}, 5000);
 	}
+	setInterval(() => {
+		win.webContents.send('is-dev', isDev)
+	}, 5000);
 
 	win.webContents.setWindowOpenHandler(({url}) => {
 		// open url in a browser and prevent default

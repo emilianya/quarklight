@@ -8,6 +8,9 @@ import {MainContext} from "../../contexts/MainContext";
 import pjson from '../../../package.json';
 import settings from "../../classes/Settings";
 import SettingsScreen from "./SettingsScreen";
+import {useFlag} from "@unleash/proxy-client-react";
+import CuteKitty from "../random/CuteKitty";
+import {environment} from "../../index";
 
 const EasterEggCat = lazy(() => import("../random/EasterEggCat"));
 
@@ -26,6 +29,7 @@ export function MainScreen() {
 	let [quarkOrder, setQuarkOrder] = useState(null);
 	let [screen, setScreen] = useState("primary");
 	let [warning, setWarning] = useState(lq.pendingWarning);//{severityColor: "#ff4a4a", message: "Something is very wrong :<", severity: "NUCLEAR"});
+	let cutekittycat = useFlag("QL_cutekittycat");
 
 	let [konamiState, setKonamiState] = useState(0);
 	let konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
@@ -42,7 +46,7 @@ export function MainScreen() {
 	}, [appContext.loading, selectedQuark, selectedChannel, appContext.quarks, appContext.channels])
 
 	return (
-		<div data-testid="screenRoot" className="screenRoot" onKeyDown={a=>{a.key===konamiCode[konamiState]?setKonamiState(konamiState+1):setKonamiState(0);if (!a.shiftKey && !a.ctrlKey && !a.altKey && !a.metaKey && !showModal) document.querySelector(".messageInput").focus();}} tabIndex="0">
+		<div data-testid="screenRoot" className="screenRoot" onKeyDown={a=>{a.key===konamiCode[konamiState]?setKonamiState(konamiState+1):(!a.shiftKey && !a.ctrlKey && !a.altKey && !a.metaKey) && setKonamiState(0);if (!a.shiftKey && !a.ctrlKey && !a.altKey && !a.metaKey && !showModal) document.querySelector(".messageInput").focus();}} tabIndex="0">
 			{ // Debug menu 
 			konamiState === konamiCode.length ? <div style={{overflowY: "scroll", height: "100vh"}} >
 				<img width={"128px"} src={appContext?.userData?.avatar || "https://quarky.vukky.net/assets/img/loading.png"} alt=""/>
@@ -52,7 +56,7 @@ export function MainScreen() {
 				<p>Selected quark: {JSON.stringify(selectedQuark)}</p>
 				<p>Selected theme: {JSON.stringify(appContext.preferences.ql_theme)}</p>
 				<p>Pending warning: {JSON.stringify(lq.pendingWarning)}</p>
-				<p>You are on {pjson.version.endsWith("-release") ? `${pjson.version} (Stable)` : `${pjson.version} (Quantum)`}</p>
+				<p>You are on {environment === "development" ? `${pjson.version} (Quantum)` : `${pjson.version} (Stable)`}</p>
 				<details><summary>Quarks</summary>{JSON.stringify(appContext.quarks)}</details>
 				<button onClick={() => lq.logout()}>Loggery Outtery</button>
 				<button onClick={() => appContext.setToken("newTokenValue")}>killtoken</button>
@@ -90,6 +94,8 @@ export function MainScreen() {
 						warning, setWarning,
 						screen, setScreen
 					}}>
+					{ (cutekittycat && appContext.preferences.cuteKitty) && <CuteKitty />
+					}
 					{
 						screen === "primary" && (<>
 							<ContentContainer />
