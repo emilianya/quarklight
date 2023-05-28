@@ -24,8 +24,7 @@ if (!isDev) {
 	const releaseChannel = releaseJson.channel
 	const server = releaseJson.updateServer
 	let platform = process.platform;
-	if (platform === 'win32') platform = 'win64'
-	const updateUrl = `${server}/update/${platform}/${releaseJson.version}/${releaseChannel}`
+	const updateUrl = `${server}/update/${platform}/${releaseJson.version}`
 
 	autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName) => {
 		console.log("Update downloaded.")
