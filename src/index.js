@@ -8,8 +8,8 @@ import { lq } from './classes/Lightquark';
 import { FlagProvider } from '@unleash/proxy-client-react';
 import pjson from '../package.json';
 
-export let environment = pjson.version.endsWith("-quantum") ? "development" : "production";
-
+export let environment = pjson.channel === "stable" ? "production" : "development";
+console.info("Environment: " + environment)
 let unleashKey
 if (environment === "production") {
   unleashKey = "default:production.2365aa01274468ff4b7250d5105fbdd159774000b10d169d82fcb097"
@@ -22,6 +22,7 @@ let unleashConfig = {
   clientKey: unleashKey, // A client-side API token OR one of your proxy's designated client keys (previously known as proxy secrets)
   refreshInterval: 60, // How often (in seconds) the client should poll the proxy for updates
   appName: 'Quarklight', // The name of your application. It's only used for identifying your application
+  environment
 };
 
 try {

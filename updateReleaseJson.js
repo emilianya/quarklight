@@ -11,11 +11,12 @@ console.log("Publishing to channel: " + channel)
 console.log("Version: " + pjson.version)
 
 let version = pjson.version
+pjson.channel = channel
 if (channel === "quantum") {
     version = `${pjson.version}-quantum`;
     pjson.version = version
-    fs.writeFileSync('package.json', JSON.stringify(pjson, null, 4))
 }
+fs.writeFileSync('package.json', JSON.stringify(pjson, null, 4))
 
 const releaseJson = {
     "channel": channel,

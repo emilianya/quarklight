@@ -6,8 +6,6 @@ const isDev = require('electron-is-dev');
 
 const fs = require('fs');
 
-let applyUpdate
-
 if (process.defaultApp) {
 	if (process.argv.length >= 2) {
 	  app.setAsDefaultProtocolClient('lightquark', process.execPath, [path.resolve(process.argv[1])])
@@ -17,7 +15,7 @@ if (process.defaultApp) {
 }
 
 // Do not check for updates in dev mode
-//if (!isDev) {
+if (!isDev) {
 	let releaseJson = JSON.parse(fs.readFileSync(path.join(__dirname, '../build/release.json')).toString())
 
 	const releaseChannel = releaseJson.channel
@@ -62,7 +60,7 @@ if (process.defaultApp) {
 		console.log("Checking for updates...")
 		autoUpdater.checkForUpdates()
 	  }, 60000)
-//}
+}
 
 
 
