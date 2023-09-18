@@ -60,7 +60,7 @@
         "@testing-library/user-event": "^14.4.3",
         "concurrently": "^7.6.0",
         "dotenv": "^16.0.3",
-        "electron": "^24.0.0",
+        "electron": "^24.8.3",
         "electron-devtools-installer": "^3.2.0",
         "linkify-react": "^4.1.1",
         "linkifyjs": "^4.1.1",
