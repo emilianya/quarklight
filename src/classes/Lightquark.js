@@ -308,7 +308,6 @@ export default class Lightquark {
         if (!this.token) return;
         console.log("Opening gateway connection");
         this.ws = new WebSocket(this.gatewayUrl, this.token);
-        this.ws.send(JSON.stringify({event: "authenticate", token: this.token}));
         this.registerWsListeners();
     }
 
@@ -318,6 +317,7 @@ export default class Lightquark {
     registerWsListeners () {
         console.log("WS listeners registered for", this.identifier)
         this.ws.onopen = () => {
+            this.ws.send(JSON.stringify({event: "authenticate", token: this.token}));
             this.retryCount = 0; // Connection open, reset retry counter
             if (this.reconnecting) {
                 this.reconnecting = false;
