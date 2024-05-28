@@ -49,7 +49,7 @@ export default class Lightquark {
             } else {
                 parsedNetworkRoot = `https://${networkRoot}`;
             }
-            fetch(`${parsedNetworkRoot}/v1/network`).then(res => res.json()).then(networkData => {
+            fetch(`${parsedNetworkRoot}/${this.defaultVersion}/network`).then(res => res.json()).then(networkData => {
                 console.log("Network data:", networkData);
                 this.baseUrl = networkData.baseUrl;
                 this.gatewayUrl = networkData.gateway;
