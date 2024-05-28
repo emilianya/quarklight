@@ -30,8 +30,8 @@ export const Main = () => {
 		(async () => {
 			let data = await lq.apiCall("/user/me");
 			if (data.request.success) {
-				appContext.setUserData(data.response.jwtData);
-				let contextUpdate = updateContext({userId: data.response.jwtData._id})
+				appContext.setUserData(data.response.user);
+				let contextUpdate = updateContext({userId: data.response.user._id})
 				appContext.setQuarks(await lq.getQuarks());
 				if (contextUpdate) await contextUpdate;
 			}
