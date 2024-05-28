@@ -68,7 +68,7 @@ export default class Lightquark {
         }
 
         this.eventBus.on("gatewayEvent", (event) => {
-            switch (event.eventId) {
+            switch (event.event) {
                 case "messageCreate":
                     this.messageCreate(event);
                     break;
@@ -150,6 +150,8 @@ export default class Lightquark {
                 case "subscribe":
                     break;
                 case "heartbeat":
+                    break;
+                case "authenticate":
                     break;
                 default:
                     console.warn("Unknown event", event)
@@ -234,7 +236,7 @@ export default class Lightquark {
     async fetchMessage (channelId, messageId) {
         let existingMessage = this.messageState.messages.find(message => message.message._id === messageId);
         if (existingMessage) return existingMessage;
-        let res = await this.apiCall(`/channel/${channelId}/messages/${messageId}`, "GET", undefined, "v2");
+        let res = await this.apiCall(`/channel/${channelId}/messages/${messageId}`, "GET", undefined, "v4");
         if (res.request.success) return res.response.data;
         return undefined;
     }
@@ -403,7 +405,7 @@ export default class Lightquark {
         }
 
         specialAttributes.push(clientAttributes);
-        await lq.apiCall(`/channel/${channelId}/messages`, "POST", {content: message, attachments, specialAttributes}, "v2");
+        await lq.apiCall(`/channel/${channelId}/messages`, "POST", {content: message, attachments, specialAttributes}, "v4");
     }
 
     /**
@@ -414,7 +416,7 @@ export default class Lightquark {
      * @returns {Promise<void>}
      */
     async editMessage(messageId, channelId, message) {
-        await lq.apiCall(`/channel/${channelId}/messages/${messageId}`, "PATCH", {content: message}, "v2");
+        await lq.apiCall(`/channel/${channelId}/messages/${messageId}`, "PATCH", {content: message}, "v4");
     }
 
     async deleteMessage(messageId, channelId) {
@@ -422,13 +424,13 @@ export default class Lightquark {
     }
 
     async getNickname(quarkId = null) {
-        let res = await lq.apiCall(`/user/me/nick/${quarkId || "global"}`, "GET", null, "v2");
+        let res = await lq.apiCall(`/user/me/nick/${quarkId || "global"}`, "GET", null, "v4");
         if (res.request.success) return res.response.nickname;
         else return null;
     }
 
     async setNickname(nickname, scope) {
-        let res = await lq.apiCall(`/user/me/nick`, "PUT", {nickname, scope}, "v2");
+        let res = await lq.apiCall(`/user/me/nick`, "PUT", {nickname, scope}, "v4");
         return res.request.success ? false : res.response.message;
     }
 
@@ -786,7 +788,7 @@ export default class Lightquark {
      */
     async getMessages (channelId, startTimestamp = undefined) {
         if (!channelId) return [];
-        let res = await this.apiCall(`/channel/${channelId}/messages${startTimestamp ? `?startTimestamp=${startTimestamp}` : ""}`, "GET", undefined, "v2")
+        let res = await this.apiCall(`/channel/${channelId}/messages${startTimestamp ? `?startTimestamp=${startTimestamp}` : ""}`, "GET", undefined, "v4")
         return await Promise.all(res.response.messages.map(async m => await this.messageParser(m)));
     }
 
