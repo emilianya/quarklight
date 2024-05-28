@@ -552,7 +552,7 @@ export default class Lightquark {
      * @returns {Promise<Quark[]>}
      */
     async getQuarks () {
-        let res = await this.apiCall("/quark/me", "GET", undefined, "v2")
+        let res = await this.apiCall("/quark", "GET", undefined, "v4")
         let quarks = res.response.quarks;
         for (const quark in quarks) {
             //quarks[quark].members = await this.inflateUserIdArray(quarks[quark].members); Perhaps dont do that...
@@ -562,7 +562,7 @@ export default class Lightquark {
             })
             this.subscribeToQuark(quarks[quark]._id);
         }
-        let order = await this.apiCall("/quark/order", "GET", undefined, "v2");
+        let order = quarks.map(quark => quark._id) // Hack for v4 compatibility
         let orderedQuarks = [];
         order.response.order.forEach(quarkId => {
             orderedQuarks.push(quarks.find(q => q._id === quarkId));
@@ -572,9 +572,8 @@ export default class Lightquark {
     }
 
     async updateQuarkOrder () {
-        let order = await this.apiCall("/quark/order", "GET", undefined, "v2");
-        if (this.mainContext) this.mainContext.setQuarkOrder(order.response.order);
-        return order.response.order
+        if (!this.mainContext) return []
+        return this.mainContext.quarkOrder
     }
 
     async getQuark (quarkId) {
