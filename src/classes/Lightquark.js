@@ -58,8 +58,8 @@ export default class Lightquark {
                 if (this.token && !this.ws) this.openGateway();
                 this.initalized = true;
             }).catch(err => {
-                alert("Failed to connect to network. Defaulting to lq.litdevs.org");
-                settings.settings.ql_network = "lq.litdevs.org";
+                alert("Failed to connect to network. Defaulting to lightquark.network");
+                settings.settings.ql_network = "lightquark.network";
                 window.location.reload();
             })
         } catch {
