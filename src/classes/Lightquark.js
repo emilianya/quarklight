@@ -564,10 +564,10 @@ export default class Lightquark {
         }
         let order = quarks.map(quark => quark._id) // Hack for v4 compatibility
         let orderedQuarks = [];
-        order.response.order.forEach(quarkId => {
+        order.forEach(quarkId => {
             orderedQuarks.push(quarks.find(q => q._id === quarkId));
         })
-        if (this.mainContext) this.mainContext.setQuarkOrder(order.response.order);
+        if (this.mainContext) this.mainContext.setQuarkOrder(order);
         return orderedQuarks;
     }
 
