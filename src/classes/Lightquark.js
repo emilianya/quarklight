@@ -8,9 +8,9 @@ import settings from "./Settings";
 export default class Lightquark {
     
     token;
-    baseUrl = "https://lq.litdevs.org";
-    gatewayUrl = "wss://lq-gateway.litdevs.org";
-    defaultVersion = "v1"
+    baseUrl = "https://lightquark.network";
+    gatewayUrl = "wss://lightquark.network";
+    defaultVersion = "v4"
     appContext;
     mainContext;
     ws;
