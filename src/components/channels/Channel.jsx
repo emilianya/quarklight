@@ -42,7 +42,7 @@ export function Channel(props) {
 				<Item disabled={true}><span>{channel.name}</span></Item>
 				<Item onClick={() => toggleChannelMute(channel._id)}>{appContext.preferences.mutedChannels.includes(channel._id) ? "Unmute" : "Mute"}</Item>
 				<Separator />
-				{appContext.quarks.find(q => q._id === channel.quark).owners.includes(appContext.userData._id) &&
+				{true &&
 					<>
 						<Item onClick={() => {
 						if (!window.confirm("Are you sure you want to delete this channel?")) return;

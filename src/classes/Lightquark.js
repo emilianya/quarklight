@@ -8,9 +8,9 @@ import settings from "./Settings";
 export default class Lightquark {
     
     token;
-    baseUrl = "https://lq.litdevs.org";
-    gatewayUrl = "wss://lq-gateway.litdevs.org";
-    defaultVersion = "v1"
+    baseUrl = "https://lightquark.network";
+    gatewayUrl = "wss://gw.rem.lightquark.network";
+    defaultVersion = "v4"
     appContext;
     mainContext;
     ws;
@@ -49,7 +49,7 @@ export default class Lightquark {
             } else {
                 parsedNetworkRoot = `https://${networkRoot}`;
             }
-            fetch(`${parsedNetworkRoot}/v1/network`).then(res => res.json()).then(networkData => {
+            fetch(`${parsedNetworkRoot}/v4/network`).then(res => res.json()).then(networkData => {
                 console.log("Network data:", networkData);
                 this.baseUrl = networkData.baseUrl;
                 this.gatewayUrl = networkData.gateway;
@@ -59,7 +59,7 @@ export default class Lightquark {
                 this.initalized = true;
             }).catch(err => {
                 alert("Failed to connect to network. Defaulting to lq.litdevs.org");
-                settings.settings.ql_network = "lq.litdevs.org";
+                settings.settings.ql_network = "lightquark.network";
                 window.location.reload();
             })
         } catch {
@@ -160,27 +160,27 @@ export default class Lightquark {
 
 
     async messageParser(data) {
-        data.message.attachments = await Promise.all(data.message.attachments.map(async attachment => {
-            let cachedAttachment = this.appContext.attachmentCache.find(a => a.url === attachment);
-            if (cachedAttachment && (Date.now() - cachedAttachment.cachedAt < 60 * 60 * 1000) ) {
-                console.log("Using cached attachment")
-                return cachedAttachment.attachment;
-            }
-            console.warn("Fetching attachment");
-            let res = await fetch(attachment, {
-                method: "HEAD",
-                headers: {
-                    Range: "bytes=0-0",
-                }
-            })
-            let newAttachment = { url: attachment }
-            newAttachment.size = humanFileSize(res.headers.get("content-range").split("/")[1].replace(/"/g, ""));
-            newAttachment.name = res.headers.get("content-disposition").split("filename=")[1].replace(/"/g, "");
-            newAttachment.type = res.headers.get("content-type");
-
-            this.appContext.setAttachmentCache(prev => [...prev, {url: attachment, cachedAt: Date.now(), attachment: newAttachment}]);
-            return newAttachment;
-        }))
+        // data.message.attachments = await Promise.all(data.message.attachments.map(async attachment => {
+        //     let cachedAttachment = this.appContext.attachmentCache.find(a => a.url === attachment);
+        //     if (cachedAttachment && (Date.now() - cachedAttachment.cachedAt < 60 * 60 * 1000) ) {
+        //         console.log("Using cached attachment")
+        //         return cachedAttachment.attachment;
+        //     }
+        //     console.warn("Fetching attachment");
+        //     let res = await fetch(attachment, {
+        //         method: "HEAD",
+        //         headers: {
+        //             Range: "bytes=0-0",
+        //         }
+        //     })
+        //     let newAttachment = { url: attachment }
+        //     newAttachment.size = humanFileSize(res.headers.get("content-range").split("/")[1].replace(/"/g, ""));
+        //     newAttachment.name = res.headers.get("content-disposition").split("filename=")[1].replace(/"/g, "");
+        //     newAttachment.type = res.headers.get("content-type");
+        //
+        //     this.appContext.setAttachmentCache(prev => [...prev, {url: attachment, cachedAt: Date.now(), attachment: newAttachment}]);
+        //     return newAttachment;
+        // }))
         const reply = data.message.specialAttributes.find(a => a.type === "reply");
         if (reply) {
             data.message.reply = await this.fetchMessage(data.message.channelId, reply.replyTo);
@@ -234,7 +234,7 @@ export default class Lightquark {
     async fetchMessage (channelId, messageId) {
         let existingMessage = this.messageState.messages.find(message => message.message._id === messageId);
         if (existingMessage) return existingMessage;
-        let res = await this.apiCall(`/channel/${channelId}/messages/${messageId}`, "GET", undefined, "v2");
+        let res = await this.apiCall(`/channel/${channelId}/messages/${messageId}`, "GET", undefined, "v4");
         if (res.request.success) return res.response.data;
         return undefined;
     }
@@ -307,7 +307,8 @@ export default class Lightquark {
         if (this.dead) return;
         if (!this.token) return;
         console.log("Opening gateway connection");
-        this.ws = new WebSocket(this.gatewayUrl, this.token);
+        this.ws = new WebSocket(this.gatewayUrl);
+
         this.registerWsListeners();
     }
 
@@ -317,6 +318,7 @@ export default class Lightquark {
     registerWsListeners () {
         console.log("WS listeners registered for", this.identifier)
         this.ws.onopen = () => {
+            this.ws.send(JSON.stringify({event: "authenticate", token: this.token}))
             this.retryCount = 0; // Connection open, reset retry counter
             if (this.reconnecting) {
                 this.reconnecting = false;
@@ -331,8 +333,6 @@ export default class Lightquark {
                 this.wygIndex += 1;
                 if(this.wygIndex === wantYouGone.length - 1) this.wygIndex = 0;
             }, 15000);
-            // subscribe to user updates
-            this.ws.send(JSON.stringify({event: "subscribe", message: "me"}))
         }
         this.ws.onmessage = (message) => {
             let data = JSON.parse(message.data);
@@ -402,7 +402,7 @@ export default class Lightquark {
         }
 
         specialAttributes.push(clientAttributes);
-        await lq.apiCall(`/channel/${channelId}/messages`, "POST", {content: message, attachments, specialAttributes}, "v2");
+        await lq.apiCall(`/channel/${channelId}/messages`, "POST", {content: message, attachments, specialAttributes}, "v4");
     }
 
     /**
@@ -413,7 +413,7 @@ export default class Lightquark {
      * @returns {Promise<void>}
      */
     async editMessage(messageId, channelId, message) {
-        await lq.apiCall(`/channel/${channelId}/messages/${messageId}`, "PATCH", {content: message}, "v2");
+        await lq.apiCall(`/channel/${channelId}/messages/${messageId}`, "PATCH", {content: message}, "v4");
     }
 
     async deleteMessage(messageId, channelId) {
@@ -421,30 +421,14 @@ export default class Lightquark {
     }
 
     async getNickname(quarkId = null) {
-        let res = await lq.apiCall(`/user/me/nick/${quarkId || "global"}`, "GET", null, "v2");
+        let res = await lq.apiCall(`/user/me/nick/${quarkId || "global"}`, "GET", null, "v4");
         if (res.request.success) return res.response.nickname;
         else return null;
     }
 
     async setNickname(nickname, scope) {
-        let res = await lq.apiCall(`/user/me/nick`, "PUT", {nickname, scope}, "v2");
+        let res = await lq.apiCall(`/user/me/nick`, "PUT", {nickname, scope}, "v4");
         return res.request.success ? false : res.response.message;
-    }
-
-    /**
-     * Subscribes to gateway updates for a channel
-     * @param channelId
-     */
-    subscribeToChannel (channelId) {
-        this.ws.send(JSON.stringify({event: "subscribe", message: `channel_${channelId}`}))
-    }
-
-    /**
-     * Subscribes to gateway updates for a quark
-     * @param quarkId
-     */
-    subscribeToQuark (quarkId) {
-        this.ws.send(JSON.stringify({event: "subscribe", message: `quark_${quarkId}`}))
     }
 
     /**
@@ -506,8 +490,6 @@ export default class Lightquark {
             let newQuark = await this.getQuark(res.response.quark._id);
             // TODO: Remove this with QUARKLIGHT-47
             this.appContext.setQuarks(o => [...o, newQuark]);
-            this.subscribeToQuark(newQuark._id)
-            newQuark.channels.forEach(c => this.subscribeToChannel(c._id));
             return {error: false, quark: newQuark};
         } else {
             console.error("Failed to create quark", res);
@@ -551,29 +533,30 @@ export default class Lightquark {
      * @returns {Promise<Quark[]>}
      */
     async getQuarks () {
-        let res = await this.apiCall("/quark/me", "GET", undefined, "v2")
+        let res = await this.apiCall("/quark", "GET", undefined, "v4")
         let quarks = res.response.quarks;
         for (const quark in quarks) {
             //quarks[quark].members = await this.inflateUserIdArray(quarks[quark].members); Perhaps dont do that...
             quarks[quark].channels.forEach(channel => {
-                this.subscribeToChannel(channel._id);
                 this.appContext.setChannelCache(prevState => [...prevState, {channel, cachedAt: new Date()}]);
             })
-            this.subscribeToQuark(quarks[quark]._id);
         }
-        let order = await this.apiCall("/quark/order", "GET", undefined, "v2");
-        let orderedQuarks = [];
-        order.response.order.forEach(quarkId => {
-            orderedQuarks.push(quarks.find(q => q._id === quarkId));
+        let orderedQuarks = quarks;
+        let order = []
+        quarks.forEach(quark => {
+            order.push(quark._id);
         })
-        if (this.mainContext) this.mainContext.setQuarkOrder(order.response.order);
+        if (this.mainContext) this.mainContext.setQuarkOrder(order);
         return orderedQuarks;
     }
 
     async updateQuarkOrder () {
-        let order = await this.apiCall("/quark/order", "GET", undefined, "v2");
-        if (this.mainContext) this.mainContext.setQuarkOrder(order.response.order);
-        return order.response.order
+        let order = []
+        this.appContext.quarks.forEach(quark => {
+            order.push(quark._id);
+        })
+        if (this.mainContext) this.mainContext.setQuarkOrder(order);
+        return order
     }
 
     async getQuark (quarkId) {
@@ -786,13 +769,13 @@ export default class Lightquark {
      */
     async getMessages (channelId, startTimestamp = undefined) {
         if (!channelId) return [];
-        let res = await this.apiCall(`/channel/${channelId}/messages${startTimestamp ? `?startTimestamp=${startTimestamp}` : ""}`, "GET", undefined, "v2")
+        let res = await this.apiCall(`/channel/${channelId}/messages${startTimestamp ? `?startTimestamp=${startTimestamp}` : ""}`, "GET", undefined, "v4")
         return await Promise.all(res.response.messages.map(async m => await this.messageParser(m)));
     }
 
     async setAvatar(avatarBin, mime) {
         try {
-            let res = await fetch(`${this.baseUrl}/v1/user/me/avatar`, {
+            let res = await fetch(`${this.baseUrl}/v4/user/me/avatar`, {
                 method: "PUT",
                 headers: {
                     Authorization: `Bearer ${this.token}`,

@@ -7,7 +7,6 @@ import Toggle from "../settings/Toggle";
 import {UserBox} from "../nav/UserBox";
 import settings from "../../classes/Settings";
 import {lq} from "../../classes/Lightquark";
-import {useFlag} from "@unleash/proxy-client-react";
 
 export default function SettingsScreen() {
 	let mainContext = useContext(MainContext);
@@ -21,10 +20,6 @@ export default function SettingsScreen() {
 	let [cuteKitty, setCuteKitty] = useState(appContext.preferences.cuteKitty);
 	let [networkError, setNetworkError] = useState("");
 	let [tab, setTab] = useState(0);
-
-	let showFunSettings = useFlag("QL_SettingsFunTab");
-	let cutekittycat = useFlag("QL_cutekittycat");
-	let showFunAsCat = useFlag("QL_FunIsCat");
 
 	function saveNetwork() {
 
@@ -111,9 +106,11 @@ export default function SettingsScreen() {
 					     onClick={() => {setTab(3)}}>
 						Lightquark
 					</div>
-					{ showFunSettings && <div className={tab === 4 ? "settingTab settingTabActive" : "settingTab"}
-					     onClick={() => {setTab(4)}}>
-						{showFunAsCat ? "😺🐈🐈‍⬛ Cat settings :3" : "Fun"}
+					{ <div className={tab === 4 ? "settingTab settingTabActive" : "settingTab"}
+					       onClick={() => {
+						       setTab(4)
+					       }}>
+						{"😺🐈🐈‍⬛ Cat settings :3"}
 					</div>}
 				</div>
 				<div className="settingTabContent">
@@ -167,7 +164,7 @@ export default function SettingsScreen() {
 							<br />
 							<span style={{fontSize: "0.9rem"}}>Switch to another Lightquark network. Select from the official presets, or type in the network domain</span>
 							<br />
-							<span className="networkPreset networkPreset-lightquark" onClick={() => setNetwork("lq.litdevs.org")}>Lightquark (Official)</span> <span className="networkPreset networkPreset-equinox" onClick={() => setNetwork("equinox.litdevs.org")}>Equinox (Official)</span>
+							<span className="networkPreset networkPreset-lightquark" onClick={() => setNetwork("lightquark.network")}>Lightquark (Official)</span> <span className="networkPreset networkPreset-equinox" onClick={() => setNetwork("equinox.lightquark.network")}>Equinox (Official)</span>
 							<br />
 							<input type="text" placeholder={"lq.litdevs.org"} value={network} onInput={(e) => setNetwork(e.target.value)} className="input-box" />
 							<br />
@@ -175,8 +172,8 @@ export default function SettingsScreen() {
 							<button className="button" id={"networkSaveButton"} onClick={saveNetwork}>Save</button>
 						</div>
 					</>)}
-					{ (tab === 4 && showFunSettings) && (<>
-						{cutekittycat && <div className="setting">
+					{ (tab === 4) && (<>
+						{<div className="setting">
 							<div className="setting">
 								<span style={{fontWeight: "600"}}>Cute kitty cat</span>
 								<br/>

@@ -36,7 +36,7 @@ export function NavContainer() {
 		(async () => {
 			lq.setAppContext(appContext);
 			appContext.setChannels([]);
-			let channels = await lq.getChannels(mainContext.selectedQuark);
+			let channels = appContext.quarks[mainContext.selectedQuark].channels;
 			appContext.setChannels(channels);
 			if (channels.length > 0 && !channels.some(c => c._id === mainContext.selectedChannel)) mainContext.setSelectedChannel(channels[0]._id);
 		})()
