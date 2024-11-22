@@ -1,7 +1,6 @@
 import wantYouGone from "../misc/wantYouGone";
 import notificationMP3 from "../assets/notification.mp3";
 import EventEmitter from "events";
-import humanFileSize from "../misc/humanFileSize";
 import * as linkify from 'linkifyjs';
 import settings from "./Settings";
 
