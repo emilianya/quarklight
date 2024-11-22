@@ -2,6 +2,10 @@
 
 © Copyright Emilia
 
+## Scope of the work
+
+All references to "this Work" in this license do not include the "catears.png" file.
+
 ## Permissions
 
 The creators of this Work (“The Licensor”) grant permission
@@ -17,6 +21,12 @@ provide a copy of this license or a (clickable, if the medium allows) link to
 and indicate whether and what kind of changes were made.
 The User may do so in any reasonable manner,
 but not in any way that suggests the Licensor endorses the User or their use.
+
+## Modifications
+
+Modifications made to the OQL license:
+- Added this section, to indicate changes made.
+- Added notice about catears.png not being covered by this license.
 
 ## Prohibitions
 

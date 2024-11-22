@@ -58,7 +58,7 @@ export default class Lightquark {
                 if (this.token && !this.ws) this.openGateway();
                 this.initalized = true;
             }).catch(err => {
-                alert("Failed to connect to network. Defaulting to lq.litdevs.org");
+                alert("Failed to connect to network. Defaulting to lightquark.network");
                 settings.settings.ql_network = "lightquark.network";
                 window.location.reload();
             })
@@ -68,7 +68,7 @@ export default class Lightquark {
         }
 
         this.eventBus.on("gatewayEvent", (event) => {
-            switch (event.eventId) {
+            switch (event.event) {
                 case "messageCreate":
                     this.messageCreate(event);
                     break;
@@ -150,6 +150,8 @@ export default class Lightquark {
                 case "subscribe":
                     break;
                 case "heartbeat":
+                    break;
+                case "authenticate":
                     break;
                 default:
                     console.warn("Unknown event", event)
@@ -308,7 +310,6 @@ export default class Lightquark {
         if (!this.token) return;
         console.log("Opening gateway connection");
         this.ws = new WebSocket(this.gatewayUrl);
-
         this.registerWsListeners();
     }
 
@@ -318,7 +319,7 @@ export default class Lightquark {
     registerWsListeners () {
         console.log("WS listeners registered for", this.identifier)
         this.ws.onopen = () => {
-            this.ws.send(JSON.stringify({event: "authenticate", token: this.token}))
+            this.ws.send(JSON.stringify({event: "authenticate", token: this.token}));
             this.retryCount = 0; // Connection open, reset retry counter
             if (this.reconnecting) {
                 this.reconnecting = false;
@@ -541,22 +542,18 @@ export default class Lightquark {
                 this.appContext.setChannelCache(prevState => [...prevState, {channel, cachedAt: new Date()}]);
             })
         }
-        let orderedQuarks = quarks;
-        let order = []
-        quarks.forEach(quark => {
-            order.push(quark._id);
+        let order = quarks.map(quark => quark._id) // Hack for v4 compatibility
+        let orderedQuarks = [];
+        order.forEach(quarkId => {
+            orderedQuarks.push(quarks.find(q => q._id === quarkId));
         })
         if (this.mainContext) this.mainContext.setQuarkOrder(order);
         return orderedQuarks;
     }
 
     async updateQuarkOrder () {
-        let order = []
-        this.appContext.quarks.forEach(quark => {
-            order.push(quark._id);
-        })
-        if (this.mainContext) this.mainContext.setQuarkOrder(order);
-        return order
+        if (!this.mainContext) return []
+        return this.mainContext.quarkOrder
     }
 
     async getQuark (quarkId) {
